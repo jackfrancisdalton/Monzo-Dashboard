@@ -2,9 +2,8 @@ import { Injectable, NotImplementedException } from '@nestjs/common';
 import type { MonzoAccount, MonzoBalance, MonzoTransaction } from '@repo/monzo-types';
 import { MonzoService } from './monzo-service.interface';
 import { HttpService } from '@nestjs/axios';
-
-// TODO: make this use env variables instead
-const BASE_URL = 'http://localhost:3001';
+import { map, catchError } from 'rxjs/operators';
+import { firstValueFrom, throwError } from 'rxjs';
 
 @Injectable()
 export class MockMonzoService implements MonzoService {
@@ -14,14 +13,30 @@ export class MockMonzoService implements MonzoService {
     ) {}
     
     async getAccounts(): Promise<MonzoAccount[]> {
-        throw new NotImplementedException('MockMonzoService.getAccounts is not implemented');
+        return this.getRequest<MonzoAccount[]>(`/accounts`);
     }
     
     async getBalance(): Promise<MonzoBalance> {
-        throw new NotImplementedException('MockMonzoService.getBalance is not implemented');
+        return this.getRequest<MonzoBalance>(`/balance`);
     }
     
     async getTransactions(): Promise<MonzoTransaction[]> {
-        throw new NotImplementedException('MockMonzoService.getTransactions is not implemented');
+        return this.getRequest<MonzoTransaction[]>(`/transactions`);
+    }
+
+    // TODO: move to a a http utils file
+    private async getRequest<T>(path: string): Promise<T> {
+        try {
+          return await firstValueFrom(
+            this.http.get<T>(path).pipe(
+              map((response) => response.data),
+              catchError((err) => {
+                return throwError(() => new Error(`Failed to fetch ${path}`));
+              }),
+            ),
+          );
+        } catch (err) {
+          throw err;
+        }
     }
 }

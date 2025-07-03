@@ -27,7 +27,7 @@ export class AppController {
     return balance;
   }
 
-  @Get()
+  @Get("/transactions")
   getTransactions(): MonzoTransaction[] {
     const transaction: MonzoTransaction = {
       id: 'txn_123456789',
