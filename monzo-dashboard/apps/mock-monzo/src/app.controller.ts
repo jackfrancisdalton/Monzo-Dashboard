@@ -7,17 +7,16 @@ export class AppController {
 
   @Get()
   getAccounts(): any {
-    return {}
+    return {};
   }
 
   @Get('/balance')
   getBalance() {
-    return {}
+    return {};
   }
 
   @Get()
   getTransactions(): any {
-    return {}
+    return {};
   }
-
 }
