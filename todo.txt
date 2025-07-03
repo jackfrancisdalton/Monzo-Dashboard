@@ -1,0 +1,8 @@
+1. add generator for mock data (should probabably be static, runs once and stores as json)
+2. generate generic components for proportial area charts, and line/bar charts ideally use a library for this
+3. Set up a masonary grid on the front end that supports re-sizing
+4. Dive into how we handle data ranges/comparisons of data ranges both in terms of UI and data flow
+5. Integrate mock data into ui and refine UI elemens (assume fixed data range of 1 week for this)
+6. Set up date range specification
+7. Set up date comparsion option (ie add another date to compare against)
+8. integrate actual data (will need to be stored in DB most likely)
