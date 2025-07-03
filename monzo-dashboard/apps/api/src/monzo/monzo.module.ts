@@ -1,7 +1,17 @@
 import { Module } from '@nestjs/common';
-import { MonzoService } from './mock-monzo.service';
+import { MonzoService } from './monzo-service.interface';
+import { RealMonzoService } from './real-monzo.service';
+import { MockMonzoService } from './mock-monzo.service';
 
 @Module({
-  providers: [MonzoService]
+  providers: [
+    {
+      provide: MonzoService,
+      useClass: process.env.NODE_ENV === 'production'
+        ? RealMonzoService
+        : MockMonzoService
+    }
+  ],
+  exports: [MonzoService]
 })
 export class MonzoModule {}

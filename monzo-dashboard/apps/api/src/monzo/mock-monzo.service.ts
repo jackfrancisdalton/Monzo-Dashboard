@@ -9,7 +9,6 @@ const BASE_URL = 'http://localhost:3001';
 @Injectable()
 export class MockMonzoService implements MonzoService {
 
-    
     constructor(
         private readonly http: HttpService
     ) {}
