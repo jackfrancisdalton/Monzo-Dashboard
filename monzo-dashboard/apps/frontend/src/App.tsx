@@ -11,6 +11,7 @@ import { computeCumulativeLineData } from './Mappers';
 import { computeTreeMapData } from './Mappers/transactions-to-tree-map';
 import { useEffect, useMemo, useState } from 'react';
 import { ResponsiveGeoMap } from '@nivo/geo';
+import TopEntitiesCard from './DashboardCards/TopEntitiesCard';
 
 function App() {
   const { balance, transactions } = useMonzoData();
@@ -18,7 +19,10 @@ function App() {
   
   const lineData = useMemo(() => computeCumulativeLineData(transactions), [transactions]);
   const treeMapData = useMemo(() => computeTreeMapData(transactions), [transactions]);
-  
+  const totalSpending = useMemo(() => transactions.reduce((acc, tx) => acc + Math.abs(tx.amount), 0), [transactions]);
+  const topTenTransactions = useMemo(() => [...transactions]
+    .sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount))
+    .slice(0, 10), [transactions]);
 
   useEffect(() => {
     fetch('/geo/world.json')
@@ -39,7 +43,7 @@ function App() {
   return (
     <AppLayout>
       <CardLayout>
-        <CardWrapper title="Spending over time" className="col-span-2">
+        <CardWrapper title="Spending over time" className="col-span-4 row-span-2">
           <ResponsiveLine
             data={lineData}
             margin={{ top: 20, right: 20, bottom: 50, left: 50 }}
@@ -78,8 +82,16 @@ function App() {
           ></DisplayCard>
         </CardWrapper>
 
+        <CardWrapper title="Top Items" className="col-span-2 row-span-1">  
+          <TopEntitiesCard
+            items={topTenTransactions}
+            getLabel={(tx) => tx.merchant?.name ?? tx.description}
+            getValue={(tx) => new Date(tx.created).toLocaleDateString()}
+            getPercent={(tx) => (Math.abs(tx.amount) / totalSpending * 100)}
+          />
+        </CardWrapper>
 
-        {(features && features.length > 0) && (
+        {/* {(features && features.length > 0) && (
           <CardWrapper title="spending by location" className="col-span-4 row-span-2">
             <ResponsiveGeoMap
                 features={features}
@@ -91,7 +103,7 @@ function App() {
                 graticuleLineColor="#666666"
             />
           </CardWrapper>
-        )}
+        )} */}
 
 
       </CardLayout>
