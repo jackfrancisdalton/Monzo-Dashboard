@@ -6,6 +6,7 @@ import { ResponsiveTreeMap } from '@nivo/treemap';
 import CardWrapper from './DashboardCards/CardWrapper';
 import CardLayout from './Layouts/CardLayout';
 import AppLayout from './Layouts/AppLayout';
+import DisplayCard from './DashboardCards/DisplayCard';
 
 function App() {
   const { balance, transactions } = useMonzoData();
@@ -93,18 +94,20 @@ function App() {
           />
         </CardWrapper>
 
-        <CardWrapper title="Merchant Spending" className="col-span-2 row-span-2">
-          <ResponsiveTreeMap
-            data={treemapData}
-            identity="name"
-            value="value"
-            innerPadding={3}
-            outerPadding={3}
-            labelSkipSize={12}
-            label={(node) => `${node.id} (£${node.value.toFixed(0)})`}
-            colors={{ scheme: 'nivo' }}
-            borderColor={{ from: 'color', modifiers: [['darker', 0.3]] }}
-          />
+        <CardWrapper className="col-span-1 row-span-1">
+          <DisplayCard
+            title='Total Balance'
+            value={`£${(balance?.balance || 0) / 100}`}
+            colorClass="text-green-600"
+          ></DisplayCard>
+        </CardWrapper>
+
+        <CardWrapper className="col-span-1 row-span-1">
+          <DisplayCard
+            title='Target Balance'
+            value={`£${(balance?.balance || 0) / 100}`}
+            colorClass="text-red-600"
+          ></DisplayCard>
         </CardWrapper>
 
         <CardWrapper title="Merchant Spending" className="col-span-2 row-span-2">
