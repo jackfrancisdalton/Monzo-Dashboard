@@ -1,6 +1,6 @@
-import './App.css'
+import './App.css';
 import { useMonzoData } from './Hooks/monzo-data.hook';
-import { ResponsiveLine } from '@nivo/line'
+import { ResponsiveLine } from '@nivo/line';
 import { ResponsiveTreeMap } from '@nivo/treemap';
 import CardWrapper from './DashboardCards/CardWrapper';
 import CardLayout from './Layouts/CardLayout';
@@ -14,7 +14,6 @@ import { ResponsivePie } from '@nivo/pie';
 import TopEntitiesCard from './DashboardCards/TopEntitiesCard';
 import { computePieData } from './Mappers/transactions-to-pie-map';
 import { TimeRangePicker } from './UIComponents/TimeRangePicker';
-
 
 function App() {
   const { balance, transactions } = useMonzoData();
@@ -41,27 +40,17 @@ function App() {
 
   useEffect(() => {
     fetch('/geo/world.json')
-        .then(res => res.json())
-        .then(data => setFeatures(data.features))
-  }, [])
+      .then((res) => res.json())
+      .then((data) => setFeatures(data.features));
+  }, []);
 
-
-
-  // const points = transactions
-  //   .filter(tx => tx.merchant?.address)
-  //   .map(tx => ({
-  //       id: tx.id,
-  //       coordinates: [
-  //           tx.merchant?.address?.longitude ?? 0,
-  //           tx.merchant?.address?.latitude ?? 0
-  //       ],
-    // }));
-
-    const generateHeader = () => {
-      return (<TimeRangePicker
-        onChange={(dateRange) => { setDateRange(dateRange); console.log(dateRange)}}
-      ></TimeRangePicker>)
-    }
+  const generateHeader = () => {
+    return (
+      <TimeRangePicker
+        onChange={(dateRange) => { setDateRange(dateRange); }}
+      ></TimeRangePicker>
+    );
+  };
 
   return (
     <AppLayout headerComponent={generateHeader()}>
@@ -91,13 +80,6 @@ function App() {
             arcLinkLabelsColor={{ from: 'color' }}
             arcLabelsSkipAngle={10}
             arcLabelsTextColor={{ from: 'color', modifiers: [['darker', 2]] }}
-            // tooltip={({ datum }) => (
-            //   <div className="p-2 text-sm">
-            //     <strong>{datum.label}</strong>: £{(datum.value / 100).toFixed(2)}
-            //     <br />
-            //     {((datum.value / total) * 100).toFixed(1)}% of total
-            //   </div>
-            // )}
           />
         </CardWrapper>
 
@@ -116,47 +98,24 @@ function App() {
         </CardWrapper>
 
         <CardWrapper className="col-span-1 row-span-1">
-          <DisplayCard
-            title='Total Spend'
-            value={`£1234.55`}
-            colorClass="text-green-600"
-          ></DisplayCard>
+          <DisplayCard title="Total Spend" value={`£1234.55`} colorClass="text-green-600"></DisplayCard>
         </CardWrapper>
 
         <CardWrapper className="col-span-1 row-span-1">
-          <DisplayCard
-            title='Target Spend'
-            value={`£1820.00`}
-            colorClass="text-red-600"
-          ></DisplayCard>
+          <DisplayCard title="Target Spend" value={`£1820.00`} colorClass="text-red-600"></DisplayCard>
         </CardWrapper>
 
-        <CardWrapper title="Top Items" className="col-span-2 row-span-1">  
+        <CardWrapper title="Top Items" className="col-span-2 row-span-1">
           <TopEntitiesCard
             items={topTenTransactions}
             getLabel={(tx) => tx.merchant?.name ?? tx.description}
             getValue={(tx) => new Date(tx.created).toLocaleDateString()}
-            getPercent={(tx) => (Math.abs(tx.amount) / totalSpending * 100)}
+            getPercent={(tx) => (Math.abs(tx.amount) / totalSpending) * 100}
           />
         </CardWrapper>
-
-        {/* {(features && features.length > 0) && (
-          <CardWrapper title="spending by location" className="col-span-4 row-span-2">
-            <ResponsiveGeoMap
-                features={features}
-                margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
-                fillColor="#eeeeee"
-                borderWidth={0.5}
-                borderColor="#333333"
-                enableGraticule={true}
-                graticuleLineColor="#666666"
-            />
-          </CardWrapper>
-        )} */}
-
       </CardLayout>
     </AppLayout>
-  )
+  );
 }
 
-export default App
+export default App;
