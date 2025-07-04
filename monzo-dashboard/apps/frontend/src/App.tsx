@@ -3,6 +3,8 @@ import './App.css'
 import { useMonzoData } from './Hooks/monzo-data.hook';
 import { ResponsiveLine } from '@nivo/line'
 import { ResponsiveTreeMap } from '@nivo/treemap';
+import CardWrapper from './DashboardCards/CardWrapper';
+import CardLayout from './Layouts/CardLayout';
 
 function App() {
   const { balance, transactions } = useMonzoData();
@@ -65,23 +67,17 @@ function App() {
   const treemapData = buildTreemapData(transactions || []);
 
   return (
-    <>
-      <div style={{ height: '500px', width: '100%' }}>
+    <CardLayout>
+      <CardWrapper title="Users Over Time" className="col-span-2">
         <ResponsiveLine
           data={data}
-          margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+          margin={{ top: 20, right: 20, bottom: 50, left: 50 }}
           xScale={{ type: 'point' }}
-          yScale={{ type: 'linear', stacked: false, min: 'auto', max: 'auto' }}
-          axisBottom={{ legend: 'Date', legendOffset: 36, legendPosition: 'middle' }}
-          axisLeft={{ legend: 'Balance (£)', legendOffset: -40, legendPosition: 'middle' }}
-          colors={{ scheme: 'category10' }}
-          pointSize={8}
-          pointBorderWidth={2}
-          pointLabelYOffset={-12}
-          useMesh={true}
+          yScale={{ type: 'linear' }}
         />
-      </div>
-      <div style={{ height: '500px', width: '100%' }}>
+      </CardWrapper>
+
+      <CardWrapper title="Merchant Spending" className="col-span-2 row-span-2">
         <ResponsiveTreeMap
           data={treemapData}
           identity="name"
@@ -92,11 +88,13 @@ function App() {
           label={(node) => `${node.id} (£${node.value.toFixed(0)})`}
           colors={{ scheme: 'nivo' }}
           borderColor={{ from: 'color', modifiers: [['darker', 0.3]] }}
-          animate
-          motionConfig="gentle"
         />
-      </div>
-    </>
+      </CardWrapper>
+
+      <CardWrapper title="Another chart">
+        <div className="flex items-center justify-center h-full">Coming soon...</div>
+      </CardWrapper>
+    </CardLayout>
   )
 }
 
