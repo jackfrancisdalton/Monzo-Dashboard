@@ -1,4 +1,3 @@
-import type { MonzoTransaction } from '@repo/monzo-types';
 import './App.css'
 import { useMonzoData } from './Hooks/monzo-data.hook';
 import { ResponsiveLine } from '@nivo/line'
@@ -10,8 +9,11 @@ import DisplayCard from './DashboardCards/DisplayCard';
 import { computeCumulativeLineData } from './Mappers';
 import { computeTreeMapData } from './Mappers/transactions-to-tree-map';
 import { useEffect, useMemo, useState } from 'react';
-import { ResponsiveGeoMap } from '@nivo/geo';
+import { ResponsivePie } from '@nivo/pie';
+
 import TopEntitiesCard from './DashboardCards/TopEntitiesCard';
+import { computePieData } from './Mappers/transactions-to-pie-map';
+
 
 function App() {
   const { balance, transactions } = useMonzoData();
@@ -19,6 +21,8 @@ function App() {
   
   const lineData = useMemo(() => computeCumulativeLineData(transactions), [transactions]);
   const treeMapData = useMemo(() => computeTreeMapData(transactions), [transactions]);
+  const pieChart = useMemo(() => computePieData(transactions) ,[transactions])
+
   const totalSpending = useMemo(() => transactions.reduce((acc, tx) => acc + Math.abs(tx.amount), 0), [transactions]);
   const topTenTransactions = useMemo(() => [...transactions]
     .sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount))
@@ -43,12 +47,38 @@ function App() {
   return (
     <AppLayout>
       <CardLayout>
-        <CardWrapper title="Spending over time" className="col-span-4 row-span-2">
+        <CardWrapper title="Spending over time" className="col-span-3 row-span-2">
           <ResponsiveLine
             data={lineData}
             margin={{ top: 20, right: 20, bottom: 50, left: 50 }}
             xScale={{ type: 'point' }}
             yScale={{ type: 'linear' }}
+          />
+        </CardWrapper>
+
+        <CardWrapper title="Spending by category" className="col-span-1 row-span-2">
+          <ResponsivePie
+            data={pieChart}
+            margin={{ top: 20, right: 40, bottom: 60, left: 40 }}
+            innerRadius={0.5}
+            padAngle={0.7}
+            cornerRadius={3}
+            colors={{ scheme: 'nivo' }}
+            borderWidth={1}
+            borderColor={{ from: 'color', modifiers: [['darker', 0.2]] }}
+            arcLinkLabelsSkipAngle={10}
+            arcLinkLabelsTextColor="#333333"
+            arcLinkLabelsThickness={2}
+            arcLinkLabelsColor={{ from: 'color' }}
+            arcLabelsSkipAngle={10}
+            arcLabelsTextColor={{ from: 'color', modifiers: [['darker', 2]] }}
+            // tooltip={({ datum }) => (
+            //   <div className="p-2 text-sm">
+            //     <strong>{datum.label}</strong>: £{(datum.value / 100).toFixed(2)}
+            //     <br />
+            //     {((datum.value / total) * 100).toFixed(1)}% of total
+            //   </div>
+            // )}
           />
         </CardWrapper>
 
@@ -104,7 +134,6 @@ function App() {
             />
           </CardWrapper>
         )} */}
-
 
       </CardLayout>
     </AppLayout>
