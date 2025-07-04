@@ -9,34 +9,38 @@ import { firstValueFrom, throwError } from 'rxjs';
 export class MockMonzoService implements MonzoService {
 
     constructor(
-        private readonly http: HttpService
+      private readonly http: HttpService
     ) {}
     
     async getAccounts(): Promise<MonzoAccount[]> {
-        return this.getRequest<MonzoAccount[]>(`/accounts`);
+      return this.getRequest<MonzoAccount[]>(`/accounts`);
     }
     
     async getBalance(): Promise<MonzoBalance> {
-        return this.getRequest<MonzoBalance>(`/balance`);
+      return this.getRequest<MonzoBalance>(`/balance`);
     }
     
     async getTransactions(): Promise<MonzoTransaction[]> {
-        return this.getRequest<MonzoTransaction[]>(`/transactions`);
+      const transactions = await this.getRequest<MonzoTransaction[]>(`/transactions`);
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 30);
+
+      return transactions.filter(transaction => new Date(transaction.created) >= oneWeekAgo);
     }
 
     // TODO: move to a a http utils file
     private async getRequest<T>(path: string): Promise<T> {
-        try {
-          return await firstValueFrom(
-            this.http.get<T>(path).pipe(
-              map((response) => response.data),
-              catchError((err) => {
-                return throwError(() => new Error(`Failed to fetch ${path}`));
-              }),
-            ),
-          );
-        } catch (err) {
-          throw err;
-        }
+      try {
+        return await firstValueFrom(
+        this.http.get<T>(path).pipe(
+          map((response) => response.data),
+          catchError((err) => {
+          return throwError(() => new Error(`Failed to fetch ${path}`));
+          }),
+        ),
+        );
+      } catch (err) {
+        throw err;
+      }
     }
 }

@@ -5,6 +5,7 @@ import { ResponsiveLine } from '@nivo/line'
 import { ResponsiveTreeMap } from '@nivo/treemap';
 import CardWrapper from './DashboardCards/CardWrapper';
 import CardLayout from './Layouts/CardLayout';
+import AppLayout from './Layouts/AppLayout';
 
 function App() {
   const { balance, transactions } = useMonzoData();
@@ -67,34 +68,64 @@ function App() {
   const treemapData = buildTreemapData(transactions || []);
 
   return (
-    <CardLayout>
-      <CardWrapper title="Users Over Time" className="col-span-2">
-        <ResponsiveLine
-          data={data}
-          margin={{ top: 20, right: 20, bottom: 50, left: 50 }}
-          xScale={{ type: 'point' }}
-          yScale={{ type: 'linear' }}
-        />
-      </CardWrapper>
+    <AppLayout>
+      <CardLayout>
+        <CardWrapper title="Users Over Time" className="col-span-2">
+          <ResponsiveLine
+            data={data}
+            margin={{ top: 20, right: 20, bottom: 50, left: 50 }}
+            xScale={{ type: 'point' }}
+            yScale={{ type: 'linear' }}
+          />
+        </CardWrapper>
 
-      <CardWrapper title="Merchant Spending" className="col-span-2 row-span-2">
-        <ResponsiveTreeMap
-          data={treemapData}
-          identity="name"
-          value="value"
-          innerPadding={3}
-          outerPadding={3}
-          labelSkipSize={12}
-          label={(node) => `${node.id} (£${node.value.toFixed(0)})`}
-          colors={{ scheme: 'nivo' }}
-          borderColor={{ from: 'color', modifiers: [['darker', 0.3]] }}
-        />
-      </CardWrapper>
+        <CardWrapper title="Merchant Spending" className="col-span-2 row-span-2">
+          <ResponsiveTreeMap
+            data={treemapData}
+            identity="name"
+            value="value"
+            innerPadding={3}
+            outerPadding={3}
+            labelSkipSize={12}
+            label={(node) => `${node.id} (£${node.value.toFixed(0)})`}
+            colors={{ scheme: 'nivo' }}
+            borderColor={{ from: 'color', modifiers: [['darker', 0.3]] }}
+          />
+        </CardWrapper>
 
-      <CardWrapper title="Another chart">
-        <div className="flex items-center justify-center h-full">Coming soon...</div>
-      </CardWrapper>
-    </CardLayout>
+        <CardWrapper title="Merchant Spending" className="col-span-2 row-span-2">
+          <ResponsiveTreeMap
+            data={treemapData}
+            identity="name"
+            value="value"
+            innerPadding={3}
+            outerPadding={3}
+            labelSkipSize={12}
+            label={(node) => `${node.id} (£${node.value.toFixed(0)})`}
+            colors={{ scheme: 'nivo' }}
+            borderColor={{ from: 'color', modifiers: [['darker', 0.3]] }}
+          />
+        </CardWrapper>
+
+        <CardWrapper title="Merchant Spending" className="col-span-2 row-span-2">
+          <ResponsiveTreeMap
+            data={treemapData}
+            identity="name"
+            value="value"
+            innerPadding={3}
+            outerPadding={3}
+            labelSkipSize={12}
+            label={(node) => `${node.id} (£${node.value.toFixed(0)})`}
+            colors={{ scheme: 'nivo' }}
+            borderColor={{ from: 'color', modifiers: [['darker', 0.3]] }}
+          />
+        </CardWrapper>
+
+        <CardWrapper title="Another chart">
+          <div className="flex items-center justify-center h-full">Coming soon...</div>
+        </CardWrapper>
+      </CardLayout>
+    </AppLayout>
   )
 }
 
