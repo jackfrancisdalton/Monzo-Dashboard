@@ -31,7 +31,17 @@ const transactions: MonzoTransaction[] = Array.from({ length: argv.transactions 
     const settled = faker.date.soon({ days: 10, refDate: created });
 
     runningBalance += amount;
-    
+
+    const merchantAddress = {
+        address: faker.location.streetAddress(),
+        city: faker.location.city(),
+        country: 'GB',
+        latitude: faker.location.latitude({ min: 51.50, max: 51.54 }),
+        longitude: faker.location.longitude({ min: -0.14 , max: -0.08 }),
+        postcode: faker.location.zipCode(),
+        region: faker.location.county()
+    };
+
     return {
         id: 'tx_' + faker.string.uuid(),
         amount,
@@ -45,6 +55,7 @@ const transactions: MonzoTransaction[] = Array.from({ length: argv.transactions 
             category: faker.helpers.arrayElement(['eating_out', 'groceries', 'shopping']),
             logo: faker.image.urlLoremFlickr({ category: 'business' }),
             emoji: '🍔',
+            address: merchantAddress
         },
         settled: settled.toISOString(),
     };

@@ -16,8 +16,18 @@ export interface MonzoMerchant {
     category: string;
     logo?: string;
     emoji?: string;
+    address?: MonzoMerchantAddress;
 }
   
+export interface MonzoMerchantAddress {
+    address: string;
+    city: string;
+    country: string;
+    latitude: number;
+    longitude: number;
+    postcode: string;
+    region: string;
+}
 export interface MonzoAccount {
     id: string;
     description: string;

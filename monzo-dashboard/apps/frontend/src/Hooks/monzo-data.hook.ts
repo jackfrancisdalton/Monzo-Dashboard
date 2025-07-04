@@ -4,9 +4,10 @@ import type { MonzoAccount, MonzoBalance, MonzoTransaction } from '@repo/monzo-t
 
 export const useMonzoData = () => {
     const [balance, setBalance] = useState<MonzoBalance>()
-    const [accounts, setAccounts] = useState<MonzoAccount[]>();
-    const [transactions, setTransactions] = useState<MonzoTransaction[]>();
+    const [accounts, setAccounts] = useState<MonzoAccount[]>([]);
+    const [transactions, setTransactions] = useState<MonzoTransaction[]>([]);
 
+    // TODO: consider doing all of the formatting on the backend
     useEffect(() => {
         const fetchData = async () => {
             const res = await fetch('http://localhost:3000');
