@@ -6,6 +6,7 @@ export interface CumulativeLineDatum {
 }
 
 export const computeCumulativeLineData = (transactions: MonzoTransaction[]): CumulativeLineDatum[] => {
+    console.log("Computing cumulative line data from transactions");
     const sorted = [...transactions].sort(
         (a, b) => new Date(a.created).getTime() - new Date(b.created).getTime()
     );

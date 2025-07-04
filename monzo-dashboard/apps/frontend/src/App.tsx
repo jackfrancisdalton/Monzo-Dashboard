@@ -21,20 +21,31 @@ function App() {
   const [features, setFeatures] = useState<any[]>([]);
   const [dateRange, setDateRange] = useState<{ start: Date, end: Date }>();
   
-  const lineData = useMemo(() => computeCumulativeLineData(transactions), [transactions]);
-  const treeMapData = useMemo(() => computeTreeMapData(transactions), [transactions]);
-  const pieChart = useMemo(() => computePieData(transactions) ,[transactions])
 
-  const totalSpending = useMemo(() => transactions.reduce((acc, tx) => acc + Math.abs(tx.amount), 0), [transactions]);
-  const topTenTransactions = useMemo(() => [...transactions]
-    .sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount))
-    .slice(0, 10), [transactions]);
+  const filteredTransactions = useMemo(() => {
+    if (!dateRange) return transactions;
+    const { start, end } = dateRange;
+    return transactions.filter(tx => {
+      const txDate = new Date(tx.created);
+      return txDate >= start && txDate <= end;
+    });
+  }, [transactions, dateRange]);
+
+  const lineData = useMemo(() => computeCumulativeLineData(filteredTransactions), [filteredTransactions]);
+  const treeMapData = useMemo(() => computeTreeMapData(filteredTransactions), [filteredTransactions]);
+  const pieChart = useMemo(() => computePieData(filteredTransactions), [filteredTransactions]);
+  const totalSpending = useMemo(() => filteredTransactions.reduce((acc, tx) => acc + Math.abs(tx.amount), 0), [filteredTransactions]);
+  const topTenTransactions = useMemo(() => [...filteredTransactions]
+      .sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount))
+      .slice(0, 10), [filteredTransactions]);
 
   useEffect(() => {
     fetch('/geo/world.json')
         .then(res => res.json())
         .then(data => setFeatures(data.features))
   }, [])
+
+
 
   // const points = transactions
   //   .filter(tx => tx.merchant?.address)
