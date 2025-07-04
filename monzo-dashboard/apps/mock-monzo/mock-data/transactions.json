@@ -1,0 +1,964 @@
+{
+  "transactions": [
+    {
+      "id": "tx_29de4b79-9a03-4748-897f-4ca1a4fdfa6e",
+      "amount": -2435,
+      "currency": "GBP",
+      "created": "2025-06-25T13:19:14.825Z",
+      "description": "Soft Concrete Hat",
+      "category": "groceries",
+      "merchant": {
+        "id": "merch_e996d5c7-6fea-4385-8422-12acfd0a36a7",
+        "name": "Gulgowski and Sons",
+        "category": "eating_out",
+        "logo": "https://loremflickr.com/3592/34/business?lock=1035281685308322",
+        "emoji": "🍔"
+      },
+      "settled": "2025-07-01T23:23:50.519Z"
+    },
+    {
+      "id": "tx_e8d0ffa8-e48d-483b-8962-5d101da99f75",
+      "amount": -7784,
+      "currency": "GBP",
+      "created": "2025-05-10T22:27:46.410Z",
+      "description": "Gorgeous Marble Cheese",
+      "category": "eating_out",
+      "merchant": {
+        "id": "merch_4078f35f-1e98-4926-a46d-9b2cbd349e96",
+        "name": "Crooks - Gleichner",
+        "category": "shopping",
+        "logo": "https://loremflickr.com/2596/1163/business?lock=5234454968959998",
+        "emoji": "🍔"
+      },
+      "settled": "2025-05-20T07:57:57.765Z"
+    },
+    {
+      "id": "tx_cad431e9-0974-46ac-90c1-c75f138dcd22",
+      "amount": -1608,
+      "currency": "GBP",
+      "created": "2025-05-26T01:48:14.878Z",
+      "description": "Unbranded Cotton Shoes",
+      "category": "eating_out",
+      "merchant": {
+        "id": "merch_3ce9cf15-0b02-41cc-9d3a-4626fab79b51",
+        "name": "Hessel Inc",
+        "category": "shopping",
+        "logo": "https://loremflickr.com/804/657/business?lock=3293452882133078",
+        "emoji": "🍔"
+      },
+      "settled": "2025-05-27T12:01:06.751Z"
+    },
+    {
+      "id": "tx_bfa7cf24-f2dc-4fd4-afda-c29d43923c95",
+      "amount": -7475,
+      "currency": "GBP",
+      "created": "2025-06-09T16:29:33.175Z",
+      "description": "Incredible Marble Salad",
+      "category": "eating_out",
+      "merchant": {
+        "id": "merch_cbfae0dc-7152-48f5-a386-477b78e71fd0",
+        "name": "Bauch - Kutch",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/2887/293/business?lock=23339986931176",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-17T16:15:55.213Z"
+    },
+    {
+      "id": "tx_954fdf93-f34d-4708-bbb0-017c9c1d5f6d",
+      "amount": -9433,
+      "currency": "GBP",
+      "created": "2025-05-17T03:33:14.992Z",
+      "description": "Soft Metal Tuna",
+      "category": "shopping",
+      "merchant": {
+        "id": "merch_3a19f770-4536-4268-a542-8a50e37abaa4",
+        "name": "Kling - Kihn",
+        "category": "eating_out",
+        "logo": "https://loremflickr.com/3739/1094/business?lock=3542406980980428",
+        "emoji": "🍔"
+      },
+      "settled": "2025-05-18T13:25:57.292Z"
+    },
+    {
+      "id": "tx_ff8d9343-0ac7-4f37-805d-444ec9a979ae",
+      "amount": -9399,
+      "currency": "GBP",
+      "created": "2025-06-11T15:59:25.763Z",
+      "description": "Electronic Granite Computer",
+      "category": "shopping",
+      "merchant": {
+        "id": "merch_ac2593bc-9f3d-4971-95f4-bbcbbd65d7dd",
+        "name": "Turner LLC",
+        "category": "eating_out",
+        "logo": "https://loremflickr.com/1100/2900/business?lock=241748630867067",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-19T04:22:53.628Z"
+    },
+    {
+      "id": "tx_4bbe70cd-2184-4404-a79e-d492100940d7",
+      "amount": -1222,
+      "currency": "GBP",
+      "created": "2025-06-28T16:48:24.327Z",
+      "description": "Handmade Wooden Sausages",
+      "category": "groceries",
+      "merchant": {
+        "id": "merch_987083fd-aaf3-42b4-9c83-7356551b2ca7",
+        "name": "Kunde - Sanford",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/220/3252/business?lock=2164215843312050",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-29T23:15:54.281Z"
+    },
+    {
+      "id": "tx_5e9a390c-8fd8-458a-8f70-794b9150e2ff",
+      "amount": -342,
+      "currency": "GBP",
+      "created": "2025-05-16T19:53:30.071Z",
+      "description": "Modern Concrete Sausages",
+      "category": "groceries",
+      "merchant": {
+        "id": "merch_2d50eb83-2bc8-4877-a8ee-7d9ba4d9074d",
+        "name": "Keeling, Corwin and Schmidt",
+        "category": "shopping",
+        "logo": "https://loremflickr.com/2225/3251/business?lock=815729367778547",
+        "emoji": "🍔"
+      },
+      "settled": "2025-05-24T03:49:23.111Z"
+    },
+    {
+      "id": "tx_c1df0ee7-d4a3-4714-a285-1df87ebf2dac",
+      "amount": -3157,
+      "currency": "GBP",
+      "created": "2025-05-12T10:07:57.035Z",
+      "description": "Handcrafted Bamboo Mouse",
+      "category": "groceries",
+      "merchant": {
+        "id": "merch_fb00363a-705e-40ea-96e0-5319e19d906e",
+        "name": "Powlowski, Moore and Lakin",
+        "category": "eating_out",
+        "logo": "https://loremflickr.com/397/1548/business?lock=2601146633103937",
+        "emoji": "🍔"
+      },
+      "settled": "2025-05-17T23:58:35.470Z"
+    },
+    {
+      "id": "tx_69433c7f-3593-49a5-b1b6-00eefecfb5af",
+      "amount": -6840,
+      "currency": "GBP",
+      "created": "2025-05-18T00:06:03.938Z",
+      "description": "Practical Bamboo Bacon",
+      "category": "groceries",
+      "merchant": {
+        "id": "merch_c926a176-8634-4416-941f-92cc4bf5a80d",
+        "name": "Douglas - Simonis",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/801/2405/business?lock=8433993036637886",
+        "emoji": "🍔"
+      },
+      "settled": "2025-05-18T09:03:27.423Z"
+    },
+    {
+      "id": "tx_d016036f-15b0-4c9d-b5af-dc5583f6254e",
+      "amount": -8627,
+      "currency": "GBP",
+      "created": "2025-05-20T05:03:25.045Z",
+      "description": "Modern Silk Keyboard",
+      "category": "shopping",
+      "merchant": {
+        "id": "merch_4eaad4ad-6697-499a-92c6-57ffbbe746b8",
+        "name": "Hoeger, Schowalter and Will",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/1636/1718/business?lock=3968090837994346",
+        "emoji": "🍔"
+      },
+      "settled": "2025-05-21T12:18:26.734Z"
+    },
+    {
+      "id": "tx_1644e197-bc16-41d5-a386-b46dd77d0234",
+      "amount": -3468,
+      "currency": "GBP",
+      "created": "2025-06-26T01:10:27.195Z",
+      "description": "Frozen Cotton Salad",
+      "category": "shopping",
+      "merchant": {
+        "id": "merch_2aeabb99-a3e7-46a1-b6cf-89ed42422df4",
+        "name": "Feeney, Baumbach and Beatty",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/3118/614/business?lock=1172627189605913",
+        "emoji": "🍔"
+      },
+      "settled": "2025-07-04T12:46:02.809Z"
+    },
+    {
+      "id": "tx_0c67776a-01db-41ee-8650-d6419f20b26f",
+      "amount": -287,
+      "currency": "GBP",
+      "created": "2025-06-09T15:24:15.574Z",
+      "description": "Fantastic Rubber Bike",
+      "category": "shopping",
+      "merchant": {
+        "id": "merch_040b169d-ea5c-48cc-bad6-55259a131688",
+        "name": "Turner LLC",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/3277/1963/business?lock=8834032624272383",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-12T07:03:40.309Z"
+    },
+    {
+      "id": "tx_ed104eed-3fed-4f13-a49c-1b3b57571c49",
+      "amount": -6999,
+      "currency": "GBP",
+      "created": "2025-05-22T16:26:23.870Z",
+      "description": "Gorgeous Ceramic Pants",
+      "category": "shopping",
+      "merchant": {
+        "id": "merch_ac486991-c7a6-49e4-ab12-c88ba5d34fc6",
+        "name": "Miller, Lakin and Dietrich",
+        "category": "shopping",
+        "logo": "https://loremflickr.com/1487/2558/business?lock=5085814752983346",
+        "emoji": "🍔"
+      },
+      "settled": "2025-05-29T10:01:41.686Z"
+    },
+    {
+      "id": "tx_6e0083e3-4712-416c-8179-54287a0992b4",
+      "amount": -7847,
+      "currency": "GBP",
+      "created": "2025-06-18T06:48:42.717Z",
+      "description": "Soft Metal Salad",
+      "category": "eating_out",
+      "merchant": {
+        "id": "merch_2fb44d7f-a964-412b-ac74-f34b6a786973",
+        "name": "Hamill - Hartmann",
+        "category": "eating_out",
+        "logo": "https://loremflickr.com/2039/2083/business?lock=7043663874370992",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-27T06:25:56.216Z"
+    },
+    {
+      "id": "tx_4df4c9aa-1229-405c-ad45-4361f1dc5ab8",
+      "amount": -1140,
+      "currency": "GBP",
+      "created": "2025-06-05T06:45:49.249Z",
+      "description": "Gorgeous Ceramic Cheese",
+      "category": "shopping",
+      "merchant": {
+        "id": "merch_62946bf4-c0bd-403a-81bf-7b8f9f771823",
+        "name": "Kautzer - Bednar",
+        "category": "shopping",
+        "logo": "https://loremflickr.com/2438/1122/business?lock=2000162058457936",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-08T09:53:07.712Z"
+    },
+    {
+      "id": "tx_ce27c5b6-29b9-4ca3-ac38-b11c90416dc9",
+      "amount": -9883,
+      "currency": "GBP",
+      "created": "2025-06-28T16:21:43.944Z",
+      "description": "Practical Silk Cheese",
+      "category": "groceries",
+      "merchant": {
+        "id": "merch_745c0acf-17a7-4992-9c6f-7d037fc681be",
+        "name": "Hettinger - Bergstrom",
+        "category": "shopping",
+        "logo": "https://loremflickr.com/1595/2819/business?lock=5954907901262844",
+        "emoji": "🍔"
+      },
+      "settled": "2025-07-08T05:08:27.562Z"
+    },
+    {
+      "id": "tx_98866de0-de70-4a61-a0bf-c596bffb4ed5",
+      "amount": -3946,
+      "currency": "GBP",
+      "created": "2025-06-05T13:03:13.683Z",
+      "description": "Rustic Steel Bacon",
+      "category": "shopping",
+      "merchant": {
+        "id": "merch_df252b9e-a82f-4224-8f72-bc9e900f9da8",
+        "name": "Windler Group",
+        "category": "shopping",
+        "logo": "https://loremflickr.com/3110/409/business?lock=1881534526408585",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-08T11:06:04.992Z"
+    },
+    {
+      "id": "tx_691f5c61-0a77-49c2-8d69-c3480c779796",
+      "amount": -2612,
+      "currency": "GBP",
+      "created": "2025-05-20T15:42:30.579Z",
+      "description": "Unbranded Plastic Cheese",
+      "category": "groceries",
+      "merchant": {
+        "id": "merch_26aa6448-3e69-4239-b452-a063fbadcdba",
+        "name": "Labadie, Friesen and Altenwerth",
+        "category": "shopping",
+        "logo": "https://loremflickr.com/2258/3668/business?lock=5737096454806238",
+        "emoji": "🍔"
+      },
+      "settled": "2025-05-25T01:10:33.065Z"
+    },
+    {
+      "id": "tx_05290b7b-5f45-4519-adf6-48510a81d9cc",
+      "amount": -799,
+      "currency": "GBP",
+      "created": "2025-06-26T09:45:24.600Z",
+      "description": "Intelligent Granite Bacon",
+      "category": "shopping",
+      "merchant": {
+        "id": "merch_d605a826-0100-4bcb-82a6-37a24b33ed00",
+        "name": "Prohaska - VonRueden",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/2690/84/business?lock=6997250231739130",
+        "emoji": "🍔"
+      },
+      "settled": "2025-07-02T15:57:55.233Z"
+    },
+    {
+      "id": "tx_22390574-6063-4f22-b32c-279e9ff17f5b",
+      "amount": -359,
+      "currency": "GBP",
+      "created": "2025-06-12T06:16:01.076Z",
+      "description": "Tasty Concrete Cheese",
+      "category": "shopping",
+      "merchant": {
+        "id": "merch_d248948a-db8e-4a99-9798-539ef0e40cb5",
+        "name": "Mohr - Hartmann",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/3982/3224/business?lock=3112083415896086",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-16T08:51:03.249Z"
+    },
+    {
+      "id": "tx_f41238bf-cabb-4408-bf92-881cc1d0daf0",
+      "amount": -8573,
+      "currency": "GBP",
+      "created": "2025-05-19T13:39:33.225Z",
+      "description": "Frozen Rubber Table",
+      "category": "shopping",
+      "merchant": {
+        "id": "merch_5e716a50-c9b2-487a-b468-005873555804",
+        "name": "DuBuque, Schmidt and Beer",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/2268/2541/business?lock=7661482907652058",
+        "emoji": "🍔"
+      },
+      "settled": "2025-05-19T20:18:26.136Z"
+    },
+    {
+      "id": "tx_35ab27e0-9aee-467a-84be-643baf619d23",
+      "amount": -9014,
+      "currency": "GBP",
+      "created": "2025-06-02T09:31:29.803Z",
+      "description": "Small Cotton Ball",
+      "category": "eating_out",
+      "merchant": {
+        "id": "merch_efd046d7-3525-490c-a670-2223083507ea",
+        "name": "Brown Group",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/1743/3212/business?lock=1519828927281602",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-09T13:15:01.614Z"
+    },
+    {
+      "id": "tx_36433d59-07d5-47a1-82e9-3d091a8d314e",
+      "amount": -570,
+      "currency": "GBP",
+      "created": "2025-06-08T22:16:49.099Z",
+      "description": "Soft Aluminum Table",
+      "category": "eating_out",
+      "merchant": {
+        "id": "merch_da5e0233-5646-4e66-b34f-7593b253b605",
+        "name": "Christiansen, Abbott and Keeling",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/3385/3979/business?lock=2753138057430130",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-13T08:43:01.637Z"
+    },
+    {
+      "id": "tx_50a9a334-786a-4bd2-93f1-27e4c7e62fd5",
+      "amount": -5092,
+      "currency": "GBP",
+      "created": "2025-05-25T08:13:30.111Z",
+      "description": "Generic Rubber Shoes",
+      "category": "groceries",
+      "merchant": {
+        "id": "merch_41ae7d69-f9fb-448d-9973-3d257a1825a3",
+        "name": "Mills - Lakin",
+        "category": "eating_out",
+        "logo": "https://loremflickr.com/2730/1320/business?lock=7361598958696613",
+        "emoji": "🍔"
+      },
+      "settled": "2025-05-31T20:40:52.381Z"
+    },
+    {
+      "id": "tx_bd3f70f3-4a62-4649-b0de-2b1edd5ed1b4",
+      "amount": -4952,
+      "currency": "GBP",
+      "created": "2025-06-27T18:38:10.402Z",
+      "description": "Sleek Aluminum Chicken",
+      "category": "eating_out",
+      "merchant": {
+        "id": "merch_4b7c5bb0-3287-415f-acef-c849d859ce5c",
+        "name": "Rath, Botsford and Volkman",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/2440/756/business?lock=1067702274553726",
+        "emoji": "🍔"
+      },
+      "settled": "2025-07-04T20:25:05.498Z"
+    },
+    {
+      "id": "tx_1eee178d-f608-4994-abff-083494e4f522",
+      "amount": -4385,
+      "currency": "GBP",
+      "created": "2025-05-17T22:01:47.435Z",
+      "description": "Gorgeous Plastic Chicken",
+      "category": "eating_out",
+      "merchant": {
+        "id": "merch_ee0a9439-166c-43f6-9cf2-b3bd81d64bae",
+        "name": "Nikolaus, Lang and Balistreri",
+        "category": "eating_out",
+        "logo": "https://loremflickr.com/1812/3061/business?lock=1488957422022572",
+        "emoji": "🍔"
+      },
+      "settled": "2025-05-20T15:09:57.694Z"
+    },
+    {
+      "id": "tx_11904bcb-6c8f-4a32-b068-e98e9308f99a",
+      "amount": -9721,
+      "currency": "GBP",
+      "created": "2025-05-15T05:25:27.686Z",
+      "description": "Handcrafted Granite Bacon",
+      "category": "shopping",
+      "merchant": {
+        "id": "merch_9ab56003-cd4d-4992-9dda-2af0ff8adc91",
+        "name": "Goodwin - Pollich",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/3194/2324/business?lock=6330398861883226",
+        "emoji": "🍔"
+      },
+      "settled": "2025-05-24T11:45:07.571Z"
+    },
+    {
+      "id": "tx_dfcad859-82bd-4ddd-9140-a448ec79edc2",
+      "amount": -6606,
+      "currency": "GBP",
+      "created": "2025-06-25T13:15:19.002Z",
+      "description": "Modern Plastic Chips",
+      "category": "eating_out",
+      "merchant": {
+        "id": "merch_2cac007f-5a6d-4975-ac04-6da8fbd8df87",
+        "name": "Senger, Dibbert and Price",
+        "category": "shopping",
+        "logo": "https://loremflickr.com/1553/1828/business?lock=746102059919121",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-27T20:32:16.145Z"
+    },
+    {
+      "id": "tx_4a8dac03-ee0b-4b32-844e-7869a8a8daed",
+      "amount": -1999,
+      "currency": "GBP",
+      "created": "2025-06-07T23:52:58.395Z",
+      "description": "Fresh Steel Chair",
+      "category": "groceries",
+      "merchant": {
+        "id": "merch_b8ba81d3-d539-42c8-89fb-d562e487e3fb",
+        "name": "Olson, Weimann and Feest",
+        "category": "shopping",
+        "logo": "https://loremflickr.com/2990/1190/business?lock=3374748768771305",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-14T22:46:43.900Z"
+    },
+    {
+      "id": "tx_258e20ff-3e45-4e58-bccc-07fba34afb65",
+      "amount": -7004,
+      "currency": "GBP",
+      "created": "2025-05-15T04:25:44.130Z",
+      "description": "Practical Cotton Soap",
+      "category": "eating_out",
+      "merchant": {
+        "id": "merch_e12f1a68-3c55-4116-992e-f1bf022367b5",
+        "name": "Morar - Marquardt",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/2291/1105/business?lock=6664640798045853",
+        "emoji": "🍔"
+      },
+      "settled": "2025-05-23T16:27:16.224Z"
+    },
+    {
+      "id": "tx_0dfdfcab-b027-4166-a5bb-6c4fceeb5f7c",
+      "amount": -6876,
+      "currency": "GBP",
+      "created": "2025-06-05T10:26:59.938Z",
+      "description": "Ergonomic Marble Cheese",
+      "category": "groceries",
+      "merchant": {
+        "id": "merch_f2095368-c960-49d1-8d56-998e7119821f",
+        "name": "Huel and Sons",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/3525/1185/business?lock=6072468245021818",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-07T14:26:11.449Z"
+    },
+    {
+      "id": "tx_bb2b9b7b-172d-4d7e-9fed-70fa3c3d5aba",
+      "amount": -456,
+      "currency": "GBP",
+      "created": "2025-05-18T20:30:01.762Z",
+      "description": "Ergonomic Marble Sausages",
+      "category": "groceries",
+      "merchant": {
+        "id": "merch_efe46f5d-5434-4dba-898b-a929c071263c",
+        "name": "Schmeler, Kunze and Kuhn",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/2308/2635/business?lock=5757000291253357",
+        "emoji": "🍔"
+      },
+      "settled": "2025-05-19T10:16:42.346Z"
+    },
+    {
+      "id": "tx_06885105-dd86-4122-b938-7a0b92cdc9d8",
+      "amount": -3498,
+      "currency": "GBP",
+      "created": "2025-06-04T03:31:36.102Z",
+      "description": "Modern Cotton Bacon",
+      "category": "shopping",
+      "merchant": {
+        "id": "merch_979160ee-ad23-49c7-accf-1130245fcc38",
+        "name": "Glover - Marvin",
+        "category": "eating_out",
+        "logo": "https://loremflickr.com/75/780/business?lock=395764629732322",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-04T08:48:26.756Z"
+    },
+    {
+      "id": "tx_fda12ff8-c3b0-4bf0-92dd-1ead65262f8b",
+      "amount": -8509,
+      "currency": "GBP",
+      "created": "2025-06-09T13:11:05.587Z",
+      "description": "Bespoke Bamboo Salad",
+      "category": "eating_out",
+      "merchant": {
+        "id": "merch_8cab1aa1-dda3-4866-9b37-5babd750d336",
+        "name": "Macejkovic and Sons",
+        "category": "eating_out",
+        "logo": "https://loremflickr.com/2004/299/business?lock=6003243111352533",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-09T16:27:07.354Z"
+    },
+    {
+      "id": "tx_4a368ad4-ce16-441c-a05d-6eafb2696827",
+      "amount": -2845,
+      "currency": "GBP",
+      "created": "2025-06-11T20:37:49.334Z",
+      "description": "Incredible Granite Salad",
+      "category": "groceries",
+      "merchant": {
+        "id": "merch_e8e5db23-c4e3-4132-8ff8-7eb669e6bcc3",
+        "name": "Graham - Feeney",
+        "category": "shopping",
+        "logo": "https://loremflickr.com/2386/1204/business?lock=1497188301361976",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-14T01:11:53.652Z"
+    },
+    {
+      "id": "tx_05b9dfe7-907b-4a0b-b64a-c94b4b638af3",
+      "amount": -2082,
+      "currency": "GBP",
+      "created": "2025-06-06T11:13:00.455Z",
+      "description": "Refined Granite Sausages",
+      "category": "shopping",
+      "merchant": {
+        "id": "merch_ecb85786-7cc6-43e3-932c-54549ec8b471",
+        "name": "Howell - Sporer",
+        "category": "eating_out",
+        "logo": "https://loremflickr.com/1731/3715/business?lock=2722686822051257",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-12T14:08:06.959Z"
+    },
+    {
+      "id": "tx_fabaa289-f2f8-41dc-94e6-305aee087586",
+      "amount": -5927,
+      "currency": "GBP",
+      "created": "2025-06-26T22:52:51.570Z",
+      "description": "Intelligent Silk Mouse",
+      "category": "groceries",
+      "merchant": {
+        "id": "merch_48f26112-ccc6-4493-9f68-73f0dfc5111a",
+        "name": "Cronin - Gleason",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/439/644/business?lock=5454210453654190",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-28T15:14:22.571Z"
+    },
+    {
+      "id": "tx_c8cb8305-8026-4136-8409-fc6d76d3fca3",
+      "amount": -8361,
+      "currency": "GBP",
+      "created": "2025-06-12T00:05:57.956Z",
+      "description": "Elegant Steel Shirt",
+      "category": "eating_out",
+      "merchant": {
+        "id": "merch_59cdbce2-d707-41ef-a0fd-b5d5d8240f03",
+        "name": "Johnston - Ziemann",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/3938/2044/business?lock=6620913186420154",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-14T06:50:07.141Z"
+    },
+    {
+      "id": "tx_30d330c9-769b-43e7-953e-ebfd72d74532",
+      "amount": -9061,
+      "currency": "GBP",
+      "created": "2025-05-29T08:12:31.982Z",
+      "description": "Tasty Wooden Chair",
+      "category": "eating_out",
+      "merchant": {
+        "id": "merch_fed990b2-3b35-4124-b71a-0ad13b545472",
+        "name": "Fisher and Sons",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/109/1009/business?lock=8634558496289918",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-06T02:31:08.729Z"
+    },
+    {
+      "id": "tx_2439cb68-4183-4446-b446-f39771c968fc",
+      "amount": -6281,
+      "currency": "GBP",
+      "created": "2025-05-15T20:38:50.908Z",
+      "description": "Licensed Granite Computer",
+      "category": "shopping",
+      "merchant": {
+        "id": "merch_26070bbe-8c54-4a50-b7b8-e449fe09a5f6",
+        "name": "Zboncak, Rolfson and Wilkinson",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/3823/3587/business?lock=7503172123232780",
+        "emoji": "🍔"
+      },
+      "settled": "2025-05-20T16:22:04.229Z"
+    },
+    {
+      "id": "tx_7c524c92-2438-4795-9403-b0713ab96fec",
+      "amount": -1980,
+      "currency": "GBP",
+      "created": "2025-06-24T10:14:00.572Z",
+      "description": "Incredible Bronze Bacon",
+      "category": "eating_out",
+      "merchant": {
+        "id": "merch_596df467-fd2c-4b7c-86e5-dd0e4943d49c",
+        "name": "Bartoletti - Walker",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/775/2017/business?lock=6641188601845544",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-27T18:32:36.571Z"
+    },
+    {
+      "id": "tx_f781a66e-6bca-436d-a3f3-87cc84f2018d",
+      "amount": -779,
+      "currency": "GBP",
+      "created": "2025-06-02T03:56:34.573Z",
+      "description": "Intelligent Metal Towels",
+      "category": "groceries",
+      "merchant": {
+        "id": "merch_119e570e-5855-4ed0-828b-88b09d8543df",
+        "name": "Heidenreich - Frami",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/1373/1876/business?lock=5619173929282730",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-12T01:50:42.067Z"
+    },
+    {
+      "id": "tx_b2fa7281-a58f-4b24-88a0-8904d776e080",
+      "amount": -7443,
+      "currency": "GBP",
+      "created": "2025-05-07T15:58:29.998Z",
+      "description": "Modern Cotton Chips",
+      "category": "shopping",
+      "merchant": {
+        "id": "merch_c4ccab6d-c36f-4e08-872a-27bb5577920c",
+        "name": "Purdy, Balistreri and Bashirian",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/3784/2292/business?lock=1981336681354926",
+        "emoji": "🍔"
+      },
+      "settled": "2025-05-12T22:32:42.849Z"
+    },
+    {
+      "id": "tx_dc2aecc0-102c-42e4-a831-21e5632ed935",
+      "amount": -9185,
+      "currency": "GBP",
+      "created": "2025-05-20T13:06:29.278Z",
+      "description": "Recycled Metal Gloves",
+      "category": "groceries",
+      "merchant": {
+        "id": "merch_39cbc4e5-6d47-4187-b92e-e0b9c71a0398",
+        "name": "Veum - Hodkiewicz",
+        "category": "shopping",
+        "logo": "https://loremflickr.com/642/3239/business?lock=1428600651703509",
+        "emoji": "🍔"
+      },
+      "settled": "2025-05-22T09:04:09.188Z"
+    },
+    {
+      "id": "tx_717d3f51-cdad-432b-bbc2-7c4c06c9b93e",
+      "amount": -7544,
+      "currency": "GBP",
+      "created": "2025-05-29T18:22:52.862Z",
+      "description": "Sleek Ceramic Chicken",
+      "category": "groceries",
+      "merchant": {
+        "id": "merch_57762001-1a6f-4225-9acc-9eb6e932de50",
+        "name": "Hahn Inc",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/3049/2386/business?lock=3531796380411110",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-02T10:11:24.083Z"
+    },
+    {
+      "id": "tx_f7505de9-a00d-42e8-8f39-69d5f4141176",
+      "amount": -9493,
+      "currency": "GBP",
+      "created": "2025-05-29T14:15:50.103Z",
+      "description": "Handmade Steel Computer",
+      "category": "shopping",
+      "merchant": {
+        "id": "merch_6fbb26fa-4f44-408f-a7a8-b33a5c0c857d",
+        "name": "Frami, Reichel and Leffler",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/938/1201/business?lock=3302173887258450",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-06T00:45:09.367Z"
+    },
+    {
+      "id": "tx_6b4318a2-594d-4f6d-bf97-46183e35f86b",
+      "amount": -5404,
+      "currency": "GBP",
+      "created": "2025-06-22T17:44:18.500Z",
+      "description": "Fresh Rubber Chicken",
+      "category": "eating_out",
+      "merchant": {
+        "id": "merch_f49baaf1-d9ee-4c13-b3a4-a961dbec1f97",
+        "name": "Towne, O'Hara and Bartoletti",
+        "category": "eating_out",
+        "logo": "https://loremflickr.com/3701/3895/business?lock=8452899674880788",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-27T21:00:33.387Z"
+    },
+    {
+      "id": "tx_3e7d88f3-3c3a-478b-8da7-93a2b4273127",
+      "amount": -130,
+      "currency": "GBP",
+      "created": "2025-05-15T18:26:28.037Z",
+      "description": "Refined Gold Chair",
+      "category": "shopping",
+      "merchant": {
+        "id": "merch_2e08c0ea-acd8-4ba7-8654-59a8b86b8223",
+        "name": "Weber - Moen",
+        "category": "shopping",
+        "logo": "https://loremflickr.com/3158/2531/business?lock=8040744491023751",
+        "emoji": "🍔"
+      },
+      "settled": "2025-05-16T03:24:45.722Z"
+    },
+    {
+      "id": "tx_f5c98b9f-6bbd-4314-a6b9-03d2da64f0a7",
+      "amount": -9398,
+      "currency": "GBP",
+      "created": "2025-05-16T23:48:45.225Z",
+      "description": "Generic Ceramic Car",
+      "category": "shopping",
+      "merchant": {
+        "id": "merch_37bb9e37-ad3b-47ec-8879-cb218b2ab073",
+        "name": "Murazik, Terry and Harvey",
+        "category": "shopping",
+        "logo": "https://loremflickr.com/2606/906/business?lock=7910910509213146",
+        "emoji": "🍔"
+      },
+      "settled": "2025-05-18T16:29:45.638Z"
+    },
+    {
+      "id": "tx_3c21e7ed-ad52-45ee-a76f-48f228923bae",
+      "amount": -3568,
+      "currency": "GBP",
+      "created": "2025-05-24T15:16:31.504Z",
+      "description": "Electronic Bamboo Chair",
+      "category": "eating_out",
+      "merchant": {
+        "id": "merch_13157b01-a2fc-4c43-bb5a-9a330aa62be6",
+        "name": "Ratke, Koss and Ward",
+        "category": "eating_out",
+        "logo": "https://loremflickr.com/131/848/business?lock=619692807161967",
+        "emoji": "🍔"
+      },
+      "settled": "2025-05-30T00:22:16.887Z"
+    },
+    {
+      "id": "tx_2841fece-c7ab-47b8-a10b-7f66d1304b51",
+      "amount": -7935,
+      "currency": "GBP",
+      "created": "2025-06-03T12:19:12.318Z",
+      "description": "Soft Marble Bacon",
+      "category": "eating_out",
+      "merchant": {
+        "id": "merch_b55380df-be87-4766-8979-8a84afcaa680",
+        "name": "Thiel LLC",
+        "category": "shopping",
+        "logo": "https://loremflickr.com/1926/3630/business?lock=2765171278298635",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-12T09:17:36.659Z"
+    },
+    {
+      "id": "tx_e1f3a236-b535-4955-89cb-d9cb0ab143bd",
+      "amount": -2466,
+      "currency": "GBP",
+      "created": "2025-05-20T05:56:33.258Z",
+      "description": "Sleek Bronze Ball",
+      "category": "eating_out",
+      "merchant": {
+        "id": "merch_783745ac-0834-47e8-ab07-f3bbe2010bbe",
+        "name": "Larkin - Hintz",
+        "category": "shopping",
+        "logo": "https://loremflickr.com/3788/1518/business?lock=8805143821101105",
+        "emoji": "🍔"
+      },
+      "settled": "2025-05-28T17:14:50.472Z"
+    },
+    {
+      "id": "tx_18e50aad-1ce6-4ed1-9523-7b42d89e04a1",
+      "amount": -770,
+      "currency": "GBP",
+      "created": "2025-06-15T05:53:19.539Z",
+      "description": "Recycled Cotton Towels",
+      "category": "eating_out",
+      "merchant": {
+        "id": "merch_7e200e09-3957-4285-bf83-323e99b69926",
+        "name": "O'Kon - Schmeler",
+        "category": "eating_out",
+        "logo": "https://loremflickr.com/365/2403/business?lock=8425277478102067",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-16T07:54:33.391Z"
+    },
+    {
+      "id": "tx_e3163489-def3-4491-b2ca-0b55fd1144c0",
+      "amount": -2711,
+      "currency": "GBP",
+      "created": "2025-06-26T20:28:25.326Z",
+      "description": "Gorgeous Bronze Gloves",
+      "category": "eating_out",
+      "merchant": {
+        "id": "merch_d839baf1-357e-46d7-b30f-b28cdb12481b",
+        "name": "Fadel - Herman",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/1991/28/business?lock=2602116706324213",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-29T22:34:12.522Z"
+    },
+    {
+      "id": "tx_b8902efa-0a44-4dba-8801-1b13b2763caf",
+      "amount": -4497,
+      "currency": "GBP",
+      "created": "2025-05-09T13:10:26.110Z",
+      "description": "Sleek Granite Table",
+      "category": "eating_out",
+      "merchant": {
+        "id": "merch_32f74148-38b3-4ed3-a683-6ec64ec948df",
+        "name": "Mann - Windler",
+        "category": "eating_out",
+        "logo": "https://loremflickr.com/2917/2728/business?lock=6689511179729506",
+        "emoji": "🍔"
+      },
+      "settled": "2025-05-09T13:43:58.021Z"
+    },
+    {
+      "id": "tx_9738fcdf-d618-471e-8070-ea689f4dc9f6",
+      "amount": -917,
+      "currency": "GBP",
+      "created": "2025-05-19T19:02:48.031Z",
+      "description": "Practical Rubber Towels",
+      "category": "shopping",
+      "merchant": {
+        "id": "merch_3496d5f3-012f-4d33-ba9d-c75c4ceddf9d",
+        "name": "Orn, Mante and Dooley",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/2323/1666/business?lock=2831505019342678",
+        "emoji": "🍔"
+      },
+      "settled": "2025-05-23T18:18:23.111Z"
+    },
+    {
+      "id": "tx_9cdadfa4-801b-4127-838d-e274ff954c15",
+      "amount": -8073,
+      "currency": "GBP",
+      "created": "2025-05-30T16:26:08.251Z",
+      "description": "Recycled Bamboo Chair",
+      "category": "shopping",
+      "merchant": {
+        "id": "merch_f0b0736a-5236-457e-ac63-ea5144031040",
+        "name": "Fahey and Sons",
+        "category": "eating_out",
+        "logo": "https://loremflickr.com/212/2478/business?lock=76606945525945",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-07T20:57:25.548Z"
+    },
+    {
+      "id": "tx_999854ac-21c5-4bb0-b819-6d74b10fb252",
+      "amount": -1992,
+      "currency": "GBP",
+      "created": "2025-06-11T18:52:35.541Z",
+      "description": "Licensed Bronze Hat",
+      "category": "groceries",
+      "merchant": {
+        "id": "merch_cc7471b3-f0bb-412d-9ff6-dcd3111789cf",
+        "name": "Johnston, Nienow and Douglas",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/322/1961/business?lock=5841969130352739",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-17T18:04:48.240Z"
+    },
+    {
+      "id": "tx_0a22505b-6a5d-4292-b402-dafcc8419ea0",
+      "amount": -3795,
+      "currency": "GBP",
+      "created": "2025-05-26T12:53:25.649Z",
+      "description": "Handcrafted Granite Shoes",
+      "category": "shopping",
+      "merchant": {
+        "id": "merch_9d2c9030-3a36-4b02-9373-f95275148d01",
+        "name": "Aufderhar - Walsh",
+        "category": "groceries",
+        "logo": "https://loremflickr.com/2488/3197/business?lock=1997400004920568",
+        "emoji": "🍔"
+      },
+      "settled": "2025-06-03T19:51:42.512Z"
+    }
+  ]
+}

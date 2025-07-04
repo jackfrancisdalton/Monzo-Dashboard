@@ -17,7 +17,9 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "generate": "ts-node src/scripts/generate-mocks.ts",
+    "generate:large": "pnpm generate -- --accounts=10 --transactions=1000"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -27,14 +29,15 @@
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
-    "@repo/monzo-types": "workspace:*",
-    "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
+    "@faker-js/faker": "^9.9.0",
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
+    "@repo/eslint-config": "workspace:*",
+    "@repo/monzo-types": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
     "@swc/cli": "^0.6.0",
     "@swc/core": "^1.10.7",
     "@types/express": "^5.0.0",
@@ -54,7 +57,8 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.3",
-    "typescript-eslint": "^8.20.0"
+    "typescript-eslint": "^8.20.0",
+    "yargs": "^18.0.0"
   },
   "jest": {
     "moduleFileExtensions": [
