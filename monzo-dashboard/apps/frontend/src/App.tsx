@@ -9,13 +9,32 @@ import AppLayout from './Layouts/AppLayout';
 import DisplayCard from './DashboardCards/DisplayCard';
 import { computeCumulativeLineData } from './Mappers';
 import { computeTreeMapData } from './Mappers/transactions-to-tree-map';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { ResponsiveGeoMap } from '@nivo/geo';
 
 function App() {
   const { balance, transactions } = useMonzoData();
+  const [features, setFeatures] = useState<any[]>([]);
   
   const lineData = useMemo(() => computeCumulativeLineData(transactions), [transactions]);
   const treeMapData = useMemo(() => computeTreeMapData(transactions), [transactions]);
+  
+
+  useEffect(() => {
+    fetch('/geo/world.json')
+        .then(res => res.json())
+        .then(data => setFeatures(data.features))
+  }, [])
+
+  // const points = transactions
+  //   .filter(tx => tx.merchant?.address)
+  //   .map(tx => ({
+  //       id: tx.id,
+  //       coordinates: [
+  //           tx.merchant?.address?.longitude ?? 0,
+  //           tx.merchant?.address?.latitude ?? 0
+  //       ],
+    // }));
 
   return (
     <AppLayout>
@@ -59,9 +78,22 @@ function App() {
           ></DisplayCard>
         </CardWrapper>
 
-        <CardWrapper title="Another chart">
-          <div className="flex items-center justify-center h-full">Coming soon...</div>
-        </CardWrapper>
+
+        {(features && features.length > 0) && (
+          <CardWrapper title="spending by location" className="col-span-4 row-span-2">
+            <ResponsiveGeoMap
+                features={features}
+                margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+                fillColor="#eeeeee"
+                borderWidth={0.5}
+                borderColor="#333333"
+                enableGraticule={true}
+                graticuleLineColor="#666666"
+            />
+          </CardWrapper>
+        )}
+
+
       </CardLayout>
     </AppLayout>
   )
