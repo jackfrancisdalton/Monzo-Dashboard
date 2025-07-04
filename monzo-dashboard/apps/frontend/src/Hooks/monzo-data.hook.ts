@@ -10,8 +10,11 @@ export const useMonzoData = () => {
     useEffect(() => {
         const fetchData = async () => {
             const res = await fetch('http://localhost:3000');
-            const data = res.body;
-            console.log(data);
+            const data: { transactions: MonzoTransaction[], balance: MonzoBalance, accounts: MonzoAccount[] } = await res.json();
+            
+            setTransactions(data.transactions);
+            setBalance(data.balance);
+            setAccounts(data.accounts);
         }
 
         fetchData();
