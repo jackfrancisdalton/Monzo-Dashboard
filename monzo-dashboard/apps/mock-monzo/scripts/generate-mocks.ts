@@ -27,7 +27,7 @@ const accounts: MonzoAccount[] = Array.from({ length: argv.accounts }, () => ({
 let runningBalance = faker.number.int({ min: 50000, max: 200000 }); // initial balance
 const transactions: MonzoTransaction[] = Array.from({ length: argv.transactions }, () => {
     const amount = faker.number.int({ min: -10000, max: -100 });
-    const created = faker.date.recent({ days: 60 });
+    const created = faker.date.recent({ days: 300 });
     const settled = faker.date.soon({ days: 10, refDate: created });
 
     runningBalance += amount;
