@@ -13,11 +13,13 @@ import { ResponsivePie } from '@nivo/pie';
 
 import TopEntitiesCard from './DashboardCards/TopEntitiesCard';
 import { computePieData } from './Mappers/transactions-to-pie-map';
+import { TimeRangePicker } from './UIComponents/TimeRangePicker';
 
 
 function App() {
   const { balance, transactions } = useMonzoData();
   const [features, setFeatures] = useState<any[]>([]);
+  const [dateRange, setDateRange] = useState<{ start: Date, end: Date }>();
   
   const lineData = useMemo(() => computeCumulativeLineData(transactions), [transactions]);
   const treeMapData = useMemo(() => computeTreeMapData(transactions), [transactions]);
@@ -44,8 +46,14 @@ function App() {
   //       ],
     // }));
 
+    const generateHeader = () => {
+      return (<TimeRangePicker
+        onChange={(dateRange) => { setDateRange(dateRange); console.log(dateRange)}}
+      ></TimeRangePicker>)
+    }
+
   return (
-    <AppLayout>
+    <AppLayout headerComponent={generateHeader()}>
       <CardLayout>
         <CardWrapper title="Spending over time" className="col-span-3 row-span-2">
           <ResponsiveLine
