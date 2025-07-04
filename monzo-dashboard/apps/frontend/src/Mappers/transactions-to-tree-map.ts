@@ -25,7 +25,7 @@ export const computeTreeMapData = (transactions: MonzoTransaction[]): TreemapDat
     }));
 
     return {
-        name: "Transactions",
+        name: "Transactions", // TODO clean up
         children,
     };
 };

@@ -25,9 +25,17 @@ const accounts: MonzoAccount[] = Array.from({ length: argv.accounts }, () => ({
 }));
 
 let runningBalance = faker.number.int({ min: 50000, max: 200000 }); // initial balance
-const transactions: MonzoTransaction[] = Array.from({ length: argv.transactions }, () => {
+const companies = Array.from({ length: 6 }, () => faker.company.name());
+
+const transactionsCount = argv.transactions;
+const daysRange = 300;
+const today = new Date();
+const interval = daysRange / transactionsCount;
+
+const transactions: MonzoTransaction[] = Array.from({ length: argv.transactions }, (_, index) => {
     const amount = faker.number.int({ min: -10000, max: -100 });
-    const created = faker.date.recent({ days: 300 });
+    const created = new Date(today);
+    created.setDate(created.getDate() - Math.round(index * interval));
     const settled = faker.date.soon({ days: 10, refDate: created });
 
     runningBalance += amount;
@@ -51,7 +59,7 @@ const transactions: MonzoTransaction[] = Array.from({ length: argv.transactions 
         category: faker.helpers.arrayElement(['eating_out', 'groceries', 'shopping']),
         merchant: {
             id: 'merch_' + faker.string.uuid(),
-            name: faker.company.name(),
+            name: faker.helpers.arrayElement(companies),
             category: faker.helpers.arrayElement(['eating_out', 'groceries', 'shopping']),
             logo: faker.image.urlLoremFlickr({ category: 'business' }),
             emoji: '🍔',

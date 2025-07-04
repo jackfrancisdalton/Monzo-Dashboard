@@ -21,11 +21,7 @@ export class MockMonzoService implements MonzoService {
     }
     
     async getTransactions(): Promise<MonzoTransaction[]> {
-      const transactions = await this.getRequest<MonzoTransaction[]>(`/transactions`);
-      const oneWeekAgo = new Date();
-      oneWeekAgo.setDate(oneWeekAgo.getDate() - 30);
-
-      return transactions.filter(transaction => new Date(transaction.created) >= oneWeekAgo);
+      return await this.getRequest<MonzoTransaction[]>(`/transactions`);
     }
 
     // TODO: move to a a http utils file

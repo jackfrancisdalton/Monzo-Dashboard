@@ -16,13 +16,19 @@ import { computePieData } from './Mappers/transactions-to-pie-map';
 import { TimeRangePicker } from './UIComponents/TimeRangePicker';
 
 function App() {
+  // const [features, setFeatures] = useState<any[]>([]);
   const { balance, transactions } = useMonzoData();
-  const [features, setFeatures] = useState<any[]>([]);
-  const [dateRange, setDateRange] = useState<{ start: Date, end: Date }>();
-  
+  const [dateRange, setDateRange] = useState<{ start: Date, end: Date }>(() => {
+    const today = new Date();
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(today.getDate() - 7);
+    return { start: sevenDaysAgo, end: today };
+  });
 
   const filteredTransactions = useMemo(() => {
-    if (!dateRange) return transactions;
+    if (!dateRange) 
+      return transactions;
+
     const { start, end } = dateRange;
     return transactions.filter(tx => {
       const txDate = new Date(tx.created);
@@ -38,11 +44,11 @@ function App() {
       .sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount))
       .slice(0, 10), [filteredTransactions]);
 
-  useEffect(() => {
-    fetch('/geo/world.json')
-      .then((res) => res.json())
-      .then((data) => setFeatures(data.features));
-  }, []);
+  // useEffect(() => {
+  //   fetch('/geo/world.json')
+  //     .then((res) => res.json())
+  //     .then((data) => setFeatures(data.features));
+  // }, []);
 
   const generateHeader = () => {
     return (
