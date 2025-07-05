@@ -1,4 +1,4 @@
-import { Injectable, NotImplementedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import type { MonzoAccount, MonzoBalance, MonzoTransaction } from '@repo/monzo-types';
 import { MonzoService } from './monzo-service.interface';
 import { HttpService } from '@nestjs/axios';
@@ -24,7 +24,7 @@ export class MockMonzoService implements MonzoService {
       return await this.getRequest<MonzoTransaction[]>(`/transactions`);
     }
 
-    // TODO: move to a a http utils file
+    // TODO: move to a http utils file
     private async getRequest<T>(path: string): Promise<T> {
       try {
         return await firstValueFrom(
