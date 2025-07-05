@@ -1,12 +1,12 @@
-import { Transform } from "class-transformer";
-import { IsDateString } from "class-validator";
+import { Type } from 'class-transformer';
+import { IsDate } from 'class-validator';
 
 export class DashboardQueryDto {
-    @Transform(({ value }) => new Date(value))
-    @IsDateString()
-    start!: Date;
-  
-    @Transform(({ value }) => new Date(value))
-    @IsDateString()
-    end!: Date;
+  @IsDate()
+  @Type(() => Date)
+  start!: Date;
+
+  @IsDate()
+  @Type(() => Date)
+  end!: Date;
 }

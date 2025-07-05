@@ -23,13 +23,10 @@ export class MockMonzoService implements MonzoService {
     async getTransactions(start: Date, end: Date): Promise<MonzoTransaction[]> {
       const res = await this.getRequest<MonzoTransaction[]>(`/transactions`);
 
-      // Sort out bug date is string here for some reason
-      const result =  res.filter((transaction) => {
+      return res.filter((transaction) => {
         const t = new Date(transaction.created);
-        return t >= new Date(start) && t <= new Date(end);
+        return t >= start && t <= end;
       });
-
-      return result;
     }
 
     // TODO: move to a http utils file
