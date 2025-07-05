@@ -1,4 +1,4 @@
-import { MonzoAccount, MonzoBalance } from "node_modules/@repo/monzo-types/src";
+import type { MonzoAccount, MonzoBalance } from "@repo/monzo-types";
 
 export interface CumulativeLineDatum {
     id: string;

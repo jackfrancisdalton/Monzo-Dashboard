@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import type { DashboardSummary } from '@repo/chart-data-types';
+import type { DashboardSummary } from '@repo/dashboard-types';
 
 export const useMonzoData = ({start, end }: { start: Date, end: Date }) => {
     const [dashboardSummary, setDashboardSummary] = useState<DashboardSummary>()

@@ -35,7 +35,7 @@
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
-    "@repo/chart-data-types": "workspace:*",
+    "@repo/dashboard-types": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@repo/monzo-types": "workspace:*",
     "@repo/typescript-config": "workspace:*",

@@ -1,4 +1,4 @@
-import { CumulativeLineDatum } from "@repo/chart-data-types";
+import { CumulativeLineDatum } from "../../../../../packages/dashboard-types/src";
 
 export function computeCumulativeLineData<T>(
     items: T[],

@@ -1,4 +1,4 @@
-import { PieDatum } from '@repo/chart-data-types';
+import { PieDatum } from '../../../../../packages/dashboard-types/src';
 
 export function computeGenericPieData<T>(
     items: T[],

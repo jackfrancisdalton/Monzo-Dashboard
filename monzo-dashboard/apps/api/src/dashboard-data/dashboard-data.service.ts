@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CumulativeLineDatum, DashboardSummary, PieDatum, TopTransactionsDatum, TreemapData } from '@repo/chart-data-types';
+import { CumulativeLineDatum, DashboardSummary, PieDatum, TopTransactionsDatum, TreemapData } from '../../../../packages/dashboard-types/src';
 import { MonzoTransaction } from '@repo/monzo-types';
 import { MonzoService } from 'src/monzo/monzo-service.interface';
 import { computeCumulativeLineData } from './mappers/line-datum-mapper';

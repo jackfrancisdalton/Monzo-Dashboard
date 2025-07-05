@@ -1,7 +1,7 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { DashboardQueryDto } from './dto/dashboard-dtos';
 import { DashboardDataService } from './dashboard-data/dashboard-data.service';
-import { DashboardSummary } from '@repo/chart-data-types';
+import { DashboardSummary } from '../../../packages/dashboard-types/src';
 
 @Controller()
 export class AppController {
