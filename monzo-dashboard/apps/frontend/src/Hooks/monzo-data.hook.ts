@@ -1,29 +1,24 @@
 import { useEffect, useState } from "react"
-import type { MonzoAccount, MonzoBalance, MonzoTransaction } from '@repo/monzo-types';
+import type { DashboardSummary } from '@repo/chart-data-types';
 
+export const useMonzoData = ({start, end }: { start: Date, end: Date }) => {
+    const [dashboardSummary, setDashboardSummary] = useState<DashboardSummary>()
 
-export const useMonzoData = () => {
-    const [balance, setBalance] = useState<MonzoBalance>()
-    const [accounts, setAccounts] = useState<MonzoAccount[]>([]);
-    const [transactions, setTransactions] = useState<MonzoTransaction[]>([]);
-
-    // TODO: consider doing all of the formatting on the backend
     useEffect(() => {
         const fetchData = async () => {
-            const res = await fetch('http://localhost:3000');
-            const data: { transactions: MonzoTransaction[], balance: MonzoBalance, accounts: MonzoAccount[] } = await res.json();
+            const queryParams = new URLSearchParams({
+                start: start.toISOString(),
+                end: end.toISOString(),
+            });
+
+            const res = await fetch(`http://localhost:3000?${queryParams.toString()}`);
+            const data: DashboardSummary = await res.json();
             
-            setTransactions(data.transactions);
-            setBalance(data.balance);
-            setAccounts(data.accounts);
+            setDashboardSummary(data);
         }
 
         fetchData();
-    }, [])
+    }, [start, end])
 
-    return { 
-        balance, setBalance,
-        accounts, setAccounts,
-        transactions, setTransactions
-    }
+    return { dashboardSummary }
 }

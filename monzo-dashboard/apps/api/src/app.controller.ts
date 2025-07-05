@@ -1,20 +1,17 @@
-import { Controller, Get } from '@nestjs/common';
-import { MonzoService } from './monzo/monzo-service.interface';
+import { Controller, Get, Query } from '@nestjs/common';
+import { DashboardQueryDto } from './dto/dashboard-dtos';
+import { DashboardDataService } from './dashboard-data/dashboard-data.service';
+import { DashboardSummary } from '@repo/chart-data-types';
 
 @Controller()
 export class AppController {
   constructor(
-    private readonly monzoService: MonzoService, 
+    private readonly dashboardService: DashboardDataService
   ) {}
 
   @Get()
-  async getDashBoard(): Promise<any> {
-    const [accounts, balance, transactions] = await Promise.all([
-      this.monzoService.getAccounts(),
-      this.monzoService.getBalance(),
-      this.monzoService.getTransactions(),
-    ])
-
-    return { accounts, balance, transactions };
+  async getDashBoard(@Query() query: DashboardQueryDto): Promise<DashboardSummary> {
+    const { start, end } = query;
+    return this.dashboardService.getDashboardData(start, end);
   }
 }

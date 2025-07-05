@@ -17,11 +17,19 @@ export class MockMonzoService implements MonzoService {
     }
     
     async getBalance(): Promise<MonzoBalance> {
-      return this.getRequest<MonzoBalance>(`/balance`);
+      return this.getRequest<MonzoBalance>(`/balance`); 
     }
     
-    async getTransactions(): Promise<MonzoTransaction[]> {
-      return await this.getRequest<MonzoTransaction[]>(`/transactions`);
+    async getTransactions(start: Date, end: Date): Promise<MonzoTransaction[]> {
+      const res = await this.getRequest<MonzoTransaction[]>(`/transactions`);
+
+      // Sort out bug date is string here for some reason
+      const result =  res.filter((transaction) => {
+        const t = new Date(transaction.created);
+        return t >= new Date(start) && t <= new Date(end);
+      });
+
+      return result;
     }
 
     // TODO: move to a http utils file

@@ -6,18 +6,14 @@ import CardWrapper from './DashboardCards/CardWrapper';
 import CardLayout from './Layouts/CardLayout';
 import AppLayout from './Layouts/AppLayout';
 import DisplayCard from './DashboardCards/DisplayCard';
-import { computeCumulativeLineData } from './Mappers';
-import { computeTreeMapData } from './Mappers/transactions-to-tree-map';
-import { useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { ResponsivePie } from '@nivo/pie';
 
 import TopEntitiesCard from './DashboardCards/TopEntitiesCard';
-import { computePieData } from './Mappers/transactions-to-pie-map';
 import { TimeRangePicker } from './UIComponents/TimeRangePicker';
 
 function App() {
-  // const [features, setFeatures] = useState<any[]>([]);
-  const { balance, transactions } = useMonzoData();
+  // TODO: integrate date range
   const [dateRange, setDateRange] = useState<{ start: Date, end: Date }>(() => {
     const today = new Date();
     const sevenDaysAgo = new Date();
@@ -25,24 +21,8 @@ function App() {
     return { start: sevenDaysAgo, end: today };
   });
 
-  const filteredTransactions = useMemo(() => {
-    if (!dateRange) 
-      return transactions;
+  const { dashboardSummary } = useMonzoData(dateRange);
 
-    const { start, end } = dateRange;
-    return transactions.filter(tx => {
-      const txDate = new Date(tx.created);
-      return txDate >= start && txDate <= end;
-    });
-  }, [transactions, dateRange]);
-
-  const lineData = useMemo(() => computeCumulativeLineData(filteredTransactions), [filteredTransactions]);
-  const treeMapData = useMemo(() => computeTreeMapData(filteredTransactions), [filteredTransactions]);
-  const pieChart = useMemo(() => computePieData(filteredTransactions), [filteredTransactions]);
-  const totalSpending = useMemo(() => filteredTransactions.reduce((acc, tx) => acc + Math.abs(tx.amount), 0), [filteredTransactions]);
-  const topTenTransactions = useMemo(() => [...filteredTransactions]
-      .sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount))
-      .slice(0, 10), [filteredTransactions]);
 
   // useEffect(() => {
   //   fetch('/geo/world.json')
@@ -63,7 +43,7 @@ function App() {
       <CardLayout>
         <CardWrapper title="Spending over time" className="col-span-3 row-span-2">
           <ResponsiveLine
-            data={lineData}
+            data={dashboardSummary?.spendingOverTimeLineData ?? []}
             margin={{ top: 20, right: 20, bottom: 50, left: 50 }}
             xScale={{ type: 'point' }}
             yScale={{ type: 'linear' }}
@@ -72,7 +52,7 @@ function App() {
 
         <CardWrapper title="Spending by category" className="col-span-1 row-span-2">
           <ResponsivePie
-            data={pieChart}
+            data={dashboardSummary?.spendingByCategoryPieData ?? []}
             margin={{ top: 20, right: 40, bottom: 60, left: 40 }}
             innerRadius={0.5}
             padAngle={0.7}
@@ -91,7 +71,7 @@ function App() {
 
         <CardWrapper title="Merchant Spending" className="col-span-2 row-span-2">
           <ResponsiveTreeMap
-            data={treeMapData}
+            data={dashboardSummary?.spendingByMerchantTreeMap ?? { name: 'root', children: [] }}
             identity="name"
             value="value"
             innerPadding={3}
@@ -113,10 +93,10 @@ function App() {
 
         <CardWrapper title="Top Items" className="col-span-2 row-span-1">
           <TopEntitiesCard
-            items={topTenTransactions}
-            getLabel={(tx) => tx.merchant?.name ?? tx.description}
+            items={dashboardSummary?.topTransactions ?? []}
+            getLabel={(tx) => tx.merchantName ?? tx.description}
             getValue={(tx) => new Date(tx.created).toLocaleDateString()}
-            getPercent={(tx) => (Math.abs(tx.amount) / totalSpending) * 100}
+            getPercent={(tx) => (Math.abs(tx.amount) / (dashboardSummary?.totalSpending ?? 1)) * 100}
           />
         </CardWrapper>
       </CardLayout>
