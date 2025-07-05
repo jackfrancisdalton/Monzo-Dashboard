@@ -1,5 +1,5 @@
 import './App.css';
-import { useMonzoData } from './Hooks/monzo-data.hook';
+import { useMonzoData } from './Hooks/useMonzoData';
 import { ResponsiveLine } from '@nivo/line';
 import { ResponsiveTreeMap } from '@nivo/treemap';
 import CardWrapper from './DashboardCards/CardWrapper';
