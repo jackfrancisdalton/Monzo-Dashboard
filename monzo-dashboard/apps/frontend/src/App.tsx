@@ -13,7 +13,6 @@ import TopEntitiesCard from './DashboardCards/TopEntitiesCard';
 import { TimeRangePicker } from './UIComponents/TimeRangePicker';
 
 function App() {
-  // TODO: integrate date range
   const [dateRange, setDateRange] = useState<{ start: Date, end: Date }>(() => {
     const today = new Date();
     const sevenDaysAgo = new Date();
