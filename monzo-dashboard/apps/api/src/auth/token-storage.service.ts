@@ -1,5 +1,5 @@
 import { Injectable, NotImplementedException } from "@nestjs/common";
-import { OAuthTokenDTO } from "./dto/oauth-token.dto";
+import { OAuthTokenDTO as OAuthTokensDTO } from "./dto/oauth-token.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { OauthTokenEntity } from "./entities/oauth-token.entity";
 import { Repository } from "typeorm";
@@ -11,15 +11,15 @@ export class TokenStorageService {
         @InjectRepository(OauthTokenEntity) private tokenRepo: Repository<OauthTokenEntity>,
     ) {}
     
-    async saveToken(token: OAuthTokenDTO): Promise<void> {
+    async saveTokens(tokens: OAuthTokensDTO): Promise<void> {
         throw new NotImplementedException("getToken method not implemented");
     }
 
-    async getToken(): Promise<OAuthTokenDTO | null> {
+    async getTokens(): Promise<OAuthTokensDTO | null> {
         throw new NotImplementedException("getToken method not implemented");
     }
 
-    async refreshToken(): Promise<void> {
+    async refreshTokens(): Promise<void> {
         throw new NotImplementedException("getToken method not implemented");
     }
 }

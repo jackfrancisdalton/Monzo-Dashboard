@@ -60,7 +60,7 @@ export class AuthController {
 
         const data = response.data;
 
-        await this.tokenStorage.saveToken({
+        await this.tokenStorage.saveTokens({
             accessToken: data.access_token,
             refreshToken: data.refresh_token,
             expiresIn: data.expires_in,
