@@ -3,11 +3,11 @@ services:
     image: postgres:15
     restart: always
     environment: # TODO move to .env file
-      POSTGRES_USER: monzo
+      POSTGRES_USER: dashboard
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: monzo_db
     ports:
-      - "5432:5432"
+      - "5432:5432" # For development, clean up dev vs prod later and clean up port exposure
     volumes:
       - pg_data:/var/lib/postgresql/data
 
