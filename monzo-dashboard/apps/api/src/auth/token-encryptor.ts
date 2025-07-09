@@ -1,8 +1,10 @@
 
-function encryptToken(token: string): void {
+export function encryptToken(token: string): string {
   // TODO
+  return token;
 }
 
-function decryptToken(encryptedToken: string): void {
+export function decryptToken(encryptedToken: string): string {
   // TODO
+  return encryptedToken;
 }

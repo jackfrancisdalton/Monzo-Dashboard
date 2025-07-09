@@ -3,4 +3,5 @@ export interface OAuthTokenDTO {
     refreshToken: string;
     expiresIn: number;  // in seconds
     obtainedAt: Date; 
+    provider: string;
 }

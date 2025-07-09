@@ -22,6 +22,14 @@ const AppLayout: React.FC<AppLayoutProps> = ({ headerComponent, children }) => {
                         Dashboard
                     </NavLink>
                     <NavLink
+                        to="/profile"
+                        className={({ isActive }) =>
+                            isActive ? 'bg-gray-700 p-2 rounded' : 'hover:bg-gray-700 p-2 rounded'
+                        }
+                    >
+                        Profile
+                    </NavLink>
+                    <NavLink
                         to="/settings"
                         className={({ isActive }) =>
                             isActive ? 'bg-gray-700 p-2 rounded' : 'hover:bg-gray-700 p-2 rounded'

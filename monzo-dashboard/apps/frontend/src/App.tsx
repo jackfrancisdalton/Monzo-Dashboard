@@ -39,6 +39,11 @@ function App() {
 
   return (
     <AppLayout headerComponent={generateHeader()}>
+      <button onClick={() => {
+        window.location.href = 'http://localhost:3000/auth/monzo/login';
+      }}>
+        Connect Monzo
+      </button>
       <CardLayout>
         <CardWrapper title="Spending over time" className="col-span-3 row-span-2">
           <ResponsiveLine

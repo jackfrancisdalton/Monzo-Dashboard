@@ -15,7 +15,7 @@ export class RealMonzoService implements MonzoService {
     ) {}
 
     private async getHeaders() {
-        const token = await this.tokenStorageService.getTokens();
+        const token = await this.tokenStorageService.getTokens('monzo');
 
         if (!token) {
             throw new Error("Monzo Oauth Token is null or undefined");

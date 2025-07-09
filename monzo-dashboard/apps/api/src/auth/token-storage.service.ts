@@ -1,8 +1,9 @@
-import { Injectable, NotImplementedException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { OAuthTokenDTO as OAuthTokensDTO } from "./dto/oauth-token.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { OauthTokenEntity } from "./entities/oauth-token.entity";
 import { Repository } from "typeorm";
+import { decryptToken, encryptToken } from "./token-encryptor";
 
 @Injectable()
 export class TokenStorageService {
@@ -12,14 +13,30 @@ export class TokenStorageService {
     ) {}
     
     async saveTokens(tokens: OAuthTokensDTO): Promise<void> {
-        throw new NotImplementedException("getToken method not implemented");
+        const tokenEntity = this.tokenRepo.create({
+            provider: tokens.provider,
+            encryptedAccessToken: encryptToken(tokens.accessToken),
+            encryptedRefreshToken: encryptToken(tokens.refreshToken),
+            expiresIn: tokens.expiresIn,
+            obtainedAt: tokens.obtainedAt,
+        });
+
+        await this.tokenRepo.save(tokenEntity);
     }
 
-    async getTokens(): Promise<OAuthTokensDTO | null> {
-        throw new NotImplementedException("getToken method not implemented");
-    }
-
-    async refreshTokens(): Promise<void> {
-        throw new NotImplementedException("getToken method not implemented");
+    async getTokens(provider: string): Promise<OAuthTokensDTO | null> {
+        const tokenEntity = await this.tokenRepo.findOneBy({ provider });
+        
+        if (!tokenEntity) {
+            return null;
+        }
+        
+        return {
+            accessToken: decryptToken(tokenEntity.encryptedAccessToken),
+            refreshToken: decryptToken(tokenEntity.encryptedRefreshToken),
+            expiresIn: tokenEntity.expiresIn,
+            obtainedAt: tokenEntity.obtainedAt,
+            provider: tokenEntity.provider,
+        };
     }
 }
