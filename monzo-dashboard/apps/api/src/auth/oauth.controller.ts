@@ -35,7 +35,7 @@ export class OAuthController {
   async handleCallback(
     @Param('provider') provider: string,
     @Query('code') code: string,
-    @Res() res: Response
+    @Res() res: Response // convert to express response to enable redirect response handling
   ) {
     const oAuthConfigs = buildOAuthProvidersConfig(this.configService);
     const providerConfig = oAuthConfigs[provider];
@@ -67,15 +67,13 @@ export class OAuthController {
     }
 
     const data = response.data;
-
-    // TODO: store token
-    // await this.tokenStorage.saveTokens({
-    //   provider,
-    //   accessToken: data.access_token,
-    //   refreshToken: data.refresh_token,
-    //   expiresIn: data.expires_in,
-    //   obtainedAt: new Date(),
-    // });
+    await this.tokenStorage.saveTokens({
+      provider,
+      accessToken: data.access_token,
+      refreshToken: data.refresh_token,
+      expiresIn: data.expires_in,
+      obtainedAt: new Date(),
+    });
 
     // TODO: replace with const
     return res.redirect(`http://localhost:5173/dashboard?connected=${provider}`);

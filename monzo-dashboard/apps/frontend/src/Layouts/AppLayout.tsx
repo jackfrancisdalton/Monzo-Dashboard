@@ -14,7 +14,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ headerComponent, children }) => {
                 <div className="text-xl font-bold mb-6">Monzo Dashboard</div>
                 <nav className="flex flex-col gap-2">
                     <NavLink
-                        to="/dashboard"
+                        to="/"
                         className={({ isActive }) =>
                             isActive ? 'bg-gray-700 p-2 rounded' : 'hover:bg-gray-700 p-2 rounded'
                         }
