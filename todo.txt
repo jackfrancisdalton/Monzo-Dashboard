@@ -9,6 +9,13 @@ Real Data
 -- on webhook or on polling build a map of all transactions with no merchant stored
 -- fetch transaction and (including `expand merchant`) and store merchant full data in db
 
+Set up/Welcome Page
+1. show if no tokens are in the database (suggesting no prior oauth)
+2. trigger oauth flow to link account (make mention here to update the .env file)
+3. move to a loading page whilst all of the transactions are being downloaded, use SSE or something to update loading
+4. redirect to dashboard once data dump is compelted
+NOTE: we should also re-use this for on app open sync latest data (limited to last 90 days)
+
 Profile Page:
 - include usefule information like IBAN, account, swift, etc...
 - list out existing accounts
