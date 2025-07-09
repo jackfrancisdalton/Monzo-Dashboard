@@ -5,6 +5,7 @@ import { HttpService } from "@nestjs/axios";
 import { firstValueFrom } from "rxjs";
 import { ConfigService } from '@nestjs/config';
 import { buildOAuthProvidersConfig } from "./oauth.providers";
+import { randomBytes } from "crypto";
 
 @Controller('auth')
 export class OAuthController {
@@ -26,8 +27,10 @@ export class OAuthController {
       throw new NotFoundException(`Provider "${provider}" is not configured.`);
     }
 
+    const state = randomBytes(16).toString('hex');
+
     return res.redirect(
-      `${providerConfig.authUrl}?client_id=${providerConfig.clientId}&redirect_uri=${encodeURIComponent(providerConfig.redirectUri)}&response_type=code`
+      `${providerConfig.authUrl}?client_id=${providerConfig.clientId}&redirect_uri=${encodeURIComponent(providerConfig.redirectUri)}&response_type=code&state=${state}`
     );
   }
 
@@ -37,6 +40,7 @@ export class OAuthController {
     @Query('code') code: string,
     @Res() res: Response // convert to express response to enable redirect response handling
   ) {
+    console.log('CALLED')
     const oAuthConfigs = buildOAuthProvidersConfig(this.configService);
     const providerConfig = oAuthConfigs[provider];
 

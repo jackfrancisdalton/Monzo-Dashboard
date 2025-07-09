@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { useMonzoData } from "../Hooks/useMonzoData";
-import { TimeRangePicker } from "../UIComponents/TimeRangePicker";
-import AppLayout from "../Layouts/AppLayout";
-import CardLayout from "../Layouts/CardLayout";
-import CardWrapper from "../DashboardCards/CardWrapper";
+import { useMonzoData } from "../hooks/useMonzoData";
+import { TimeRangePicker } from "../components/TimeRangePicker";
+import AppLayout from "../layouts/AppLayout";
+import CardLayout from "../layouts/CardLayout";
+import CardWrapper from "../components/CardWrapper";
 import { ResponsiveLine } from "@nivo/line";
-import TopEntitiesCard from "../DashboardCards/TopEntitiesCard";
-import DisplayCard from "../DashboardCards/DisplayCard";
+import TopEntitiesCard from "../components/TopEntitiesCard";
+import DisplayCard from "../components/DisplayCard";
 import { ResponsiveTreeMap } from "@nivo/treemap";
 import { ResponsivePie } from "@nivo/pie";
 

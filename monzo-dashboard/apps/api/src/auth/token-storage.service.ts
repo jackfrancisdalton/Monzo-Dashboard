@@ -22,6 +22,7 @@ export class TokenStorageService {
             obtainedAt: tokens.obtainedAt,
         });
 
+        console.log('stored', tokenEntity)
         await this.tokenRepo.save(tokenEntity);
     }
 

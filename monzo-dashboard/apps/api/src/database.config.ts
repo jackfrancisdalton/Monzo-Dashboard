@@ -9,7 +9,6 @@ export const databaseConfig = (): TypeOrmModuleOptions => ({
     database: process.env.DB_NAME || 'monzo_db',
     entities: [__dirname + '/../**/*.entity{.ts,.js}'],
 
-    // Clear and sync during development to avoid having to deal with migrations 
+    // Sync during development to avoid having to deal with migrations 
     synchronize: true,
-    dropSchema: true,
   });

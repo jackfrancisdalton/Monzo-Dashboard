@@ -1,4 +1,4 @@
-import AppLayout from "../Layouts/AppLayout";
+import AppLayout from "../layouts/AppLayout";
 
 // TODO: this component
 const ProfilePage: React.FC = () => {

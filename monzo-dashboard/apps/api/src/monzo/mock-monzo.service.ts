@@ -7,41 +7,38 @@ import { firstValueFrom, throwError } from 'rxjs';
 
 @Injectable()
 export class MockMonzoService implements MonzoService {
+  constructor(private readonly http: HttpService) {}
 
-    constructor(
-      private readonly http: HttpService
-    ) {}
-    
-    async getAccounts(): Promise<MonzoAccount[]> {
-      return this.getRequest<MonzoAccount[]>(`/accounts`);
-    }
-    
-    async getBalance(): Promise<MonzoBalance> {
-      return this.getRequest<MonzoBalance>(`/balance`); 
-    }
-    
-    async getTransactions(start: Date, end: Date): Promise<MonzoTransaction[]> {
-      const res = await this.getRequest<MonzoTransaction[]>(`/transactions`);
+  async getAccounts(): Promise<MonzoAccount[]> {
+    return this.getRequest<MonzoAccount[]>(`/accounts`);
+  }
 
-      return res.filter((transaction) => {
-        const t = new Date(transaction.created);
-        return t >= start && t <= end;
-      });
-    }
+  async getBalance(): Promise<MonzoBalance> {
+    return this.getRequest<MonzoBalance>(`/balance`);
+  }
 
-    // TODO: move to a http utils file
-    private async getRequest<T>(path: string): Promise<T> {
-      try {
-        return await firstValueFrom(
+  async getTransactions(start: Date, end: Date): Promise<MonzoTransaction[]> {
+    const res = await this.getRequest<MonzoTransaction[]>(`/transactions`);
+
+    return res.filter((transaction) => {
+      const t = new Date(transaction.created);
+      return t >= start && t <= end;
+    });
+  }
+
+  // TODO: move to a http utils file
+  private async getRequest<T>(path: string): Promise<T> {
+    try {
+      return await firstValueFrom(
         this.http.get<T>(path).pipe(
           map((response) => response.data),
           catchError((err) => {
-          return throwError(() => new Error(`Failed to fetch ${path}`));
+            return throwError(() => new Error(`Failed to fetch ${path}`));
           }),
         ),
-        );
-      } catch (err) {
-        throw err;
-      }
+      );
+    } catch (err) {
+      throw err;
     }
+  }
 }
