@@ -4,6 +4,11 @@ import { RealMonzoService } from './real-monzo.service';
 import { MockMonzoService } from './mock-monzo.service';
 import { HttpModule } from '@nestjs/axios';
 import { AuthModule } from 'src/auth/auth.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AccountEntity } from './entities/account.entity';
+import { BalanceEntity } from './entities/balance.entity';
+import { TransactionEntity } from './entities/transaction.entity';
+import { MerchantEntity } from './entities/merchant.entity';
 
 @Module({
   imports: [
@@ -13,15 +18,22 @@ import { AuthModule } from 'src/auth/auth.module';
       timeout: 5000,
       maxRedirects: 5,
     }),
+    TypeOrmModule.forFeature([
+      AccountEntity,
+      BalanceEntity,
+      TransactionEntity,
+      MerchantEntity,
+    ]),
   ],
   providers: [
     {
       provide: MonzoService,
-      useClass: process.env.NODE_ENV === 'production'
-        ? RealMonzoService
-        : MockMonzoService
-    }
+      useClass:
+        process.env.NODE_ENV === 'production'
+          ? RealMonzoService
+          : MockMonzoService,
+    },
   ],
-  exports: [MonzoService]
+  exports: [MonzoService],
 })
 export class MonzoModule {}
