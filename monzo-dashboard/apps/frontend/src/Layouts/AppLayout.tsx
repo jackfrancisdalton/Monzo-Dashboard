@@ -42,9 +42,11 @@ const AppLayout: React.FC<AppLayoutProps> = ({ headerComponent, children }) => {
 
             {/* Right content area */}
             <div className="flex flex-col flex-1 h-full">
-                <header className="bg-gray-800 text-white p-4 flex justify-between items-center flex-none">
-                    {headerComponent}
-                </header>
+                {headerComponent && (
+                    <header className="bg-gray-800 text-white p-4 flex justify-between items-center flex-none">
+                        {headerComponent}
+                    </header>
+                )}
                 <main className="flex-1 overflow-y-auto p-4">
                     {children}
                 </main>
