@@ -1,2 +1,13 @@
+# TODO:
+
 # Monzo-Dashboard
-Monzo is an incredible banking service that I've been using as my daily driver for years. Unfortunately they don't offer a web version of the app which I find frustrating. This repo provides that! :) 
+
+
+
+# Set up
+- set up monzo
+- specifcy env files for clients/etc...
+
+# Running
+- spin up docker compose for database and server
+- run client in electron or via container on local machine
