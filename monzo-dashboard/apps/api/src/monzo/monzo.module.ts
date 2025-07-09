@@ -9,6 +9,7 @@ import { AccountEntity } from './entities/account.entity';
 import { BalanceEntity } from './entities/balance.entity';
 import { TransactionEntity } from './entities/transaction.entity';
 import { MerchantEntity } from './entities/merchant.entity';
+import { MonzoSyncService } from './monzo-sync.service';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { MerchantEntity } from './entities/merchant.entity';
     ]),
   ],
   providers: [
+    MonzoSyncService,
     {
       provide: MonzoService,
       useClass:
@@ -34,6 +36,10 @@ import { MerchantEntity } from './entities/merchant.entity';
           : MockMonzoService,
     },
   ],
-  exports: [MonzoService],
+  exports: [
+    MonzoService, 
+    // TODO: remove included for testing purposes
+    MonzoSyncService 
+  ],
 })
 export class MonzoModule {}

@@ -20,10 +20,16 @@ export class DashboardDataService {
             throw new Error("No Monzo accounts found. Please ensure you have linked your Monzo account.");
         }
 
+        // TODO: clean up should be clear to TS from above that these cannot be null, but oh well.
+        const targetAccountId = accounts[0]?.id;
+        if(!targetAccountId) {
+            throw new Error("No valid account ID found. Please ensure your Monzo account is properly linked.");
+        }
+
         // Default to using the first account (TODO: allow this to be configurable in the future)
         const [balance, transactions] = await Promise.all([
-            this.monzoService.getBalance(accounts[0].id),
-            this.monzoService.getTransactions(accounts[0].id, start, end),
+            this.monzoService.getBalance(targetAccountId),
+            this.monzoService.getTransactions(targetAccountId, start, end),
         ]);
 
         return { 

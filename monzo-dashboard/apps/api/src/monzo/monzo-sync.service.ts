@@ -44,22 +44,29 @@ export class MonzoSyncService {
     }
 
     async initialFullFetch(onProgress?: (p: SyncProgress) => void): Promise<void> {
-        this.logger.log('Starting full Monzo fetch.');
-        const headers = await this.getAuthHeaders();
+        try {
+            this.logger.log('Starting full Monzo fetch.');
+            console.log('Starting full Monzo fetch...');
+            const headers = await this.getAuthHeaders();
+    
+            onProgress?.({ stage: 'accounts:sync:start' });
+            await this.syncAccountsAndBalances(headers);
+            onProgress?.({ stage: 'accounts:sync:done' });
+    
+            onProgress?.({ stage: 'transactions:sync:start' });
+            await this.syncTransactions(headers, undefined, onProgress);
+            onProgress?.({ stage: 'transactions:sync:done' });
+    
+            onProgress?.({ stage: 'merchants:sync:start' });
+            await this.enrichMerchants(headers, onProgress);
+            onProgress?.({ stage: 'merchants:sync:done' });
+    
+            this.logger.log('Full Monzo fetch complete.');
+        } catch (error: any) {
+            this.logger.error('Error during full Monzo fetch:', error.message);
+            throw new Error(`Failed to complete full Monzo fetch: ${error.message}`);
+        }
 
-        onProgress?.({ stage: 'accounts:sync:start' });
-        await this.syncAccountsAndBalances(headers);
-        onProgress?.({ stage: 'accounts:sync:done' });
-
-        onProgress?.({ stage: 'transactions:sync:start' });
-        await this.syncTransactions(headers, undefined, onProgress);
-        onProgress?.({ stage: 'transactions:sync:done' });
-
-        onProgress?.({ stage: 'merchants:sync:start' });
-        await this.enrichMerchants(headers, onProgress);
-        onProgress?.({ stage: 'merchants:sync:done' });
-
-        this.logger.log('Full Monzo fetch complete.');
     }
 
     async incrementalSync(onProgress?: (p: SyncProgress) => void): Promise<void> {
@@ -83,6 +90,26 @@ export class MonzoSyncService {
         onProgress?.({ stage: 'merchants:sync:done' });
 
         this.logger.log('Incremental Monzo sync complete.');
+    }
+
+    // TODO: remove included for testing purposes
+    async testSync(startDate: Date, onProgress?: (p: SyncProgress) => void): Promise<void> {
+        this.logger.log('Starting test Monzo sync...');
+        const headers = await this.getAuthHeaders();
+
+        onProgress?.({ stage: 'accounts:sync:start' });
+        await this.syncAccountsAndBalances(headers);
+        onProgress?.({ stage: 'accounts:sync:done' });
+
+        onProgress?.({ stage: 'transactions:sync:start', accountId: undefined });
+        await this.syncTransactions(headers, startDate, onProgress);
+        onProgress?.({ stage: 'transactions:sync:done' });
+
+        onProgress?.({ stage: 'merchants:sync:start' });
+        await this.enrichMerchants(headers, onProgress);
+        onProgress?.({ stage: 'merchants:sync:done' });
+
+        this.logger.log('Test Monzo sync complete.');
     }
 
     private async syncAccountsAndBalances(headers: { Authorization: string }) {
