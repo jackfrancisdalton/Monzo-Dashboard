@@ -5,6 +5,7 @@ import { OauthTokenEntity } from './entities/oauth-token.entity';
 import { OAuthController } from './oauth.controller';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule } from '@nestjs/config';
+import { TokenCryptoService } from './token-crypto.service';
 
 @Module({
     imports: [
@@ -12,7 +13,7 @@ import { ConfigModule } from '@nestjs/config';
         HttpModule,
         ConfigModule
     ],
-    providers: [TokenStorageService],
+    providers: [TokenStorageService, TokenCryptoService],
     controllers: [OAuthController],
     exports: [TokenStorageService],
 })

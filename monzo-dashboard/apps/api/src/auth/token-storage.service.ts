@@ -3,20 +3,21 @@ import { OAuthTokenDTO as OAuthTokensDTO } from "./dto/oauth-token.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { OauthTokenEntity } from "./entities/oauth-token.entity";
 import { Repository } from "typeorm";
-import { decryptToken, encryptToken } from "./token-encryptor";
+import { TokenCryptoService } from "./token-crypto.service";
 
 @Injectable()
 export class TokenStorageService {
 
     constructor(
         @InjectRepository(OauthTokenEntity) private tokenRepo: Repository<OauthTokenEntity>,
+        private readonly tokenCryptoService: TokenCryptoService
     ) {}
     
     async saveTokens(tokens: OAuthTokensDTO): Promise<void> {
         const tokenEntity = this.tokenRepo.create({
             provider: tokens.provider,
-            encryptedAccessToken: encryptToken(tokens.accessToken),
-            encryptedRefreshToken: encryptToken(tokens.refreshToken),
+            encryptedAccessToken: this.tokenCryptoService.encrypt(tokens.accessToken),
+            encryptedRefreshToken: this.tokenCryptoService.encrypt(tokens.refreshToken),
             expiresIn: tokens.expiresIn,
             obtainedAt: tokens.obtainedAt,
         });
@@ -32,8 +33,8 @@ export class TokenStorageService {
         }
         
         return {
-            accessToken: decryptToken(tokenEntity.encryptedAccessToken),
-            refreshToken: decryptToken(tokenEntity.encryptedRefreshToken),
+            accessToken: this.tokenCryptoService.decrypt(tokenEntity.encryptedAccessToken),
+            refreshToken: this.tokenCryptoService.decrypt(tokenEntity.encryptedRefreshToken),
             expiresIn: tokenEntity.expiresIn,
             obtainedAt: tokenEntity.obtainedAt,
             provider: tokenEntity.provider,
