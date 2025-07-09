@@ -14,14 +14,16 @@ export class DashboardDataService {
     ) {}
 
     async getDashboardData(start: Date, end: Date): Promise<DashboardSummary> {
+        const accounts = await this.monzoService.getAccounts();
 
+        if(accounts.length === 0) {
+            throw new Error("No Monzo accounts found. Please ensure you have linked your Monzo account.");
+        }
 
-        console.log(`Fetching dashboard data for range: ${start} to ${end}`);
-
-        const [accounts, balance, transactions] = await Promise.all([
-            this.monzoService.getAccounts(),
-            this.monzoService.getBalance(),
-            this.monzoService.getTransactions(start, end),
+        // Default to using the first account (TODO: allow this to be configurable in the future)
+        const [balance, transactions] = await Promise.all([
+            this.monzoService.getBalance(accounts[0].id),
+            this.monzoService.getTransactions(accounts[0].id, start, end),
         ]);
 
         return { 
@@ -37,6 +39,7 @@ export class DashboardDataService {
         };
     }
 
+    // TODO clean up into a 
     private getSpendingOverTimeLineData(transactions: MonzoTransaction[]): CumulativeLineDatum[] {
         const lineData = computeCumulativeLineData(
             transactions,

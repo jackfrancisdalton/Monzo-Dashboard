@@ -13,11 +13,11 @@ export class MockMonzoService implements MonzoService {
     return this.getRequest<MonzoAccount[]>(`/accounts`);
   }
 
-  async getBalance(): Promise<MonzoBalance> {
+  async getBalance(accountId: string): Promise<MonzoBalance> {
     return this.getRequest<MonzoBalance>(`/balance`);
   }
 
-  async getTransactions(start: Date, end: Date): Promise<MonzoTransaction[]> {
+  async getTransactions(accountId: string, start: Date, end: Date): Promise<MonzoTransaction[]> {
     const res = await this.getRequest<MonzoTransaction[]>(`/transactions`);
 
     return res.filter((transaction) => {
