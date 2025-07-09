@@ -10,8 +10,7 @@ import { TokenCryptoService } from './token-crypto.service';
 @Module({
     imports: [
         TypeOrmModule.forFeature([OauthTokenEntity]),
-        HttpModule,
-        ConfigModule
+        HttpModule
     ],
     providers: [TokenStorageService, TokenCryptoService],
     controllers: [OAuthController],
