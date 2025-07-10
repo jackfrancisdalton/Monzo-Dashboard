@@ -1,20 +1,7 @@
-Real Data
-- Set up monzo auth and token storage for real monzo api
-- Set up initial data fetch of Balances, Transactions, Accounts
-- Set up DB to store data and insert
-- Arch/Decide method for updating data on the go options considered atm
--- polling (refresh data every X hours)
--- webhook (have webhook attached to the)
-- Set up merchant scraping (merchant data and address not provided in list transactions by default)
--- on webhook or on polling build a map of all transactions with no merchant stored
--- fetch transaction and (including `expand merchant`) and store merchant full data in db
 
 Set up/Welcome Page
-1. show if no tokens are in the database (suggesting no prior oauth)
-2. trigger oauth flow to link account (make mention here to update the .env file)
-3. move to a loading page whilst all of the transactions are being downloaded, use SSE or something to update loading
-4. redirect to dashboard once data dump is compelted
-NOTE: we should also re-use this for on app open sync latest data (limited to last 90 days)
+1. Add handling after oauth handshake specifying that they must go on app to approave before sync and that they must do it in 5 minutes
+2. Add cards for each of the stages that go green on sync complete
 
 Profile Page:
 - include usefule information like IBAN, account, swift, etc...
@@ -23,12 +10,8 @@ Profile Page:
 - include easy UI for copy pasting 
 
 Settings page:
-- add components for: setting monzo details (ideally let people config in app instead of env)
-- option to trigger a refetch of data/refresh rate
-- stretch goal: specify theme
-
-Setup Page:
-- on load if no monzo keys show page so they have to do it to login first (reuse same logic from settings page)
+- Add option to clear all data from DB forcing them to re-auth and resync.
+- Add them options (can leverage tailwind themes for this too)
 
 Electronise:
 - Set up an electron build to wrap the react application for a nice desktop experiance and ability to add to toolbar
@@ -40,10 +23,6 @@ Dockerise:
 Clean up:
 - indentation standarisation
 - naming conventions/capitalisations
-
-
-# Electron
-- make an option to have the client react app as electron app for easy opening, and connection to hosted backend services
 
 Unit testing:
 - should start once a stable project structure is in place
