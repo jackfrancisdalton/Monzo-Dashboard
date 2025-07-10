@@ -1,6 +1,7 @@
 import { Controller, Sse } from "@nestjs/common";
 import { MonzoSyncService } from "./monzo-sync.service";
 import { Observable } from "rxjs";
+import { MonzoSyncProgressUpdateEvent } from "@repo/monzo-types";
 
 @Controller('monzo')
 export class MonzoController {
@@ -10,13 +11,18 @@ export class MonzoController {
   ) {}
   
   @Sse('sync')
-  sync(): Observable<MessageEvent> {
+  sync(): Observable<MonzoSyncProgressUpdateEvent> {
+
+
+
     return new Observable((subscriber) => {
-      this.monzoSyncService.initialFullFetch((progress) => {
-        subscriber.next({ data: progress } as MessageEvent);// TODO: clean up typing fix
-      })
+      const onProgress = (progress) => {
+        subscriber.next({ data: { taskName: progress.taskName, taskStage: progress.taskStage }});
+      }
+      
+      this.monzoSyncService.initialFullFetch(onProgress)
       .then(() => {
-        subscriber.next({ data: { stage: "completed" } } as MessageEvent);// TODO: clean up typing fix
+        subscriber.next({ data: { taskName: 'fullSync', taskStage: "completed" } });
       })
       .catch((err) => {
         subscriber.error(err);

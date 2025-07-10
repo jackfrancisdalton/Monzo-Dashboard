@@ -5,17 +5,7 @@ import { Repository } from 'typeorm';
 import { firstValueFrom } from 'rxjs';
 import { TokenStorageService } from '../auth/token-storage.service';
 import { AccountEntity, BalanceEntity, MerchantAddressEntity, MerchantEntity, TransactionEntity } from './entities';
-
-type SyncEntity = 'accounts' | 'transactions';
-type SyncPhase = 'start' | 'progress' | 'done';
-type SyncStage = `${SyncEntity}:sync:${SyncPhase}` | 'completed';
-
-interface SyncProgress {
-    stage: SyncStage;
-    accountId?: string;
-    fetchedTransactions?: number;
-    enrichedMerchants?: number;
-}
+import { MonzoSyncProgressUpdate } from '@repo/monzo-types';
 
 // TODO: clean up general logging approach, errorhandling, progress reporting and logging content
 @Injectable()
@@ -31,31 +21,24 @@ export class MonzoSyncService {
         @InjectRepository(TransactionEntity) private readonly transactionRepo: Repository<TransactionEntity>,
         @InjectRepository(MerchantEntity) private readonly merchantRepo: Repository<MerchantEntity>,
     ) {
-        // TODO: Move this to a more appropriate place, or making it re-usable repo wide
         const axios = this.http.axiosRef;
 
         axios.interceptors.response.use(
-          response => response,
-          async (error) => {
-            console.log('Axios error interceptor triggered');
-            const originalRequest = error.config;
-    
-            // 401 for for auth failures, don't retry on 403 as these are valid permission failures 
-            if (error.response?.status === 401 && !originalRequest._retry) {
-              originalRequest._retry = true;
-    
-                console.log('refreshing tokens for Monzo');
+            response => response,
+            async (error) => {
+                const originalRequest = error.config;
 
-              const newTokens = await this.tokenStorage.refreshTokens('monzo');
-              originalRequest.headers['Authorization'] = `Bearer ${newTokens.accessToken}`;
-              console.log('Retrying request');
+                if (error.response?.status === 401 && !originalRequest._retry) {
+                    originalRequest._retry = true;
 
-    
-              return axios(originalRequest);
+                    const newTokens = await this.tokenStorage.refreshTokens('monzo');
+                    originalRequest.headers['Authorization'] = `Bearer ${newTokens.accessToken}`;
+
+                    return axios(originalRequest);
+                }
+
+                return Promise.reject(error);
             }
-    
-            return Promise.reject(error);
-          }
         );
     }
 
@@ -71,73 +54,54 @@ export class MonzoSyncService {
         };
     }
 
-    async initialFullFetch(onProgress?: (p: SyncProgress) => void): Promise<void> {
+    async initialFullFetch(onProgress?: (p: MonzoSyncProgressUpdate) => void): Promise<void> {
         try {
-            this.logger.log('Starting full Monzo fetch.');
-            console.log('Starting full Monzo fetch...');
             const headers = await this.getAuthHeaders();
-    
-            onProgress?.({ stage: 'accounts:sync:start' });
-            await this.syncAccountsAndBalances(headers);
-            onProgress?.({ stage: 'accounts:sync:done' });
-    
-            onProgress?.({ stage: 'transactions:sync:start' });
+            await this.syncAccountsAndBalances(headers, onProgress);
             await this.syncTransactions(headers, undefined, onProgress);
-            onProgress?.({ stage: 'transactions:sync:done' });
-
-            onProgress?.({ stage: 'completed' });
-            this.logger.log('Full Monzo fetch complete.');
         } catch (error: any) {
-            this.logger.error('Error during full Monzo fetch:', error.message);
             throw new Error(`Failed to complete full Monzo fetch: ${error.message}`);
         }
-
     }
 
-    async incrementalSync(onProgress?: (p: SyncProgress) => void): Promise<void> {
-        this.logger.log('Starting incremental Monzo sync...');
-        const headers = await this.getAuthHeaders();
-
-        onProgress?.({ stage: 'accounts:sync:start' });
-        await this.syncAccountsAndBalances(headers);
-        onProgress?.({ stage: 'accounts:sync:done' });
-
-        const lastTx = await this.transactionRepo.findOne({
-            order: { created: 'DESC' },
-        });
-
-        onProgress?.({ stage: 'transactions:sync:start', accountId: undefined });
-        await this.syncTransactions(headers, lastTx?.created, onProgress);
-        onProgress?.({ stage: 'transactions:sync:done' });
-
-        this.logger.log('Incremental Monzo sync complete.');
-    }
-
-    private async syncAccountsAndBalances(headers: { Authorization: string }) {
+    async incrementalSync(onProgress?: (p: MonzoSyncProgressUpdate) => void): Promise<void> {
         try {
+            // use last transaction point as starting point of fetch
+            const lastTx = await this.transactionRepo.findOne({ order: { created: 'DESC' } });
+            const headers = await this.getAuthHeaders();
+
+            await this.syncAccountsAndBalances(headers, onProgress);
+            await this.syncTransactions(headers, lastTx?.created, onProgress);
+        } catch (error: any) {
+            throw new Error(`Failed to complete incremental Monzo fetch: ${error.message}`);
+        }
+    }
+
+    private async syncAccountsAndBalances(
+        headers: { Authorization: string },
+        onProgress?: (p: MonzoSyncProgressUpdate) => void
+    ) {
+        try {
+            onProgress?.({ taskName: 'accounts', taskStage: 'start' });
+            onProgress?.({ taskName: 'balances', taskStage: 'start' });
+
             const accountResponse = await firstValueFrom(
                 this.http.get(`${this.MONZO_API}/accounts`, { headers })
             );
-            const accounts = accountResponse.data.accounts;
 
-            for (const account of accounts) {
-
-                console.log(`Syncing account: ${account.id} - ${account.description}`);
+            for (const account of accountResponse.data.accounts) {
                 await this.accountRepo.save({
                     id: account.id,
                     description: account.description,
                     created: new Date(account.created),
                 });
-                console.log(`Account ${account.id} synced.`);
-    
-                console.log(`Fetching balance for account: ${account.id}`);
+                onProgress?.({ taskName: 'accounts', taskStage: 'progress' });
+
                 const balanceResponse = await firstValueFrom(
                     this.http.get(`${this.MONZO_API}/balance?account_id=${account.id}`, { headers })
                 );
-                console.log(`Balance for account ${account.id} fetched successfully.`);
-    
-                console.log(`Saving balance for account: ${account.id}`);
-                const balance = balanceResponse.data;    
+
+                const balance = balanceResponse.data;
                 await this.balanceRepo.save({
                     accountId: account.id,
                     balance: balance.balance,
@@ -145,13 +109,16 @@ export class MonzoSyncService {
                     spend_today: balance.spend_today,
                     currency: balance.currency,
                 });
-                console.log(`Balance for account ${account.id} saved successfully.`);
+                onProgress?.({ taskName: 'balances', taskStage: 'progress' });
             }
+
+            onProgress?.({ taskName: 'accounts', taskStage: 'completed' });
+            onProgress?.({ taskName: 'balances', taskStage: 'completed' });
         } catch (err: any) {
             const errormessage = {
                 message: 'Failed to fetch accounts and balances from Monzo API',
                 details: err?.response?.data || err.message || 'Unknown error',
-            }
+            };
             this.logger.error('Failed to fetch accounts', errormessage);
         }
     }
@@ -159,44 +126,41 @@ export class MonzoSyncService {
     private async syncTransactions(
         headers: { Authorization: string },
         since?: Date,
-        onProgress?: (p: SyncProgress) => void
+        onProgress?: (p: MonzoSyncProgressUpdate) => void
     ) {
-        console.log('Starting transaction sync...');
         const accounts = await this.accountRepo.find();
-    
+        onProgress?.({ taskName: 'transactions', taskStage: 'start' });
+
         for (const account of accounts) {
             await this.syncTransactionsForAccount(account, headers, since, onProgress);
         }
+        onProgress?.({ taskName: 'transactions', taskStage: 'completed' });
     }
-    
+
     private async syncTransactionsForAccount(
         account: AccountEntity,
         headers: { Authorization: string },
         since?: Date,
-        onProgress?: (p: SyncProgress) => void
+        onProgress?: (p: MonzoSyncProgressUpdate) => void
     ) {
         let nextSince = since ? since.toISOString() : undefined;
         let keepGoing = true;
         let totalFetched = 0;
-    
+
         while (keepGoing) {
             const transactions = await this.fetchTransactionsPage(account, headers, nextSince);
-    
             await this.saveTransactionsBatch(transactions, account);
-    
             totalFetched += transactions.length;
-            onProgress?.({ stage: 'transactions:sync:progress', accountId: account.id, fetchedTransactions: totalFetched });
-    
+            onProgress?.({ taskName: 'transactions', taskStage: 'progress' });
+
             if (transactions.length < 200) {
                 keepGoing = false;
-                console.log(`No more transactions to fetch for account ${account.id}. Total fetched: ${totalFetched}`);
             } else {
                 nextSince = transactions[transactions.length - 1].created;
-                console.log(`Next since date for account ${account.id}: ${nextSince}`);
             }
         }
     }
-    
+
     private async fetchTransactionsPage(
         account: AccountEntity,
         headers: { Authorization: string },
@@ -207,17 +171,15 @@ export class MonzoSyncService {
         if (since) {
             url += `&since=${since}`;
         }
-    
+
         const response = await firstValueFrom(this.http.get(url, { headers }));
-        this.logger.log(`Fetched ${response.data.transactions.length} transactions for account ${account.id}`);
         return response.data.transactions;
     }
-    
+
     private async saveTransactionsBatch(transactions: any[], account: AccountEntity) {
-        console.log(`Saving ${transactions.length} transactions for account: ${account.id}`);
         for (const tx of transactions) {
             const merchant = tx.merchant ? await this.findOrCreateMerchant(tx.merchant) : undefined;
-    
+
             await this.transactionRepo.save({
                 id: tx.id,
                 account,
@@ -233,11 +195,9 @@ export class MonzoSyncService {
                 settled: tx.settled ? new Date(tx.settled) : undefined,
             });
         }
-        console.log(`Saved ${transactions.length} transactions for account: ${account.id}`);
     }
-    
+
     private async findOrCreateMerchant(merchantData: any): Promise<MerchantEntity> {
-        // Try preload first
         let merchant = await this.merchantRepo.preload({
             id: merchantData.id,
             name: merchantData.name,
@@ -255,8 +215,7 @@ export class MonzoSyncService {
                 region: merchantData.address?.region || '',
             }
         });
-    
-        // if no pre-exising merchant try to create a new one
+
         if (!merchant) {
             const address = new MerchantAddressEntity();
             address.address = merchantData.address?.address || '';
@@ -266,11 +225,11 @@ export class MonzoSyncService {
             address.longitude = merchantData.address?.longitude || 0;
             address.postcode = merchantData.address?.postcode || '';
             address.region = merchantData.address?.region || '';
-    
+
             const safeCreatedDate = (merchantData.created && !isNaN(Date.parse(merchantData.created)))
-            ? new Date(merchantData.created)
-            : undefined;
-        
+                ? new Date(merchantData.created)
+                : undefined;
+
             merchant = this.merchantRepo.create({
                 id: merchantData.id,
                 name: merchantData.name,
@@ -280,7 +239,7 @@ export class MonzoSyncService {
                 created: safeCreatedDate,
                 address,
             });
-    
+
             await this.merchantRepo.save(merchant);
         }
         return merchant;

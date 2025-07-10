@@ -9,7 +9,7 @@ export interface MonzoTransaction {
     settled?: string;
     notes?: string;
 }
-  
+
 export interface MonzoMerchant {
     id: string;
     name: string;
@@ -18,7 +18,7 @@ export interface MonzoMerchant {
     emoji?: string;
     address?: MonzoMerchantAddress;
 }
-  
+
 export interface MonzoMerchantAddress {
     address: string;
     city: string;
@@ -28,6 +28,7 @@ export interface MonzoMerchantAddress {
     postcode: string;
     region: string;
 }
+
 export interface MonzoAccount {
     id: string;
     description: string;
@@ -38,4 +39,19 @@ export interface MonzoBalance {
     balance: number;
     currency: string;
     spend_today: number;
+}
+
+// Types and interfaces for SSE update events on monzo sync
+export type MonzoSyncTaskName = 'fullSync' | 'accounts' | 'transactions' | 'balances';
+export type MonzoSyncTaskStage = 'start' | 'progress' | 'completed';
+
+export interface MonzoSyncProgressUpdate {
+    taskName: MonzoSyncTaskName;
+    taskStage: MonzoSyncTaskStage;
+    accountId?: string;
+    fetchedTransactions?: number;
+}
+
+export interface MonzoSyncProgressUpdateEvent {
+    data: MonzoSyncProgressUpdate;
 }
