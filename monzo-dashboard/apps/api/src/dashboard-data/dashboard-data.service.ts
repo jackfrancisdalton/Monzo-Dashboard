@@ -13,6 +13,13 @@ export class DashboardDataService {
         private readonly monzoService: MonzoService
     ) {}
 
+
+    async isConfigured(): Promise<boolean> {
+        // For now we only implement monzo so only need to verify it is configured.
+        // In the future we may support multiple providers, so this could be expanded.
+        return this.monzoService.isConfigured();
+    }
+
     async getDashboardData(start: Date, end: Date): Promise<DashboardSummary> {
         const accounts = await this.monzoService.getAccounts();
 

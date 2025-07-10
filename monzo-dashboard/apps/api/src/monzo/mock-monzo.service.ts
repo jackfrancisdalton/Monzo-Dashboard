@@ -9,6 +9,11 @@ import { firstValueFrom, throwError } from 'rxjs';
 export class MockMonzoService implements MonzoService {
   constructor(private readonly http: HttpService) {}
 
+  async isConfigured(): Promise<boolean> {
+    // We don't actually do any oauth for the mock so it's always configured
+    return true;
+  }
+
   async getAccounts(): Promise<MonzoAccount[]> {
     return this.getRequest<MonzoAccount[]>(`/accounts`);
   }

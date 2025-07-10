@@ -37,7 +37,7 @@ import { MonzoSyncService } from './monzo-sync.service';
     },
   ],
   exports: [
-    MonzoService, 
+    MonzoService,
   ],
 })
 export class MonzoModule {}

@@ -19,6 +19,13 @@ export class RealMonzoService implements MonzoService {
         @InjectRepository(BalanceEntity) private readonly balanceRepo: Repository<BalanceEntity>,
     ) {}
 
+
+    async isConfigured(): Promise<boolean> {
+        // We consider the monzo app configured if we have tokens stored denoting that we have completed an oauth exchange
+        const accounts = await this.accountRepo.find();
+        return accounts.length > 0;
+    }
+
     async getAccounts(): Promise<MonzoAccount[]> {
         const accounts = await this.accountRepo.find({});
 
