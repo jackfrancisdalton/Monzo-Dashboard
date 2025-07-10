@@ -18,6 +18,7 @@ export class OAuthController {
   @Get(':provider/login')
   redirectToProvider(
     @Param('provider') provider: string,
+    @Query('redirect_uri') redirectUri: string,
     @Res() res: Response
   ) {
     const oAuthConfigs = buildOAuthProvidersConfig(this.configService);
@@ -27,24 +28,38 @@ export class OAuthController {
       throw new NotFoundException(`Provider "${provider}" is not configured.`);
     }
 
-    const state = randomBytes(16).toString('hex');
+    // Applications will set their redirect_URIs as the callback funtion. To control redirection on the UI
+    // We pass the rdirect specfied in the frontend as a state parameter, then use it in the callback, so that the frontend
+    // can control the terminating redirection of the oauth flow.
+    const statePayload = {
+      nonce: randomBytes(8).toString('hex'),
+      frontend_redirect_uri: redirectUri
+    };
+    const state = Buffer.from(JSON.stringify(statePayload)).toString('base64url');
 
-    let redirectUrl = `${providerConfig.authUrl}?client_id=${providerConfig.clientId}&redirect_uri=${encodeURIComponent(providerConfig.redirectUri)}&response_type=code&state=${state}`;
+    const queryParams = new URLSearchParams({
+      client_id: providerConfig.clientId,
+      redirect_uri: providerConfig.redirectUri,
+      response_type: 'code',
+      state: state,
+    });
+    let url = `${providerConfig.authUrl}?${queryParams.toString()}`;
 
     if (providerConfig.scopes.length > 0) {
       const scopeParam = encodeURIComponent(providerConfig.scopes.join(' '));
-      redirectUrl += `&scope=${scopeParam}`;
+      url += `&scope=${scopeParam}`;
     }
 
-    return res.redirect(redirectUrl);
+    return res.redirect(url);
   }
 
   @Get(':provider/callback')
   async handleCallback(
     @Param('provider') provider: string,
     @Query('code') code: string,
-    @Res() res: Response // convert to express response to enable redirect response handling
-  ) {    
+    @Query('state') state: string,
+    @Res() res: Response
+  ) {
     const oAuthConfigs = buildOAuthProvidersConfig(this.configService);
     const providerConfig = oAuthConfigs[provider];
 
@@ -52,8 +67,11 @@ export class OAuthController {
       throw new NotFoundException(`Provider "${provider}" is not configured.`);
     }
 
-    if (!providerConfig) {
-      throw new NotFoundException(`Provider "${provider}" not configured.`);
+    let stateData: { nonce: string; frontend_redirect_uri: string } = { nonce: '', frontend_redirect_uri: 'http://localhost:5173' };
+    try {
+      stateData = JSON.parse(Buffer.from(state, 'base64url').toString());
+    } catch (err) {
+      console.warn('Failed to parse state', err);
     }
 
     const response = await firstValueFrom(
@@ -70,13 +88,7 @@ export class OAuthController {
       )
     );
 
-    if (!response || !response.data) {
-      throw new Error(`Failed to retrieve token data from ${provider} API.`);
-    }
-
     const data = response.data;
-
-    console.log('Token scopes:', data?.scope);
 
     await this.tokenStorage.saveTokens({
       provider,
@@ -86,7 +98,7 @@ export class OAuthController {
       obtainedAt: new Date(),
     });
 
-    // TODO: replace with const
-    return res.redirect(`http://localhost:5173?connected=${provider}`);
+    // Redirects to to the original redirect URI provided by the frontend
+    return res.redirect(`${stateData.frontend_redirect_uri}`);
   }
 }

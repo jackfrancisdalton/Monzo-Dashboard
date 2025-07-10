@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, Sse } from '@nestjs/common';
 import { DashboardDataService } from './dashboard-data/dashboard-data.service';
 import { DashboardSummary } from '../../../packages/dashboard-types/src';
 import { DashboardQueryDto } from './dashboard-data/dto/dashboard-dtos';
@@ -23,19 +23,4 @@ export class AppController {
 
     return { isConfigured };
   }
-
-  // @Sse('sync')
-  // sync(): Observable<MessageEvent> {
-  //   return new Observable((subscriber) => {
-  //     this.syncService.initialFullFetch((progress) => {
-  //       subscriber.next({ data: progress });
-  //     })
-  //     .then(() => {
-  //       subscriber.complete();
-  //     })
-  //     .catch((err) => {
-  //       subscriber.error(err);
-  //     });
-  //   });
-  // }
 }

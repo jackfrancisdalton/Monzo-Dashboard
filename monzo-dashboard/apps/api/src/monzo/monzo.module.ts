@@ -10,6 +10,7 @@ import { BalanceEntity } from './entities/balance.entity';
 import { TransactionEntity } from './entities/transaction.entity';
 import { MerchantEntity } from './entities/merchant.entity';
 import { MonzoSyncService } from './monzo-sync.service';
+import { MonzoController } from './monzo.controller';
 
 @Module({
   imports: [
@@ -26,6 +27,9 @@ import { MonzoSyncService } from './monzo-sync.service';
       MerchantEntity,
     ]),
   ],
+  controllers: [
+    MonzoController
+  ],
   providers: [
     MonzoSyncService,
     {
@@ -33,7 +37,7 @@ import { MonzoSyncService } from './monzo-sync.service';
       useClass:
         process.env.NODE_ENV === 'production'
           ? RealMonzoService
-          : MockMonzoService,
+          : RealMonzoService, // temp for testing
     },
   ],
   exports: [

@@ -8,7 +8,7 @@ import { AccountEntity, BalanceEntity, MerchantAddressEntity, MerchantEntity, Tr
 
 type SyncEntity = 'accounts' | 'transactions';
 type SyncPhase = 'start' | 'progress' | 'done';
-type SyncStage = `${SyncEntity}:sync:${SyncPhase}`;
+type SyncStage = `${SyncEntity}:sync:${SyncPhase}` | 'completed';
 
 interface SyncProgress {
     stage: SyncStage;
@@ -81,10 +81,16 @@ export class MonzoSyncService {
             await this.syncAccountsAndBalances(headers);
             onProgress?.({ stage: 'accounts:sync:done' });
     
+            // Temp Code whilst testing
+            const now = new Date();
+            const fiveDaysAgo = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000);
+
             onProgress?.({ stage: 'transactions:sync:start' });
-            await this.syncTransactions(headers, undefined, onProgress);
+            await this.syncTransactions(headers, fiveDaysAgo, onProgress);
             onProgress?.({ stage: 'transactions:sync:done' });
-    
+
+
+            onProgress?.({ stage: 'completed' });
             this.logger.log('Full Monzo fetch complete.');
         } catch (error: any) {
             this.logger.error('Error during full Monzo fetch:', error.message);
