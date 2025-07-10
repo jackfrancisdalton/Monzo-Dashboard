@@ -46,9 +46,9 @@ export class RealMonzoService implements MonzoService {
         }
 
         return {
-            balance: latestBalance.balance,
+            balance: latestBalance.balance / 100,
             currency: latestBalance.currency,
-            spend_today: latestBalance.spend_today,
+            spend_today: latestBalance.spend_today / 100,
         };
     }
 
@@ -61,10 +61,12 @@ export class RealMonzoService implements MonzoService {
             relations: ['merchant'],
         });
 
+        console.log("Found transactions", txs.length, "for account", accountId, "between", start.toISOString(), "and", end.toISOString());
+
         return txs.map(tx => ({
             id: tx.id,
             accountId: tx.accountId,
-            amount: tx.amount,
+            amount: tx.amount / 100,
             currency: tx.currency,
             category: tx.category,
             merchant: tx.merchant ? {

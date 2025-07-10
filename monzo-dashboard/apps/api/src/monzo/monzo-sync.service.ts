@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Repository } from 'typeorm';
 import { firstValueFrom } from 'rxjs';
 import { TokenStorageService } from '../auth/token-storage.service';
 import { AccountEntity, BalanceEntity, MerchantAddressEntity, MerchantEntity, TransactionEntity } from './entities';
@@ -81,14 +81,9 @@ export class MonzoSyncService {
             await this.syncAccountsAndBalances(headers);
             onProgress?.({ stage: 'accounts:sync:done' });
     
-            // Temp Code whilst testing
-            const now = new Date();
-            const fiveDaysAgo = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000);
-
             onProgress?.({ stage: 'transactions:sync:start' });
-            await this.syncTransactions(headers, fiveDaysAgo, onProgress);
+            await this.syncTransactions(headers, undefined, onProgress);
             onProgress?.({ stage: 'transactions:sync:done' });
-
 
             onProgress?.({ stage: 'completed' });
             this.logger.log('Full Monzo fetch complete.');

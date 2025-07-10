@@ -73,7 +73,7 @@ function DashboardPage() {
 
         <CardWrapper title="Merchant Spending" className="col-span-2 row-span-2">
           <ResponsiveTreeMap
-            data={dashboardSummary?.spendingByMerchantTreeMap ?? { name: 'root', children: [] }}
+            data={dashboardSummary?.spendingByDescriptionTreeMap ?? { name: 'root', children: [] }}
             identity="name"
             value="value"
             innerPadding={3}
@@ -86,11 +86,11 @@ function DashboardPage() {
         </CardWrapper>
 
         <CardWrapper className="col-span-1 row-span-1">
-          <DisplayCard title="Total Spend" value={`£1234.55`} colorClass="text-green-600"></DisplayCard>
+          <DisplayCard title="Total Spend" value={dashboardSummary?.balance.balance ?? "N/A"} colorClass="text-green-600"></DisplayCard>
         </CardWrapper>
 
         <CardWrapper className="col-span-1 row-span-1">
-          <DisplayCard title="Target Spend" value={`£1820.00`} colorClass="text-red-600"></DisplayCard>
+          <DisplayCard title="Spend Today" value={dashboardSummary?.balance.spend_today ?? "N/A"} colorClass="text-red-600"></DisplayCard>
         </CardWrapper>
 
         <CardWrapper title="Top Items" className="col-span-2 row-span-1">

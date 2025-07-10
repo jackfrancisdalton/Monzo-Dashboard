@@ -28,12 +28,12 @@ export class DashboardDataService {
         }
 
         // TODO: clean up should be clear to TS from above that these cannot be null, but oh well.
-        const targetAccountId = accounts[0]?.id;
+        // TODO: clean up, currently setting this while default account choice not supported as this is my main account 
+        const targetAccountId = accounts[1]?.id;
         if(!targetAccountId) {
             throw new Error("No valid account ID found. Please ensure your Monzo account is properly linked.");
         }
 
-        // Default to using the first account (TODO: allow this to be configurable in the future)
         const [balance, transactions] = await Promise.all([
             this.monzoService.getBalance(targetAccountId),
             this.monzoService.getTransactions(targetAccountId, start, end),
@@ -44,7 +44,7 @@ export class DashboardDataService {
             balance,
             spendingOverTimeLineData: this.getSpendingOverTimeLineData(transactions),
             spendingByCategoryPieData: this.getSpendingByCategoryPieChart(transactions),
-            spendingByMerchantTreeMap: this.getTreeMapByMerchantData(transactions),
+            spendingByDescriptionTreeMap: this.getTreeMapByDescriptionData(transactions),
             topTransactions: this.getTopTransactions(transactions),
             totalSpending: transactions.reduce((acc, transaction) => {
                 return acc + (transaction.amount < 0 ? Math.abs(transaction.amount) : 0);
@@ -62,13 +62,13 @@ export class DashboardDataService {
         return lineData;
     }
 
-    private getTreeMapByMerchantData(transactions: MonzoTransaction[]): TreemapData {
-        const treeMapByMerchant = computeTreeMapData(
+    private getTreeMapByDescriptionData(transactions: MonzoTransaction[]): TreemapData {
+        const treeMapByDescription = computeTreeMapData(
             transactions,
-            (tx) => tx.merchant?.name ?? "unknown",
+            (tx) => tx.description ?? "unknown",
             (tx) => Math.abs(tx.amount)
         );
-        return treeMapByMerchant;
+        return treeMapByDescription;
     }
 
     private getSpendingByCategoryPieChart(transactions: MonzoTransaction[]): PieDatum[] {

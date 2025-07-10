@@ -33,7 +33,7 @@ export interface DashboardSummary {
     balance: MonzoBalance;
     spendingOverTimeLineData: CumulativeLineDatum[];
     spendingByCategoryPieData: PieDatum[];
-    spendingByMerchantTreeMap: TreemapData;
+    spendingByDescriptionTreeMap: TreemapData;
     topTransactions: {
         description: string;
         amount: number;
