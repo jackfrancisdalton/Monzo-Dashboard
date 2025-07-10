@@ -82,14 +82,17 @@ export class MonzoSyncService {
         onProgress?: (p: MonzoSyncProgressUpdate) => void
     ) {
         try {
-            onProgress?.({ taskName: 'accounts', taskStage: 'start' });
-            onProgress?.({ taskName: 'balances', taskStage: 'start' });
+            onProgress?.({ taskName: 'accounts', taskStage: 'start'});
+            onProgress?.({ taskName: 'balances', taskStage: 'start'});
 
             const accountResponse = await firstValueFrom(
                 this.http.get(`${this.MONZO_API}/accounts`, { headers })
             );
 
-            for (const account of accountResponse.data.accounts) {
+            const accounts = accountResponse.data.accounts;
+            let balanceCount = 0;
+
+            for (const account of accounts) {
                 await this.accountRepo.save({
                     id: account.id,
                     description: account.description,
@@ -109,11 +112,12 @@ export class MonzoSyncService {
                     spend_today: balance.spend_today,
                     currency: balance.currency,
                 });
+                balanceCount++;
                 onProgress?.({ taskName: 'balances', taskStage: 'progress' });
             }
 
-            onProgress?.({ taskName: 'accounts', taskStage: 'completed' });
-            onProgress?.({ taskName: 'balances', taskStage: 'completed' });
+            onProgress?.({ taskName: 'accounts', taskStage: 'completed', syncedCount: accounts.length });
+            onProgress?.({ taskName: 'balances', taskStage: 'completed', syncedCount: balanceCount });
         } catch (err: any) {
             const errormessage = {
                 message: 'Failed to fetch accounts and balances from Monzo API',
@@ -130,11 +134,13 @@ export class MonzoSyncService {
     ) {
         const accounts = await this.accountRepo.find();
         onProgress?.({ taskName: 'transactions', taskStage: 'start' });
+        let totalFetchedForAllAccounts = 0;
 
         for (const account of accounts) {
-            await this.syncTransactionsForAccount(account, headers, since, onProgress);
+            const txFetchedCount = await this.syncTransactionsForAccount(account, headers, since, onProgress);
+            totalFetchedForAllAccounts += txFetchedCount
         }
-        onProgress?.({ taskName: 'transactions', taskStage: 'completed' });
+        onProgress?.({ taskName: 'transactions', taskStage: 'completed', syncedCount: totalFetchedForAllAccounts });
     }
 
     private async syncTransactionsForAccount(
@@ -142,7 +148,7 @@ export class MonzoSyncService {
         headers: { Authorization: string },
         since?: Date,
         onProgress?: (p: MonzoSyncProgressUpdate) => void
-    ) {
+    ): Promise<number> {
         let nextSince = since ? since.toISOString() : undefined;
         let keepGoing = true;
         let totalFetched = 0;
@@ -159,6 +165,8 @@ export class MonzoSyncService {
                 nextSince = transactions[transactions.length - 1].created;
             }
         }
+
+        return totalFetched;
     }
 
     private async fetchTransactionsPage(

@@ -48,8 +48,7 @@ export type MonzoSyncTaskStage = 'start' | 'progress' | 'completed';
 export interface MonzoSyncProgressUpdate {
     taskName: MonzoSyncTaskName;
     taskStage: MonzoSyncTaskStage;
-    accountId?: string;
-    fetchedTransactions?: number;
+    syncedCount?: number;
 }
 
 export interface MonzoSyncProgressUpdateEvent {

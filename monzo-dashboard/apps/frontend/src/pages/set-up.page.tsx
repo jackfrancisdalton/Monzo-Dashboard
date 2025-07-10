@@ -27,20 +27,34 @@ const SetUpPage: React.FC = () => {
         eventSource.onmessage = (event) => {
             const data: MonzoSyncProgressUpdate = JSON.parse(event.data);
 
+            console.table(data);
+
             setSyncTasks((prevTasks) => {
                 const taskIndex = prevTasks.findIndex((task) => task.taskName === data.taskName);
+
                 if (taskIndex !== -1) {
                     const updatedTasks = [...prevTasks];
-                    updatedTasks[taskIndex] = { ...updatedTasks[taskIndex], taskStage: data.taskStage };
+
+                    updatedTasks[taskIndex] = { 
+                        ...updatedTasks[taskIndex], 
+                        taskStage: data.taskStage,
+                        syncedCount: data.syncedCount
+                    };
+
                     return updatedTasks;
                 } else {
-                    return [...prevTasks, { taskName: data.taskName, taskStage: data.taskStage }];
+                    return [...prevTasks, { 
+                        taskName: data.taskName, 
+                        taskStage: data.taskStage,
+                        syncedCount: data.syncedCount
+                    }];
                 }
             });
 
+            // When this message arrives we've recieved the complete sync and can navigate to dashboard
             if (data.taskStage === 'completed' && data.taskName === 'fullSync') {
                 eventSource.close();
-                setTimeout(() => navigate('/dashboard'), 3000);
+                setTimeout(() => navigate('/dashboard'), 5000);
             }
         };
 
@@ -91,6 +105,11 @@ const SetUpPage: React.FC = () => {
                                 <Loader2 className="w-12 h-12 text-white animate-spin" />
                             )}
                             <p className="mt-3 text-white font-medium text-center">{task.taskName}</p>
+                            {task.syncedCount !== undefined && (
+                                <p className="mt-1 text-white text-sm text-center">
+                                    Synced: {task.syncedCount}
+                                </p>
+                            )}
                         </div>
                     );
                 })}
