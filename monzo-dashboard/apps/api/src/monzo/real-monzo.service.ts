@@ -46,7 +46,7 @@ export class RealMonzoService implements MonzoService {
         }
 
         return {
-            balance: latestBalance.balance / 100,
+            balance: latestBalance.balance / 100, // TODO: add typing for major/minor currency to control moving forwards
             currency: latestBalance.currency,
             spend_today: latestBalance.spend_today / 100,
         };
