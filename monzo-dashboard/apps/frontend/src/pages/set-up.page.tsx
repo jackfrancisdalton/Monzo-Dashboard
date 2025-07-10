@@ -10,18 +10,22 @@ const SetUpPage: React.FC = () => {
 
     useEffect(() => {
         const url = new URL(window.location.href);
+        // TODO: replace with CONSTS
         if (url.searchParams.get('oauth') === 'success') {
             startSync();
         }
     }, []);
 
     const startAuth = () => {
+
+        // TODO: replace with CONSTS
         window.location.href = `http://localhost:3000/auth/monzo/login?redirect_uri=${encodeURIComponent(
             'http://localhost:5173/setup?oauth=success'
         )}`;
     };
 
     const startSync = () => {
+        // TODO: replace with CONSTS
         const eventSource = new EventSource('http://localhost:3000/monzo/sync');
 
         eventSource.onmessage = (event) => {
@@ -51,6 +55,7 @@ const SetUpPage: React.FC = () => {
                 }
             });
 
+            // TODO: replace with CONSTS
             // When this message arrives we've recieved the complete sync and can navigate to dashboard
             if (data.taskStage === 'completed' && data.taskName === 'fullSync') {
                 eventSource.close();
