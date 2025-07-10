@@ -18,7 +18,7 @@ export class MerchantEntity {
   @Column({ nullable: true })
   logo!: string;
 
-  @Column()
+  @Column({ nullable: true }) // Monzo API sometimes returns NA:NA:NA for created, so we have to suppot null created dates
   created!: Date;
 
   @CreateDateColumn()

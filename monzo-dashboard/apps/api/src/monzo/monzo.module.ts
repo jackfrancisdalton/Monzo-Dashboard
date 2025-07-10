@@ -38,8 +38,6 @@ import { MonzoSyncService } from './monzo-sync.service';
   ],
   exports: [
     MonzoService, 
-    // TODO: remove included for testing purposes
-    MonzoSyncService 
   ],
 })
 export class MonzoModule {}

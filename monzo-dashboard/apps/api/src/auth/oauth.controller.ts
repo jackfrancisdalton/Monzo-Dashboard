@@ -29,9 +29,14 @@ export class OAuthController {
 
     const state = randomBytes(16).toString('hex');
 
-    return res.redirect(
-      `${providerConfig.authUrl}?client_id=${providerConfig.clientId}&redirect_uri=${encodeURIComponent(providerConfig.redirectUri)}&response_type=code&state=${state}`
-    );
+    let redirectUrl = `${providerConfig.authUrl}?client_id=${providerConfig.clientId}&redirect_uri=${encodeURIComponent(providerConfig.redirectUri)}&response_type=code&state=${state}`;
+
+    if (providerConfig.scopes.length > 0) {
+      const scopeParam = encodeURIComponent(providerConfig.scopes.join(' '));
+      redirectUrl += `&scope=${scopeParam}`;
+    }
+
+    return res.redirect(redirectUrl);
   }
 
   @Get(':provider/callback')
@@ -39,8 +44,7 @@ export class OAuthController {
     @Param('provider') provider: string,
     @Query('code') code: string,
     @Res() res: Response // convert to express response to enable redirect response handling
-  ) {
-    console.log('CALLED')
+  ) {    
     const oAuthConfigs = buildOAuthProvidersConfig(this.configService);
     const providerConfig = oAuthConfigs[provider];
 
@@ -71,6 +75,9 @@ export class OAuthController {
     }
 
     const data = response.data;
+
+    console.log('Token scopes:', data?.scope);
+
     await this.tokenStorage.saveTokens({
       provider,
       accessToken: data.access_token,
@@ -80,6 +87,6 @@ export class OAuthController {
     });
 
     // TODO: replace with const
-    return res.redirect(`http://localhost:5173/dashboard?connected=${provider}`);
+    return res.redirect(`http://localhost:5173?connected=${provider}`);
   }
 }

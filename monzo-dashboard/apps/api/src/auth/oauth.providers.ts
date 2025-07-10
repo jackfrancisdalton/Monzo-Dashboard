@@ -6,6 +6,7 @@ export interface OAuthProviderConfig {
     clientId: string;
     clientSecret: string;
     redirectUri: string;
+    scopes: string[];
 }
 
 export function buildOAuthProvidersConfig(configService: ConfigService): Record<string, OAuthProviderConfig> {
@@ -16,6 +17,7 @@ export function buildOAuthProvidersConfig(configService: ConfigService): Record<
         clientId: configService.get<string>('MONZO_CLIENT_ID', ''),
         clientSecret: configService.get<string>('MONZO_CLIENT_SECRET', ''),
         redirectUri: configService.get<string>('MONZO_REDIRECT_URI', ''),
+        scopes: ['accounts', 'balance', 'transactions:read']
       },
       // more providers...
     };

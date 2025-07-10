@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn, RelationId } from 'typeorm';
 import { AccountEntity } from './account.entity';
 import { MerchantEntity } from './merchant.entity';
 
@@ -29,12 +29,10 @@ export class TransactionEntity {
   @Column()
   category!: string;
 
-  @Column({ nullable: true })
-  merchantId?: string;
-
+  // TODO: determine if things like bank transfers are null merchant, leaving as nullabel for now
   @ManyToOne(() => MerchantEntity, { nullable: true })
   @JoinColumn({ name: 'merchantId' })
-  merchant!: MerchantEntity;
+  merchant?: MerchantEntity;
 
   @Column({ type: 'jsonb', nullable: true })
   metadata!: Record<string, any>;

@@ -4,13 +4,19 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { OauthTokenEntity } from "./entities/oauth-token.entity";
 import { Repository } from "typeorm";
 import { TokenCryptoService } from "./token-crypto.service";
+import { buildOAuthProvidersConfig } from "./oauth.providers";
+import { ConfigService } from "@nestjs/config";
+import { HttpService } from "@nestjs/axios";
+import { firstValueFrom } from "rxjs";
 
 @Injectable()
 export class TokenStorageService {
 
     constructor(
         @InjectRepository(OauthTokenEntity) private tokenRepo: Repository<OauthTokenEntity>,
-        private readonly tokenCryptoService: TokenCryptoService
+        private readonly tokenCryptoService: TokenCryptoService,
+        private readonly configService: ConfigService,
+        private readonly httpService: HttpService
     ) {}
     
     async saveTokens(tokens: OAuthTokensDTO): Promise<void> {
@@ -22,7 +28,6 @@ export class TokenStorageService {
             obtainedAt: tokens.obtainedAt,
         });
 
-        console.log('stored', tokenEntity)
         await this.tokenRepo.save(tokenEntity);
     }
 
@@ -40,5 +45,45 @@ export class TokenStorageService {
             obtainedAt: tokenEntity.obtainedAt,
             provider: tokenEntity.provider,
         };
+    }
+
+    async refreshTokens(provider: string): Promise<OAuthTokensDTO> {
+        const existing = await this.getTokens(provider);
+        if (!existing?.refreshToken) {
+            throw new Error(`No refresh token stored for provider ${provider}`);
+        }
+
+        // You'll probably want to generalize this by putting your OAuth config elsewhere
+        const oAuthConfigs = buildOAuthProvidersConfig(this.configService);
+        const providerConfig = oAuthConfigs[provider];
+        if (!providerConfig) {
+            throw new Error(`No OAuth config found for provider ${provider}`);
+        }
+
+        const response = await firstValueFrom(
+            this.httpService.post(
+                providerConfig.tokenUrl,
+                new URLSearchParams({
+                    grant_type: 'refresh_token',
+                    client_id: providerConfig.clientId,
+                    client_secret: providerConfig.clientSecret,
+                    refresh_token: existing.refreshToken,
+                }),
+                { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+            )
+        );
+
+        const data = response.data;
+
+        const updatedTokens: OAuthTokensDTO = {
+            provider,
+            accessToken: data.access_token,
+            refreshToken: data.refresh_token ?? existing.refreshToken,
+            expiresIn: data.expires_in,
+            obtainedAt: new Date(),
+        };
+
+        await this.saveTokens(updatedTokens);
+        return updatedTokens;
     }
 }
