@@ -1,8 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { MonzoService } from "./monzo-service.interface";
-import { HttpService } from '@nestjs/axios';
-import { TokenStorageService } from "src/auth/token-storage.service";
-import { firstValueFrom } from "rxjs";
 import { MonzoAccount, MonzoBalance, MonzoTransaction } from "@repo/monzo-types";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Between, Repository } from "typeorm";

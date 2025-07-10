@@ -20,7 +20,7 @@ function DashboardPage() {
 
   const { dashboardSummary } = useMonzoData(dateRange);
 
-
+  // TODO: review if geo card is worth while, likely not that useful in retrospect, remove json too if case
   // useEffect(() => {
   //   fetch('/geo/world.json')
   //     .then((res) => res.json())
@@ -29,6 +29,8 @@ function DashboardPage() {
 
   const generateHeader = () => {
     return (
+      // Add an account picker here so that user can select the account they are viewing
+      // Add in small cards for todays spend, and current balance
       <TimeRangePicker
         onChange={(dateRange) => { setDateRange(dateRange); }}
       ></TimeRangePicker>
@@ -37,11 +39,6 @@ function DashboardPage() {
 
   return (
     <AppLayout headerComponent={generateHeader()}>
-      <button onClick={() => {
-        window.location.href = 'http://localhost:3000/auth/monzo/login';
-      }}>
-        Connect Monzo
-      </button>
       <CardLayout>
         <CardWrapper title="Spending over time" className="col-span-3 row-span-2">
           <ResponsiveLine
@@ -85,10 +82,12 @@ function DashboardPage() {
           />
         </CardWrapper>
 
+        {/* TODO: add card for known (ignore unknown) biggest spends by merchant */}
+
+        {/* Potentially remove these or move them to header as they are confusing as they are not time relevant*/}
         <CardWrapper className="col-span-1 row-span-1">
           <DisplayCard title="Total Spend" value={dashboardSummary?.balance.balance ?? "N/A"} colorClass="text-green-600"></DisplayCard>
         </CardWrapper>
-
         <CardWrapper className="col-span-1 row-span-1">
           <DisplayCard title="Spend Today" value={dashboardSummary?.balance.spend_today ?? "N/A"} colorClass="text-red-600"></DisplayCard>
         </CardWrapper>
