@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { firstValueFrom } from 'rxjs';
 import { TokenStorageService } from '../auth/token-storage.service';
 import { AccountEntity, BalanceEntity, MerchantAddressEntity, MerchantEntity, TransactionEntity } from './entities';
-import { MonzoSyncProgressUpdate } from '@repo/monzo-types';
+import { MonzoAccount, MonzoSyncProgressUpdate } from '@repo/monzo-types';
 
 // TODO: clean up general logging approach, errorhandling, progress reporting and logging content
 @Injectable()
@@ -60,6 +60,7 @@ export class MonzoSyncService {
             await this.syncAccountsAndBalances(headers, onProgress);
             await this.syncTransactions(headers, undefined, onProgress);
         } catch (error: any) {
+            console.log(`Failed to complete full Monzo fetch: ${error}`)
             throw new Error(`Failed to complete full Monzo fetch: ${error.message}`);
         }
     }
@@ -123,7 +124,7 @@ export class MonzoSyncService {
                 message: 'Failed to fetch accounts and balances from Monzo API',
                 details: err?.response?.data || err.message || 'Unknown error',
             };
-            this.logger.error('Failed to fetch accounts', errormessage);
+            console.log('Failed to fetch accounts', errormessage);
         }
     }
 
@@ -149,81 +150,83 @@ export class MonzoSyncService {
         since?: Date,
         onProgress?: (p: MonzoSyncProgressUpdate) => void
     ): Promise<number> {
-        let nextSince = since ? since.toISOString() : undefined;
-        let keepGoing = true;
+        const merchantCache = new Map<string, MerchantEntity>();
+    
+        // Starting date if provided, otherwise use account creation date
+        let cursor = since ? new Date(since) : new Date(account.created);
+        const now = new Date();
+        const timeWindows: { start: string, end: string }[] = [];
+
+        while (cursor < now) {
+            const start = cursor.toISOString();
+            cursor.setMonth(cursor.getMonth() + 1);
+            const end = (cursor < now ? cursor : now).toISOString();
+            timeWindows.push({ start, end });
+        }
+    
+        const concurrency = 3;
+        let running: Promise<void>[] = [];
         let totalFetched = 0;
-
-        while (keepGoing) {
-            const transactions = await this.fetchTransactionsPage(account, headers, nextSince);
-            await this.saveTransactionsBatch(transactions, account);
-            totalFetched += transactions.length;
-            onProgress?.({ taskName: 'transactions', taskStage: 'progress' });
-
-            if (transactions.length < 200) {
-                keepGoing = false;
-            } else {
-                nextSince = transactions[transactions.length - 1].created;
+    
+        // Generate a promise for each time window to fetch transactions
+        for (const window of timeWindows) {
+            const promise = this.fetchTransactionsPage(account, headers, window.start, window.end)
+                .then(async (transactions) => {
+                    if (!transactions.length) return;
+    
+                    // resolve merchants immediately
+                    for (const tx of transactions) {
+                        if (tx.merchant && !merchantCache.has(tx.merchant.id)) {
+                            const merchant = await this.findOrCreateMerchantCached(tx.merchant, merchantCache);
+                            merchantCache.set(tx.merchant.id, merchant);
+                        }
+                    }
+    
+                    // bulk insert immediately
+                    const entities = transactions.map(tx => ({
+                        id: tx.id,
+                        account,
+                        amount: tx.amount,
+                        currency: tx.currency,
+                        description: tx.description,
+                        created: new Date(tx.created),
+                        category: tx.category,
+                        merchant: tx.merchant ? merchantCache.get(tx.merchant.id) : undefined,
+                        metadata: tx.metadata || {},
+                        notes: tx.notes,
+                        is_load: tx.is_load,
+                        settled: tx.settled ? new Date(tx.settled) : undefined,
+                    }));
+    
+                    console.log(`Fetched ${entities.length} transactions for account ${account.id} from ${window.start} to ${window.end}`);
+                    await this.transactionRepo.save(entities);
+                    totalFetched += entities.length;
+    
+                    onProgress?.({ taskName: 'transactions', taskStage: 'progress', syncedCount: totalFetched });
+                });
+    
+            running.push(promise);
+    
+            if (running.length >= concurrency) {
+                await Promise.race(running);
+                running = running.filter(p => !p['settled']); // keep unfinished
             }
         }
-
+    
+        // Wait for all remaining promises to finish then return
+        await Promise.all(running);
         return totalFetched;
     }
 
-    private async fetchTransactionsPage(
-        account: AccountEntity,
-        headers: { Authorization: string },
-        since?: string
-    ): Promise<any[]> {
-        let url = `${this.MONZO_API}/transactions?expand[]=merchant&account_id=${account.id}&limit=200`;
-
-        if (since) {
-            url += `&since=${since}`;
+    private async findOrCreateMerchantCached(
+        merchantData: any,
+        cache: Map<string, MerchantEntity>
+    ): Promise<MerchantEntity> {
+        if (cache.has(merchantData.id)) {
+            return cache.get(merchantData.id)!;
         }
-
-        const response = await firstValueFrom(this.http.get(url, { headers }));
-        return response.data.transactions;
-    }
-
-    private async saveTransactionsBatch(transactions: any[], account: AccountEntity) {
-        for (const tx of transactions) {
-            const merchant = tx.merchant ? await this.findOrCreateMerchant(tx.merchant) : undefined;
-
-            await this.transactionRepo.save({
-                id: tx.id,
-                account,
-                amount: tx.amount,
-                currency: tx.currency,
-                description: tx.description,
-                created: new Date(tx.created),
-                category: tx.category,
-                merchant,
-                metadata: tx.metadata || {},
-                notes: tx.notes,
-                is_load: tx.is_load,
-                settled: tx.settled ? new Date(tx.settled) : undefined,
-            });
-        }
-    }
-
-    private async findOrCreateMerchant(merchantData: any): Promise<MerchantEntity> {
-        let merchant = await this.merchantRepo.preload({
-            id: merchantData.id,
-            name: merchantData.name,
-            category: merchantData.category,
-            emoji: merchantData.emoji,
-            logo: merchantData.logo,
-            created: new Date(merchantData.created),
-            address: {
-                address: merchantData.address?.address || '',
-                city: merchantData.address?.city || '',
-                country: merchantData.address?.country || '',
-                latitude: merchantData.address?.latitude || 0,
-                longitude: merchantData.address?.longitude || 0,
-                postcode: merchantData.address?.postcode || '',
-                region: merchantData.address?.region || '',
-            }
-        });
-
+    
+        let merchant = await this.merchantRepo.findOne({ where: { id: merchantData.id } });
         if (!merchant) {
             const address = new MerchantAddressEntity();
             address.address = merchantData.address?.address || '';
@@ -233,11 +236,11 @@ export class MonzoSyncService {
             address.longitude = merchantData.address?.longitude || 0;
             address.postcode = merchantData.address?.postcode || '';
             address.region = merchantData.address?.region || '';
-
+    
             const safeCreatedDate = (merchantData.created && !isNaN(Date.parse(merchantData.created)))
                 ? new Date(merchantData.created)
                 : undefined;
-
+    
             merchant = this.merchantRepo.create({
                 id: merchantData.id,
                 name: merchantData.name,
@@ -247,9 +250,29 @@ export class MonzoSyncService {
                 created: safeCreatedDate,
                 address,
             });
-
+    
             await this.merchantRepo.save(merchant);
         }
+        cache.set(merchantData.id, merchant);
         return merchant;
+    }
+    
+    private async fetchTransactionsPage(
+        account: AccountEntity,
+        headers: { Authorization: string },
+        since?: string,
+        before?: string
+    ): Promise<any[]> {
+        let url = `${this.MONZO_API}/transactions?expand[]=merchant&account_id=${account.id}&limit=200`;
+        if (since) url += `&since=${since}`;
+        if (before) url += `&before=${before}`;
+    
+        try {
+            const response = await firstValueFrom(this.http.get(url, { headers }));
+            return response.data.transactions;
+        } catch (error: any) {
+            console.log('Failed to fetch transaction page', error.response?.data || error.message);
+            throw new Error(`Failed to fetch transaction page: ${error.message}`);
+        }
     }
 }

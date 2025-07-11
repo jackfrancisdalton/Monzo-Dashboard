@@ -11,7 +11,7 @@ import { ResponsiveTreeMap } from "@nivo/treemap";
 import { ResponsivePie } from "@nivo/pie";
 
 function DashboardPage() {
-  const [dateRange, setDateRange] = useState<{ start: Date, end: Date }>(() => {
+  const [dateRange, setDateRange] = useState<{ start: Date; end: Date }>(() => {
     const today = new Date();
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(today.getDate() - 7);
@@ -20,86 +20,147 @@ function DashboardPage() {
 
   const { dashboardSummary } = useMonzoData(dateRange);
 
-  // TODO: review if geo card is worth while, likely not that useful in retrospect, remove json too if case
-  // useEffect(() => {
-  //   fetch('/geo/world.json')
-  //     .then((res) => res.json())
-  //     .then((data) => setFeatures(data.features));
-  // }, []);
-
   const generateHeader = () => {
     return (
-      // Add an account picker here so that user can select the account they are viewing
-      // Add in small cards for todays spend, and current balance
       <TimeRangePicker
-        onChange={(dateRange) => { setDateRange(dateRange); }}
-      ></TimeRangePicker>
+        onChange={(dateRange) => {
+          setDateRange(dateRange);
+        }}
+      />
     );
   };
 
   return (
     <AppLayout headerComponent={generateHeader()}>
+      {/* Display Cards */}
       <CardLayout>
-        <CardWrapper title="Spending over time" className="col-span-3 row-span-2">
+        <CardWrapper title="Spending over time" className="col-span-4 row-span-2">
           <ResponsiveLine
-            data={dashboardSummary?.spendingOverTimeLineData ?? []}
+            data={dashboardSummary?.creditAndDebitOverTimeLineData ?? []}
             margin={{ top: 20, right: 20, bottom: 50, left: 50 }}
-            xScale={{ type: 'point' }}
-            yScale={{ type: 'linear' }}
+            xScale={{
+              type: "time",
+              format: "%Y-%m-%dT%H:%M:%S.%LZ",
+              precision: "day",
+            }}
+            xFormat="time:%d/%m/%Y"
+            yScale={{ type: "linear" }}
+            axisBottom={{
+              format: "%d/%m/%Y",
+              tickValues: "every 2 days",
+            }}
           />
         </CardWrapper>
 
-        <CardWrapper title="Spending by category" className="col-span-1 row-span-2">
+        <CardWrapper className="col-span-2 row-span-1">
+          <DisplayCard
+            title="Total In"
+            value={`£${dashboardSummary?.totalCredit ?? 0}`}
+            colorClass="text-green-600"
+          />
+        </CardWrapper>
+        <CardWrapper className="col-span-2 row-span-1">
+          <DisplayCard
+            title="Total Out"
+            value={`£${dashboardSummary?.totalDebit ?? 0}`}
+            colorClass="text-red-600"
+          />
+        </CardWrapper>
+
+        {/* Pie Diagrams */}
+        <CardWrapper title="Credit by category" className="col-span-2 row-span-2">
           <ResponsivePie
-            data={dashboardSummary?.spendingByCategoryPieData ?? []}
+            data={dashboardSummary?.creditsByCategoryPieData ?? []}
             margin={{ top: 20, right: 40, bottom: 60, left: 40 }}
             innerRadius={0.5}
             padAngle={0.7}
             cornerRadius={3}
-            colors={{ scheme: 'nivo' }}
+            colors={{ scheme: "nivo" }}
             borderWidth={1}
-            borderColor={{ from: 'color', modifiers: [['darker', 0.2]] }}
+            borderColor={{ from: "color", modifiers: [["darker", 0.2]] }}
             arcLinkLabelsSkipAngle={10}
             arcLinkLabelsTextColor="#333333"
             arcLinkLabelsThickness={2}
-            arcLinkLabelsColor={{ from: 'color' }}
+            arcLinkLabelsColor={{ from: "color" }}
             arcLabelsSkipAngle={10}
-            arcLabelsTextColor={{ from: 'color', modifiers: [['darker', 2]] }}
+            arcLabelsTextColor={{ from: "color", modifiers: [["darker", 2]] }}
+          />
+        </CardWrapper>
+        <CardWrapper title="Debit by category" className="col-span-2 row-span-2">
+          <ResponsivePie
+            data={dashboardSummary?.debitsByCategoryPieData ?? []}
+            margin={{ top: 20, right: 40, bottom: 60, left: 40 }}
+            innerRadius={0.5}
+            padAngle={0.7}
+            cornerRadius={3}
+            colors={{ scheme: "nivo" }}
+            borderWidth={1}
+            borderColor={{ from: "color", modifiers: [["darker", 0.2]] }}
+            arcLinkLabelsSkipAngle={10}
+            arcLinkLabelsTextColor="#333333"
+            arcLinkLabelsThickness={2}
+            arcLinkLabelsColor={{ from: "color" }}
+            arcLabelsSkipAngle={10}
+            arcLabelsTextColor={{ from: "color", modifiers: [["darker", 2]] }}
           />
         </CardWrapper>
 
-        <CardWrapper title="Merchant Spending" className="col-span-2 row-span-2">
+        {/* Tree Diagrams */}
+        <CardWrapper title="Credits Tree" className="col-span-2 row-span-2">
           <ResponsiveTreeMap
-            data={dashboardSummary?.spendingByDescriptionTreeMap ?? { name: 'root', children: [] }}
+            data={
+              dashboardSummary?.creditsByDescriptionTreeMap ?? {
+                name: "root",
+                children: [],
+              }
+            }
             identity="name"
             value="value"
             innerPadding={3}
             outerPadding={3}
             labelSkipSize={12}
             label={(node) => `${node.id} (£${node.value.toFixed(0)})`}
-            colors={{ scheme: 'nivo' }}
-            borderColor={{ from: 'color', modifiers: [['darker', 0.3]] }}
+            colors={{ scheme: "nivo" }}
+            borderColor={{ from: "color", modifiers: [["darker", 0.3]] }}
+          />
+        </CardWrapper>
+        <CardWrapper title="Debits Tree" className="col-span-2 row-span-2">
+          <ResponsiveTreeMap
+            data={
+              dashboardSummary?.debitsByDescriptionTreeMap ?? {
+                name: "root",
+                children: [],
+              }
+            }
+            identity="name"
+            value="value"
+            innerPadding={3}
+            outerPadding={3}
+            labelSkipSize={12}
+            label={(node) => `${node.id} (£${node.value.toFixed(0)})`}
+            colors={{ scheme: "nivo" }}
+            borderColor={{ from: "color", modifiers: [["darker", 0.3]] }}
           />
         </CardWrapper>
 
-        {/* TODO: add card for known (ignore unknown) biggest spends by merchant */}
-
-        {/* Potentially remove these or move them to header as they are confusing as they are not time relevant*/}
-        <CardWrapper className="col-span-1 row-span-1">
-          <DisplayCard title="Total Spend" value={dashboardSummary?.balance.balance ?? "N/A"} colorClass="text-green-600"></DisplayCard>
-        </CardWrapper>
-        <CardWrapper className="col-span-1 row-span-1">
-          <DisplayCard title="Spend Today" value={dashboardSummary?.balance.spend_today ?? "N/A"} colorClass="text-red-600"></DisplayCard>
-        </CardWrapper>
-
-        <CardWrapper title="Top Items" className="col-span-2 row-span-1">
+        {/* Top Entity Cards */}
+        <CardWrapper title="Top Credits" className="col-span-2 row-span-1">
           <TopEntitiesCard
-            items={dashboardSummary?.topTransactions ?? []}
-            getLabel={(tx) => tx.merchantName ?? tx.description}
-            getValue={(tx) => new Date(tx.created).toLocaleDateString()}
-            getPercent={(tx) => (Math.abs(tx.amount) / (dashboardSummary?.totalSpending ?? 1)) * 100}
+            items={dashboardSummary?.topCredits ?? []}
+            getLabel={(tx) => tx.label}
+            getValue={(tx) => `£${tx.amount}`}
+            getDate={(tx) => new Date(tx.date)}
           />
         </CardWrapper>
+        <CardWrapper title="Top Debits" className="col-span-2 row-span-1">
+          <TopEntitiesCard
+            items={dashboardSummary?.topDebits ?? []}
+            getLabel={(tx) => tx.label}
+            getValue={(tx) => `£${tx.amount}`}
+            getDate={(tx) => new Date(tx.date)}
+          />
+        </CardWrapper>
+
       </CardLayout>
     </AppLayout>
   );

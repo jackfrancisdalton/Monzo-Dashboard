@@ -1,6 +1,6 @@
 interface DisplayCardProps {
   title: string
-  value: string | number
+  value: string
   colorClass?: string // tailwind text color
 }
 

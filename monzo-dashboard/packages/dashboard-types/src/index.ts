@@ -22,23 +22,29 @@ export interface TreemapData {
 }
 
 export interface TopTransactionsDatum {
-    description: string;
+    label: string;
     amount: number;
-    created: string;
-    merchantName?: string;
+    date: Date;
 }
 
 export interface DashboardSummary {
     accounts: MonzoAccount[];
     balance: MonzoBalance;
-    spendingOverTimeLineData: CumulativeLineDatum[];
-    spendingByCategoryPieData: PieDatum[];
-    spendingByDescriptionTreeMap: TreemapData;
-    topTransactions: {
-        description: string;
-        amount: number;
-        created: string;
-        merchantName?: string;
-    }[];
-    totalSpending: number;
+    totalCredit: number;
+    totalDebit: number;
+
+    // Line Charts
+    creditAndDebitOverTimeLineData: CumulativeLineDatum[];
+
+    // Pie Charts
+    creditsByCategoryPieData: PieDatum[];
+    debitsByCategoryPieData: PieDatum[];
+
+    // Tree Charts
+    creditsByDescriptionTreeMap: TreemapData;
+    debitsByDescriptionTreeMap: TreemapData;
+
+    // Top Entity Cards
+    topDebits: TopTransactionsDatum[];
+    topCredits: TopTransactionsDatum[];
 }

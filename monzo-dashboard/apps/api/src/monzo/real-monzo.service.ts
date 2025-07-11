@@ -58,8 +58,6 @@ export class RealMonzoService implements MonzoService {
             relations: ['merchant'],
         });
 
-        console.log("Found transactions", txs.length, "for account", accountId, "between", start.toISOString(), "and", end.toISOString());
-
         return txs.map(tx => ({
             id: tx.id,
             accountId: tx.accountId,

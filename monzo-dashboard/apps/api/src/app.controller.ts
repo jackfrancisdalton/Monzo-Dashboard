@@ -2,8 +2,6 @@ import { Controller, Get, Query, Sse } from '@nestjs/common';
 import { DashboardDataService } from './dashboard-data/dashboard-data.service';
 import { DashboardSummary } from '../../../packages/dashboard-types/src';
 import { DashboardQueryDto } from './dashboard-data/dto/dashboard-dtos';
-import { MonzoSyncService } from './monzo/monzo-sync.service';
-import { Observable } from 'rxjs';
 
 @Controller()
 export class AppController {

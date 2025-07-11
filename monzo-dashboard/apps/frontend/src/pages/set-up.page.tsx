@@ -7,17 +7,17 @@ const SetUpPage: React.FC = () => {
     const navigate = useNavigate();
     const [syncTasks, setSyncTasks] = useState<MonzoSyncProgressUpdate[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const [oauthSuccess, setOauthSuccess] = useState(false);
 
     useEffect(() => {
         const url = new URL(window.location.href);
         // TODO: replace with CONSTS
         if (url.searchParams.get('oauth') === 'success') {
-            startSync();
+            setOauthSuccess(true);
         }
     }, []);
 
     const startAuth = () => {
-
         // TODO: replace with CONSTS
         window.location.href = `http://localhost:3000/auth/monzo/login?redirect_uri=${encodeURIComponent(
             'http://localhost:5173/setup?oauth=success'
@@ -30,8 +30,6 @@ const SetUpPage: React.FC = () => {
 
         eventSource.onmessage = (event) => {
             const data: MonzoSyncProgressUpdate = JSON.parse(event.data);
-
-            console.table(data);
 
             setSyncTasks((prevTasks) => {
                 const taskIndex = prevTasks.findIndex((task) => task.taskName === data.taskName);
@@ -56,7 +54,7 @@ const SetUpPage: React.FC = () => {
             });
 
             // TODO: replace with CONSTS
-            // When this message arrives we've recieved the complete sync and can navigate to dashboard
+            // When this message arrives we've received the complete sync and can navigate to dashboard
             if (data.taskStage === 'completed' && data.taskName === 'fullSync') {
                 eventSource.close();
                 setTimeout(() => navigate('/dashboard'), 5000);
@@ -86,6 +84,15 @@ const SetUpPage: React.FC = () => {
             className="bg-blue-600 text-white px-6 py-3 rounded shadow hover:bg-blue-700 transition"
         >
             Connect and Sync
+        </button>
+    );
+
+    const renderSyncButton = () => (
+        <button
+            onClick={startSync}
+            className="bg-green-600 text-white px-6 py-3 rounded shadow hover:bg-green-700 transition mt-4"
+        >
+            Start Sync
         </button>
     );
 
@@ -127,7 +134,9 @@ const SetUpPage: React.FC = () => {
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
             {renderHeader()}
-            {syncTasks.length === 0 ? renderConnectButton() : renderSyncTasks()}
+            {!oauthSuccess && syncTasks.length === 0 && renderConnectButton()}
+            {oauthSuccess && syncTasks.length === 0 && renderSyncButton()}
+            {syncTasks.length > 0 && renderSyncTasks()}
             {renderError()}
         </div>
     );

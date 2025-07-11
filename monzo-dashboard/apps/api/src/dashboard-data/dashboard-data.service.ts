@@ -6,6 +6,7 @@ import { computeCumulativeLineData } from './mappers/line-datum-mapper';
 import { computeTreeMapData } from './mappers/tree-map-data-mapper';
 import { computeGenericPieData } from './mappers/pie-datum-mapper';
 
+// TODO: need to differnatiate between spending, transfers and debiting for data responses
 @Injectable()
 export class DashboardDataService {
 
@@ -38,27 +39,52 @@ export class DashboardDataService {
             this.monzoService.getTransactions(targetAccountId, start, end),
         ]);
 
+        const { creditTxs, debitTxs } = this.splitTransactionsByCreditDebit(transactions);
+
         return { 
             accounts, 
             balance,
-            spendingOverTimeLineData: this.getSpendingOverTimeLineData(transactions),
-            spendingByCategoryPieData: this.getSpendingByCategoryPieChart(transactions),
-            spendingByDescriptionTreeMap: this.getTreeMapByDescriptionData(transactions),
-            topTransactions: this.getTopTransactions(transactions),
-            totalSpending: transactions.reduce((acc, transaction) => {
-                return acc + (transaction.amount < 0 ? Math.abs(transaction.amount) : 0);
-            }, 0),
+            creditAndDebitOverTimeLineData: this.getSpendingAndIncomeOverTimeLineData(creditTxs, debitTxs),
+            creditsByCategoryPieData: this.getSpendingByCategoryPieChart(creditTxs),
+            debitsByCategoryPieData: this.getSpendingByCategoryPieChart(debitTxs),
+            creditsByDescriptionTreeMap: this.getTreeMapByDescriptionData(creditTxs),
+            debitsByDescriptionTreeMap: this.getTreeMapByDescriptionData(debitTxs),
+            topDebits: this.getTopDebits(debitTxs),
+            topCredits: this.getTopCredits(creditTxs),
+            totalDebit: parseFloat(debitTxs.reduce((acc, tx) => { // TODO: clean up to functions and introduce major/minor currecy typing
+                return acc + (tx.amount < 0 ? Math.abs(tx.amount) : 0);
+            }, 0).toFixed(2)),
+            totalCredit: parseFloat(creditTxs.reduce((acc, tx) => {
+                return acc + (tx.amount > 0 ? Math.abs(tx.amount) : 0);
+            }, 0).toFixed(2)),
         };
     }
 
+      /**
+         * TODO: 
+         * Pie money by category
+         * Line chart of Income over time & Spending over time
+         * Top 10 biggest spends by merchant
+         * Top 10 biggest spends by category
+         */
+
     // TODO clean up into a 
-    private getSpendingOverTimeLineData(transactions: MonzoTransaction[]): CumulativeLineDatum[] {
-        const lineData = computeCumulativeLineData(
-            transactions,
-            (tx) => tx.created,
+    private getSpendingAndIncomeOverTimeLineData(creditTxs: MonzoTransaction[], debitTxs: MonzoTransaction[]): CumulativeLineDatum[] {    
+        const spendingLine = computeCumulativeLineData(
+            "Debits",
+            debitTxs,
+            (tx) => new Date(tx.created),
             (tx) => Math.abs(tx.amount)
         );
-        return lineData;
+    
+        const incomeLine = computeCumulativeLineData(
+            "Credits",
+            creditTxs,
+            (tx) => new Date(tx.created),
+            (tx) => Math.abs(tx.amount)
+        );
+    
+        return [spendingLine[0]!, incomeLine[0]!];
     }
 
     private getTreeMapByDescriptionData(transactions: MonzoTransaction[]): TreemapData {
@@ -80,18 +106,39 @@ export class DashboardDataService {
         return pieMap
     }
 
-    private getTopTransactions(transactions: MonzoTransaction[]): TopTransactionsDatum[] {
+    private getTopCredits(transactions: MonzoTransaction[]): TopTransactionsDatum[] {
         return [...transactions]
             .sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount))
             .slice(0, 10)
             .map((tx) => ({
-                id: tx.id,
                 amount: Math.abs(tx.amount),
-                date: new Date(tx.created).toLocaleDateString(),
-                merchant: tx.merchant?.name ?? 'unknown',
-                description: tx.description || 'No description',
-                category: tx.category || 'unknown',
-                created: new Date(tx.created).toLocaleDateString(),
+                date: new Date(tx.created),
+                label: tx.description || 'No description',
             }));
+    }
+
+    private getTopDebits(transactions: MonzoTransaction[]): TopTransactionsDatum[] {
+        return [...transactions]
+            .sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount))
+            .slice(0, 10)
+            .map((tx) => ({
+                amount: Math.abs(tx.amount),
+                date: new Date(tx.created),
+                label: tx.description || 'No description',
+            }));
+    }
+
+    private splitTransactionsByCreditDebit(transactions: MonzoTransaction[]): { creditTxs: MonzoTransaction[], debitTxs: MonzoTransaction[] } {
+        const sortedTransactions = [...transactions].sort((a, b) => new Date(a.created).getTime() - new Date(b.created).getTime());
+
+        return sortedTransactions.reduce((acc, tx) => {
+            if (tx.amount > 0) {
+                acc.creditTxs.push(tx);
+            } else if (tx.amount < 0) {
+                acc.debitTxs.push(tx);
+            }
+
+            return acc;
+        }, { creditTxs: [], debitTxs: [] } as { creditTxs: MonzoTransaction[], debitTxs: MonzoTransaction[] });
     }
 }
