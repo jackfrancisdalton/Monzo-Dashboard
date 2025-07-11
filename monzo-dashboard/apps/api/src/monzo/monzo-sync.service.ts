@@ -202,6 +202,7 @@ export class MonzoSyncService {
                     await this.transactionRepo.save(entities);
                     totalFetched += entities.length;
     
+                    // TODO: replace total fetched with number of batches completed
                     onProgress?.({ taskName: 'transactions', taskStage: 'progress', syncedCount: totalFetched });
                 });
     

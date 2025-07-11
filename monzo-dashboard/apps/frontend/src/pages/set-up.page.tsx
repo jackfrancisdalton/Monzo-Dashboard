@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import type { MonzoSyncProgressUpdate } from '@repo/monzo-types';
 import { CheckCircle, Loader2 } from 'lucide-react';
 
+const API_URL = import.meta.env.VITE_API_URL;
+const FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL;
+
 const SetUpPage: React.FC = () => {
     const navigate = useNavigate();
     const [syncTasks, setSyncTasks] = useState<MonzoSyncProgressUpdate[]>([]);
@@ -18,15 +21,14 @@ const SetUpPage: React.FC = () => {
     }, []);
 
     const startAuth = () => {
-        // TODO: replace with CONSTS
-        window.location.href = `http://localhost:3000/auth/monzo/login?redirect_uri=${encodeURIComponent(
-            'http://localhost:5173/setup?oauth=success'
+        window.location.href = `${API_URL}/auth/monzo/login?redirect_uri=${encodeURIComponent(
+            `${FRONTEND_URL}/setup?oauth=success`
         )}`;
     };
 
     const startSync = () => {
         // TODO: replace with CONSTS
-        const eventSource = new EventSource('http://localhost:3000/monzo/sync');
+        const eventSource = new EventSource(`${API_URL}/monzo/sync`);
 
         eventSource.onmessage = (event) => {
             const data: MonzoSyncProgressUpdate = JSON.parse(event.data);

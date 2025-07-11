@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { DashboardDataController } from './dashboard-data/dashboard-data.controller';
 import { MonzoModule } from './monzo/monzo.module';
 import { DashboardDataModule } from './dashboard-data/dashboard-data.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -10,14 +9,15 @@ import { validationSchema } from './env-vars.config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validationSchema,
+      envFilePath: '../../.env'
+    }),
     AuthModule,
     MonzoModule, 
     DashboardDataModule,
     TypeOrmModule.forRoot(databaseConfig()),
-    ConfigModule.forRoot({
-      isGlobal: true,
-      validationSchema,
-    }),
   ],
 })
 export class AppModule {}

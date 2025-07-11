@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const BootingPage: React.FC = () => {
   const navigate = useNavigate();
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:3000/dashboard-data/is-configured') // TODO: replace with env var
+    console.log(import.meta.env)
+    fetch(`${API_URL}/dashboard-data/is-configured`)
       .then((res) => res.json())
       .then((data) => {
         if (data.isConfigured) {

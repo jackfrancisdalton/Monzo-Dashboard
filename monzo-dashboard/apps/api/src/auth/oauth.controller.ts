@@ -67,7 +67,11 @@ export class OAuthController {
       throw new NotFoundException(`Provider "${provider}" is not configured.`);
     }
 
-    let stateData: { nonce: string; frontend_redirect_uri: string } = { nonce: '', frontend_redirect_uri: 'http://localhost:5173' };
+    let stateData: { nonce: string; frontend_redirect_uri: string } = { 
+      nonce: '', 
+      frontend_redirect_uri: providerConfig.redirectUri  
+    };
+
     try {
       stateData = JSON.parse(Buffer.from(state, 'base64url').toString());
     } catch (err) {

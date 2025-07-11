@@ -13,8 +13,11 @@ export const validationSchema = Joi.object({
     MONZO_CLIENT_SECRET: Joi.string().required(),
     MONZO_REDIRECT_URI: Joi.string().uri().required(),
 
+    VITE_FRONTEND_URL: Joi.string().uri().required(),
+    VITE_API_URL: Joi.string().uri().required(),
+
     // Encryption
     ENCRYPTION_ALGORITHM: Joi.string().valid('aes-256-cbc').required(),
-    ENCRYPTION_KEY: Joi.string().length(32).required(),
-    ENCRYPTION_IV: Joi.string().length(16).required(),
+    ENCRYPTION_KEY: Joi.string().length(64).required(),
+    ENCRYPTION_IV: Joi.string().length(32).required(),
 });

@@ -10,20 +10,20 @@ export class MockMonzoService implements MonzoService {
   constructor(private readonly http: HttpService) {}
 
   async isConfigured(): Promise<boolean> {
-    // We don't actually do any oauth for the mock so it's always configured
+    // No Oauth required for mock service so we considered it always configured.
     return true;
   }
 
   async getAccounts(): Promise<MonzoAccount[]> {
-    return this.getRequest<MonzoAccount[]>(`/accounts`);
+    return this.getRequest<MonzoAccount[]>(`${process.env.VITE_MOCK_MONZO_URL}/accounts`);
   }
 
   async getBalance(accountId: string): Promise<MonzoBalance> {
-    return this.getRequest<MonzoBalance>(`/balance`);
+    return this.getRequest<MonzoBalance>(`${process.env.VITE_MOCK_MONZO_URL}/balance`);
   }
 
   async getTransactions(accountId: string, start: Date, end: Date): Promise<MonzoTransaction[]> {
-    const res = await this.getRequest<MonzoTransaction[]>(`/transactions`);
+    const res = await this.getRequest<MonzoTransaction[]>(`${process.env.VITE_MOCK_MONZO_URL}/transactions`);
 
     return res.filter((transaction) => {
       const t = new Date(transaction.created);

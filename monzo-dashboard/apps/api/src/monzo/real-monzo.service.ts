@@ -24,8 +24,7 @@ export class RealMonzoService implements MonzoService {
 
     async getAccounts(): Promise<MonzoAccount[]> {
         const accounts = await this.accountRepo.find({});
-
-        console.log('TEST', accounts)
+        
         return accounts.map(account => ({
             id: account.id,
             description: account.description,

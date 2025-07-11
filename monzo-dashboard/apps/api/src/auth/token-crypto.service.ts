@@ -10,8 +10,8 @@ export class TokenCryptoService {
 
   constructor(private readonly configService: ConfigService) {
     this.algorithm = this.configService.get<string>('ENCRYPTION_ALGORITHM', 'aes-256-cbc');
-    this.key = Buffer.from(this.configService.get<string>('ENCRYPTION_KEY', ''), 'utf8');
-    this.iv = Buffer.from(this.configService.get<string>('ENCRYPTION_IV', ''), 'utf8');
+    this.key = Buffer.from(this.configService.get<string>('ENCRYPTION_KEY', ''), 'hex');
+    this.iv = Buffer.from(this.configService.get<string>('ENCRYPTION_IV', ''), 'hex');
   }
 
   encrypt(token: string): string {

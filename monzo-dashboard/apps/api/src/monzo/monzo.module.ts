@@ -14,10 +14,9 @@ import { MonzoController } from './monzo.controller';
 
 @Module({
   imports: [
-    AuthModule,
+    AuthModule, 
     HttpModule.register({
-      baseURL: 'http://localhost:3001', // TODO: make this use env variables instead
-      timeout: 5000,
+      timeout: 5 * 60 * 10, // 5 minutes to reflect monzo limitations
       maxRedirects: 5,
     }),
     TypeOrmModule.forFeature([
