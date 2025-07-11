@@ -1,7 +1,11 @@
 import { Type } from 'class-transformer';
-import { IsDate } from 'class-validator';
+import { IsDate, IsString } from 'class-validator';
 
 export class DashboardQueryDto {
+
+  @IsString()
+  accountId!: string
+
   @IsDate()
   @Type(() => Date)
   start!: Date;

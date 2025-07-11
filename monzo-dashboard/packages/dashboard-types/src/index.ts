@@ -28,7 +28,6 @@ export interface TopTransactionsDatum {
 }
 
 export interface DashboardSummary {
-    accounts: MonzoAccount[];
     balance: MonzoBalance;
     totalCredit: number;
     totalDebit: number;
@@ -47,4 +46,8 @@ export interface DashboardSummary {
     // Top Entity Cards
     topDebits: TopTransactionsDatum[];
     topCredits: TopTransactionsDatum[];
+}
+
+export interface AccountsSummary {
+    accounts: MonzoAccount[];
 }

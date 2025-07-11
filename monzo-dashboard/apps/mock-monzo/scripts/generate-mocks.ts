@@ -33,7 +33,7 @@ const today = new Date();
 const interval = daysRange / transactionsCount;
 
 const transactions: MonzoTransaction[] = Array.from({ length: argv.transactions }, (_, index) => {
-    const amount = faker.number.int({ min: -10000, max: -100 });
+    const amount = faker.number.int({ min: -10000, max: 10000 }); // Allow both debits (negative) and credits (positive)
     const created = new Date(today);
     created.setDate(created.getDate() - Math.round(index * interval));
     const settled = faker.date.soon({ days: 10, refDate: created });
@@ -55,7 +55,7 @@ const transactions: MonzoTransaction[] = Array.from({ length: argv.transactions 
         amount,
         currency: 'GBP',
         created: created.toISOString(),
-        description: faker.commerce.productName(),
+        description: (amount > 0 ? faker.helpers.arrayElement(['Income', 'Transfer', 'Refund']) : faker.commerce.productName()),
         category: faker.helpers.arrayElement(['eating_out', 'groceries', 'shopping']),
         merchant: {
             id: 'merch_' + faker.string.uuid(),
@@ -68,6 +68,7 @@ const transactions: MonzoTransaction[] = Array.from({ length: argv.transactions 
         settled: settled.toISOString(),
     };
 });
+
 
 const balance: MonzoBalance = {
     balance: runningBalance,

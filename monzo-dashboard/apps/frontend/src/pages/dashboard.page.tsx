@@ -11,8 +11,10 @@ import { ResponsiveTreeMap } from "@nivo/treemap";
 import { ResponsivePie } from "@nivo/pie";
 
 function DashboardPage() {
-  // TODO: sync date and account selection with URL query params
 
+  // TODO: sync account/date range with URL params for consistant UX on refresh
+
+  // TECH-DEBT: Sets default date range to last 7 days, may wish to change this in future when user defaults can be set
   const [dateRange, setDateRange] = useState<{ start: Date; end: Date }>(() => {
     const today = new Date();
     const sevenDaysAgo = new Date();
@@ -20,7 +22,12 @@ function DashboardPage() {
     return { start: sevenDaysAgo, end: today };
   });
 
-  const { dashboardSummary } = useMonzoData(dateRange);
+  const {
+    accounts,
+    selectedAccount,
+    setSelectedAccount,
+    dashboardSummary
+  } = useMonzoData({ start: dateRange.start, end: dateRange.end });
 
   const generateHeader = () => {
     return (
@@ -30,7 +37,6 @@ function DashboardPage() {
             setDateRange(dateRange);
           }}
         />
-        {/* // TODO: move to component */}
         <div className="flex items-center gap-2 float-right">
           <label htmlFor="account-select" className="text-white">
             Account:
@@ -38,14 +44,14 @@ function DashboardPage() {
           <select
             id="account-select"
             className="border border-gray-300 rounded-md p-2 bg-gray-800 text-white"
+            value={selectedAccount ?? ""}
             onChange={(e) => {
-              console.log("Selected account:", e.target.value);
-              // Add logic to handle account selection
+              setSelectedAccount(e.target.value);
             }}
           >
-            {dashboardSummary?.accounts?.map((account) => (
+            {accounts?.map((account) => (
               <option key={account.id} value={account.id}>
-          {account.description}
+                {account.id}
               </option>
             ))}
           </select>
@@ -76,18 +82,35 @@ function DashboardPage() {
           />
         </CardWrapper>
 
-        <CardWrapper className="col-span-2 row-span-1">
+        <CardWrapper className="col-span-1   row-span-1">
           <DisplayCard
             title="Total In"
             value={`£${dashboardSummary?.totalCredit ?? 0}`}
             colorClass="text-green-600"
           />
         </CardWrapper>
-        <CardWrapper className="col-span-2 row-span-1">
+{/* Top Entity Cards */}
+        <CardWrapper title="Top Credits" className="col-span-1 row-span-1">
+          <TopEntitiesCard
+            items={dashboardSummary?.topCredits ?? []}
+            getLabel={(tx) => tx.label}
+            getValue={(tx) => `£${tx.amount}`}
+            getDate={(tx) => new Date(tx.date)}
+          />
+        </CardWrapper>
+        <CardWrapper className="col-span-1 row-span-1">
           <DisplayCard
             title="Total Out"
             value={`£${dashboardSummary?.totalDebit ?? 0}`}
             colorClass="text-red-600"
+          />
+        </CardWrapper>
+        <CardWrapper title="Top Debits" className="col-span-1 row-span-1">
+          <TopEntitiesCard
+            items={dashboardSummary?.topDebits ?? []}
+            getLabel={(tx) => tx.label}
+            getValue={(tx) => `£${tx.amount}`}
+            getDate={(tx) => new Date(tx.date)}
           />
         </CardWrapper>
 
@@ -167,23 +190,6 @@ function DashboardPage() {
           />
         </CardWrapper>
 
-        {/* Top Entity Cards */}
-        <CardWrapper title="Top Credits" className="col-span-2 row-span-1">
-          <TopEntitiesCard
-            items={dashboardSummary?.topCredits ?? []}
-            getLabel={(tx) => tx.label}
-            getValue={(tx) => `£${tx.amount}`}
-            getDate={(tx) => new Date(tx.date)}
-          />
-        </CardWrapper>
-        <CardWrapper title="Top Debits" className="col-span-2 row-span-1">
-          <TopEntitiesCard
-            items={dashboardSummary?.topDebits ?? []}
-            getLabel={(tx) => tx.label}
-            getValue={(tx) => `£${tx.amount}`}
-            getDate={(tx) => new Date(tx.date)}
-          />
-        </CardWrapper>
 
       </CardLayout>
     </AppLayout>

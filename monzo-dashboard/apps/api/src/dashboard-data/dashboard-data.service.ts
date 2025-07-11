@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CumulativeLineDatum, DashboardSummary, PieDatum, TopTransactionsDatum, TreemapData } from '../../../../packages/dashboard-types/src';
-import { MonzoTransaction } from '@repo/monzo-types';
+import { AccountsSummary, CumulativeLineDatum, DashboardSummary, PieDatum, TopTransactionsDatum, TreemapData } from '../../../../packages/dashboard-types/src';
+import { MonzoAccount, MonzoTransaction } from '@repo/monzo-types';
 import { MonzoService } from 'src/monzo/monzo-service.interface';
 import { computeCumulativeLineData } from './mappers/line-datum-mapper';
 import { computeTreeMapData } from './mappers/tree-map-data-mapper';
@@ -20,16 +20,31 @@ export class DashboardDataService {
         return this.monzoService.isConfigured();
     }
 
-    async getDashboardData(start: Date, end: Date): Promise<DashboardSummary> {
+    async getAccounts(): Promise<AccountsSummary> {
+        const accounts = await this.monzoService.getAccounts();
+        
+        if (accounts.length === 0) {
+            throw new Error("No Monzo accounts found. Please ensure you have linked your Monzo account.");
+        }
+
+        const mappedAccounts = accounts.map(account => ({
+            id: account.id,
+            description: account.description,
+            created: account.created,
+        }));
+
+        return { accounts: mappedAccounts };
+    }
+
+    async getDashboardData(accountId: string, start: Date, end: Date): Promise<DashboardSummary> {
         const accounts = await this.monzoService.getAccounts();
 
         if(accounts.length === 0) {
             throw new Error("No Monzo accounts found. Please ensure you have linked your Monzo account.");
         }
 
-        // TODO: clean up should be clear to TS from above that these cannot be null, but oh well.
-        // TODO: clean up, currently setting this while default account choice not supported as this is my main account 
-        const targetAccountId = accounts[1]?.id;
+        const targetAccountId = accounts.find(account => account.id === accountId)?.id;
+
         if(!targetAccountId) {
             throw new Error("No valid account ID found. Please ensure your Monzo account is properly linked.");
         }
@@ -41,8 +56,7 @@ export class DashboardDataService {
 
         const { creditTxs, debitTxs } = this.splitTransactionsByCreditDebit(transactions);
 
-        return { 
-            accounts, 
+        return {  
             balance,
             creditAndDebitOverTimeLineData: this.getSpendingAndIncomeOverTimeLineData(creditTxs, debitTxs),
             creditsByCategoryPieData: this.getSpendingByCategoryPieChart(creditTxs),

@@ -37,7 +37,7 @@ import { MonzoController } from './monzo.controller';
       useClass:
         process.env.NODE_ENV === 'production'
           ? RealMonzoService
-          : RealMonzoService,
+          : MockMonzoService,
     },
   ],
   exports: [
