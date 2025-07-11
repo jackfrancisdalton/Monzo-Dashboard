@@ -17,6 +17,7 @@ All data is stored on your machine, and this app is meant for personal use only.
 ## Set up guide
 ### Set up Monzo Account 
 ### Install and run application
+note to self: docker compose up -f docker-compose.prod.yaml --env-file .env.docker up --build
 ### Oauth and syncing account 
 
 ----------------------------------
@@ -25,6 +26,11 @@ All data is stored on your machine, and this app is meant for personal use only.
 ## Contributing to this project and future features
 ### Dashboard API and Card Layout
 ### Using the Monzo Service
+### Secrets management
+.env
+docker compose pass in via env
+explain prod vs other approach
+
 ### Future Features
 - transaction search (by merchant/description/date range)
 - merchant overview (how much total spent, how much refunded, latest transactions)

@@ -23,7 +23,7 @@ const SetUpPage: React.FC = () => {
     const startAuth = () => {
         window.location.href = `${API_URL}/auth/monzo/login?redirect_uri=${encodeURIComponent(
             `${FRONTEND_URL}/setup?oauth=success`
-        )}`;
+        )}`; // TODO: review if we want to set this here, or on the backend
     };
 
     const startSync = () => {

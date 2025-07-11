@@ -5,11 +5,12 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // TODO: currently cors is always available, should turn off when not in dev mode
-  app.enableCors({
-    origin: [process.env.VITE_FRONTEND_URL],
-    credentials: true
-  });
+  if (process.env.NODE_ENV === 'development') {
+    app.enableCors({
+      origin: [process.env.VITE_FRONTEND_URL],
+      credentials: true
+    });
+  }
 
   app.useGlobalPipes(new ValidationPipe({
     transform: true,

@@ -199,7 +199,7 @@ export class MonzoSyncService {
                     }));
     
                     console.log(`Fetched ${entities.length} transactions for account ${account.id} from ${window.start} to ${window.end}`);
-                    await this.transactionRepo.save(entities);
+                    await this.transactionRepo.upsert(entities, ['id']);
                     totalFetched += entities.length;
     
                     // TODO: replace total fetched with number of batches completed

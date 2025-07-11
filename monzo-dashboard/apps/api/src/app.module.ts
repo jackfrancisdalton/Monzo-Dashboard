@@ -12,7 +12,8 @@ import { validationSchema } from './env-vars.config';
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema,
-      envFilePath: '../../.env'
+      // On Production we pass in as process.env variables, so should ignore turborepo .env
+      envFilePath: process.env.NODE_ENV === 'development' ? '../../.env' : undefined
     }),
     AuthModule,
     MonzoModule, 

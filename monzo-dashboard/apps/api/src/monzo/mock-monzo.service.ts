@@ -15,11 +15,11 @@ export class MockMonzoService implements MonzoService {
   }
 
   async getAccounts(): Promise<MonzoAccount[]> {
-    return this.getRequest<MonzoAccount[]>(`${process.env.VITE_MOCK_MONZO_URL}/accounts`);
+    return this.getRequest<MonzoAccount[]>(`${process.env.MOCK_MONZO_URL}/accounts`);
   }
 
   async getBalance(accountId: string): Promise<MonzoBalance> {
-    return this.getRequest<MonzoBalance>(`${process.env.VITE_MOCK_MONZO_URL}/balance`);
+    return this.getRequest<MonzoBalance>(`${process.env.MOCK_MONZO_URL}/balance`);
   }
 
   async getTransactions(accountId: string, start: Date, end: Date): Promise<MonzoTransaction[]> {
