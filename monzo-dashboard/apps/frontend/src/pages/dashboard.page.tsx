@@ -11,6 +11,8 @@ import { ResponsiveTreeMap } from "@nivo/treemap";
 import { ResponsivePie } from "@nivo/pie";
 
 function DashboardPage() {
+  // TODO: sync date and account selection with URL query params
+
   const [dateRange, setDateRange] = useState<{ start: Date; end: Date }>(() => {
     const today = new Date();
     const sevenDaysAgo = new Date();
@@ -22,11 +24,33 @@ function DashboardPage() {
 
   const generateHeader = () => {
     return (
-      <TimeRangePicker
-        onChange={(dateRange) => {
-          setDateRange(dateRange);
-        }}
-      />
+      <>
+        <TimeRangePicker
+          onChange={(dateRange) => {
+            setDateRange(dateRange);
+          }}
+        />
+        {/* // TODO: move to component */}
+        <div className="flex items-center gap-2 float-right">
+          <label htmlFor="account-select" className="text-white">
+            Account:
+          </label>
+          <select
+            id="account-select"
+            className="border border-gray-300 rounded-md p-2 bg-gray-800 text-white"
+            onChange={(e) => {
+              console.log("Selected account:", e.target.value);
+              // Add logic to handle account selection
+            }}
+          >
+            {dashboardSummary?.accounts?.map((account) => (
+              <option key={account.id} value={account.id}>
+          {account.description}
+              </option>
+            ))}
+          </select>
+        </div>
+      </>
     );
   };
 
