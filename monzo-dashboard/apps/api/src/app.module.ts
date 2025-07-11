@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
+import { DashboardDataController } from './dashboard-data/dashboard-data.controller';
 import { MonzoModule } from './monzo/monzo.module';
 import { DashboardDataModule } from './dashboard-data/dashboard-data.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -19,7 +19,5 @@ import { validationSchema } from './env-vars.config';
       validationSchema,
     }),
   ],
-  controllers: [AppController],
-  providers: [],
 })
 export class AppModule {}

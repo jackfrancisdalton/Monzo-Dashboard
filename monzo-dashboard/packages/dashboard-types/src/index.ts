@@ -50,4 +50,5 @@ export interface DashboardSummary {
 
 export interface AccountsSummary {
     accounts: MonzoAccount[];
+    // TODO: add a nullable default account option for convenience
 }

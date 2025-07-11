@@ -10,7 +10,7 @@ export const useMonzoData = ({ start, end }: { start: Date, end: Date }) => {
     // Fetch accounts on first load
     useEffect(() => {
         const fetchAccounts = async () => {
-            const res = await fetch(`http://localhost:3000/accounts`);
+            const res = await fetch(`http://localhost:3000/dashboard-data/accounts`);
             const data: AccountsSummary = await res.json();
             setAccounts(data.accounts);
 
@@ -23,8 +23,8 @@ export const useMonzoData = ({ start, end }: { start: Date, end: Date }) => {
 
     // Fetch dashboard summary whenever selectedAccount or date range changes
     useEffect(() => {
-        // if no account is selected, do not fetch data
-        if (!selectedAccount) return;
+        if (!selectedAccount) // if no account is selected, do not fetch data
+            return;
 
         const fetchData = async () => {
             const queryParams = new URLSearchParams({
@@ -33,7 +33,7 @@ export const useMonzoData = ({ start, end }: { start: Date, end: Date }) => {
                 accountId: selectedAccount
             });
 
-            const res = await fetch(`http://localhost:3000?${queryParams.toString()}`);
+            const res = await fetch(`http://localhost:3000/dashboard-data/data?${queryParams.toString()}`);
             const data: DashboardSummary = await res.json();
             setDashboardSummary(data);
         };

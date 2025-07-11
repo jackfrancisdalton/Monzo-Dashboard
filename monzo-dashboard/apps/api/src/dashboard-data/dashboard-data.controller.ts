@@ -1,22 +1,21 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { DashboardDataService } from './dashboard-data/dashboard-data.service';
-import { AccountsSummary, DashboardSummary } from '../../../packages/dashboard-types/src';
-import { DashboardQueryDto } from './dashboard-data/dto/dashboard-dtos';
+import { DashboardDataService } from './dashboard-data.service';
+import { AccountsSummary, DashboardSummary } from '../../../../packages/dashboard-types/src';
+import { DashboardQueryDto } from './dto/dashboard-dtos';
 
-// TODO: move this to data dashboard module
-@Controller()
-export class AppController {
+@Controller('dashboard-data')
+export class DashboardDataController {
   constructor(
     private readonly dashboardService: DashboardDataService,
   ) {}
 
-  @Get()
+  @Get('data')
   async getDashBoard(@Query() query: DashboardQueryDto): Promise<DashboardSummary> {
     const { accountId, start, end } = query;
     return this.dashboardService.getDashboardData(accountId, start, end);
   }
 
-  @Get("/accounts")
+  @Get("accounts")
   async getAccounts(): Promise<AccountsSummary> {
     return await this.dashboardService.getAccounts();
   }
