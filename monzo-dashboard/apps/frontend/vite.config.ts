@@ -6,7 +6,6 @@ import path from 'path'
 export default defineConfig(({ mode }) => {
   // load .env from monorepo root
   const rootEnv = loadEnv(mode, path.resolve(__dirname, '../../'), 'VITE_');
-  console.log('Loaded ENV:', rootEnv);
 
   return {
     plugins: [

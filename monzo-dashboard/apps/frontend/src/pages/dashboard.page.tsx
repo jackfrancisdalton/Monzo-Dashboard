@@ -11,6 +11,7 @@ import { ResponsiveTreeMap } from "@nivo/treemap";
 import { ResponsivePie } from "@nivo/pie";
 import { useSearchParams } from "react-router-dom";
 
+// TODO: add a loading spinner on data loading/change
 function DashboardPage() {
   // TODO: sync account/date range with URL params for consistant UX on refresh
 

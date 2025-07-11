@@ -8,7 +8,6 @@ const BootingPage: React.FC = () => {
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    console.log(import.meta.env)
     fetch(`${API_URL}/dashboard-data/is-configured`)
       .then((res) => res.json())
       .then((data) => {

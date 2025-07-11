@@ -33,10 +33,10 @@ import { MonzoController } from './monzo.controller';
     MonzoSyncService,
     {
       provide: MonzoService,
-      useClass:
+      useClass: 
         process.env.NODE_ENV === 'production'
           ? RealMonzoService
-          : MockMonzoService,
+          : RealMonzoService, // TODO: change back after WIP testing
     },
   ],
   exports: [
