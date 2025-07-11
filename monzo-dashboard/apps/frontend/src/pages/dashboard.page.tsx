@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMonzoData } from "../hooks/useMonzoData";
 import { TimeRangePicker } from "../components/TimeRangePicker";
 import AppLayout from "../layouts/AppLayout";
@@ -9,12 +9,13 @@ import TopEntitiesCard from "../components/TopEntitiesCard";
 import DisplayCard from "../components/DisplayCard";
 import { ResponsiveTreeMap } from "@nivo/treemap";
 import { ResponsivePie } from "@nivo/pie";
+import { useSearchParams } from "react-router-dom";
 
 function DashboardPage() {
-
   // TODO: sync account/date range with URL params for consistant UX on refresh
 
   // TECH-DEBT: Sets default date range to last 7 days, may wish to change this in future when user defaults can be set
+  const [searchParams, setSearchParams] = useSearchParams();
   const [dateRange, setDateRange] = useState<{ start: Date; end: Date }>(() => {
     const today = new Date();
     const sevenDaysAgo = new Date();
@@ -26,8 +27,37 @@ function DashboardPage() {
     accounts,
     selectedAccount,
     setSelectedAccount,
-    dashboardSummary
+    dashboardSummary,
   } = useMonzoData({ start: dateRange.start, end: dateRange.end });
+
+  // On initial load, check URL params for account and date range
+  useEffect(() => {
+    const accountFromUrl = searchParams.get("account");
+    const startFromUrl = searchParams.get("start");
+    const endFromUrl = searchParams.get("end");
+
+    if (accountFromUrl) {
+      setSelectedAccount(accountFromUrl);
+    }
+
+    if (startFromUrl && endFromUrl) {
+      setDateRange({
+        start: new Date(startFromUrl),
+        end: new Date(endFromUrl),
+      });
+    }
+  }, []);
+
+  // Sync param changes to URL
+  useEffect(() => {
+    if (!selectedAccount || !dateRange) return;
+
+    setSearchParams({
+      account: selectedAccount,
+      start: dateRange.start.toISOString(),
+      end: dateRange.end.toISOString(),
+    });
+  }, [selectedAccount, dateRange]);
 
   const generateHeader = () => {
     return (
@@ -37,6 +67,7 @@ function DashboardPage() {
             setDateRange(dateRange);
           }}
         />
+        {/* TODO: move to dedicated component */}
         <div className="flex items-center gap-2 float-right">
           <label htmlFor="account-select" className="text-white">
             Account:
@@ -82,14 +113,15 @@ function DashboardPage() {
           />
         </CardWrapper>
 
-        <CardWrapper className="col-span-1   row-span-1">
+        <CardWrapper className="col-span-1 row-span-1">
           <DisplayCard
             title="Total In"
             value={`£${dashboardSummary?.totalCredit ?? 0}`}
             colorClass="text-green-600"
           />
         </CardWrapper>
-{/* Top Entity Cards */}
+
+        {/* Top Entity Cards */}
         <CardWrapper title="Top Credits" className="col-span-1 row-span-1">
           <TopEntitiesCard
             items={dashboardSummary?.topCredits ?? []}
@@ -189,8 +221,6 @@ function DashboardPage() {
             borderColor={{ from: "color", modifiers: [["darker", 0.3]] }}
           />
         </CardWrapper>
-
-
       </CardLayout>
     </AppLayout>
   );

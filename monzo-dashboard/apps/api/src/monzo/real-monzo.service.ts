@@ -7,7 +7,6 @@ import { AccountEntity } from "./entities/account.entity";
 import { TransactionEntity } from "./entities/transaction.entity";
 import { BalanceEntity } from "./entities/balance.entity";
 
-// TODO: replace this service with a more complex approach of fetching from DB and offloading storing data to another service (cron)
 @Injectable()
 export class RealMonzoService implements MonzoService {
     constructor(

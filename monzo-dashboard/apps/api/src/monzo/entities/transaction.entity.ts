@@ -29,7 +29,7 @@ export class TransactionEntity {
   @Column()
   category!: string;
 
-  // TODO: determine if things like bank transfers are null merchant, leaving as nullabel for now
+  // Merchant data seems to be optonal in some cases, so reflecting that here
   @ManyToOne(() => MerchantEntity, { nullable: true })
   @JoinColumn({ name: 'merchantId' })
   merchant?: MerchantEntity;

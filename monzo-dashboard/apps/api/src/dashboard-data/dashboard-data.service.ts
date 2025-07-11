@@ -6,7 +6,6 @@ import { computeCumulativeLineData } from './mappers/line-datum-mapper';
 import { computeTreeMapData } from './mappers/tree-map-data-mapper';
 import { computeGenericPieData } from './mappers/pie-datum-mapper';
 
-// TODO: need to differnatiate between spending, transfers and debiting for data responses
 @Injectable()
 export class DashboardDataService {
 
@@ -74,15 +73,6 @@ export class DashboardDataService {
         };
     }
 
-      /**
-         * TODO: 
-         * Pie money by category
-         * Line chart of Income over time & Spending over time
-         * Top 10 biggest spends by merchant
-         * Top 10 biggest spends by category
-         */
-
-    // TODO clean up into a 
     private getSpendingAndIncomeOverTimeLineData(creditTxs: MonzoTransaction[], debitTxs: MonzoTransaction[]): CumulativeLineDatum[] {    
         const spendingLine = computeCumulativeLineData(
             "Debits",
