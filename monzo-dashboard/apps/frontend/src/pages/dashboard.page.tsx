@@ -13,8 +13,6 @@ import { useSearchParams } from "react-router-dom";
 
 // TODO: add a loading spinner on data loading/change
 function DashboardPage() {
-  // TODO: sync account/date range with URL params for consistant UX on refresh
-
   // TECH-DEBT: Sets default date range to last 7 days, may wish to change this in future when user defaults can be set
   const [searchParams, setSearchParams] = useSearchParams();
   const [dateRange, setDateRange] = useState<{ start: Date; end: Date }>(() => {

@@ -21,5 +21,3 @@ export const validationSchema = Joi.object({
     // Used in Dev mode to allow cors requests from frontend
     VITE_FRONTEND_URL: Joi.string().uri().required(),
 });
-
-// TODO: Ensure all env variables ar appropriate for different apps
