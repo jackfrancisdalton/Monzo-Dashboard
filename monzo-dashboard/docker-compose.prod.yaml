@@ -34,17 +34,17 @@ services:
       - monzo_dashboard
 
   nginx:
-    image: nginx:alpine
-    volumes:
-      - ./docker/nginx.conf.template:/etc/nginx/conf.d/default.conf.template
-      - ./docker/entrypoint.sh:/docker-entrypoint.d/10-envsubst.sh # trigger default conf on startup
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.nginx
     environment: # Provide URLs to template to reverse proxy to services over docker network
       API_DOCKER_URL: ${API_DOCKER_URL}
       FRONTEND_DOCKER_URL: ${FRONTEND_DOCKER_URL}
     ports:
-      - "80:80"
+      - "80:80" # Expose port 80  as the entrypoint for reverse proxy TODO: replace with env variable for flexibility
+      # NOTE: consider offering over HTTP and exposing 443 for HTTPS with certs
     depends_on:
-      # - frontend
+      - frontend
       - api
     networks:
       - monzo_dashboard
