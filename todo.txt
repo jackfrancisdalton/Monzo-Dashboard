@@ -1,8 +1,4 @@
 
-Set up/Welcome Page
-1. Add handling after oauth handshake specifying that they must go on app to approave before sync and that they must do it in 5 minutes
-2. Add cards for each of the stages that go green on sync complete
-
 Profile Page:
 - include usefule information like IBAN, account, swift, etc...
 - list out existing accounts
@@ -13,16 +9,16 @@ Settings page:
 - Add option to clear all data from DB forcing them to re-auth and resync.
 - Add them options (can leverage tailwind themes for this too)
 
-Electronise:
-- Set up an electron build to wrap the react application for a nice desktop experiance and ability to add to toolbar
-
-Dockerise:
-- set up Dockerfiles and docker compose for other services so they can be run on backend
-
-
 Clean up:
+- Address all TODOs
+- Review enviornment variables set up (over sharing/under sharing)
+- FIX BUG: duplicate FK on sync leading to error on frontend)
 - indentation standarisation
 - naming conventions/capitalisations
+- Clean up typing of currency MAjor/minor
+- Clean up display of large data sets on frontend leading to unreadable content
+- Do read me text
+
 
 Unit testing:
 - should start once a stable project structure is in place
