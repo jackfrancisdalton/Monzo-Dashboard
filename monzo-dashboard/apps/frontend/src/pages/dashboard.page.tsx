@@ -10,6 +10,8 @@ import DisplayCard from "../components/DisplayCard";
 import { ResponsiveTreeMap } from "@nivo/treemap";
 import { ResponsivePie } from "@nivo/pie";
 import { useSearchParams } from "react-router-dom";
+import type { lastDayOfDecade } from "date-fns";
+import DropDownPicker from "../components/DropDownPicker";
 
 // TODO: add a loading spinner on data loading/change
 function DashboardPage() {
@@ -31,7 +33,7 @@ function DashboardPage() {
 
   // On initial load, check URL params for account and date range
   useEffect(() => {
-    const accountFromUrl = searchParams.get("account");
+    const accountFromUrl = searchParams.get("account"); // TODO: change to CONSTS
     const startFromUrl = searchParams.get("start");
     const endFromUrl = searchParams.get("end");
 
@@ -66,26 +68,14 @@ function DashboardPage() {
             setDateRange(dateRange);
           }}
         />
-        {/* TODO: move to dedicated component */}
-        <div className="flex items-center gap-2 float-right">
-          <label htmlFor="account-select" className="text-white">
-            Account:
-          </label>
-          <select
-            id="account-select"
-            className="border border-gray-300 rounded-md p-2 bg-gray-800 text-white"
-            value={selectedAccount ?? ""}
-            onChange={(e) => {
-              setSelectedAccount(e.target.value);
-            }}
-          >
-            {accounts?.map((account) => (
-              <option key={account.id} value={account.id}>
-                {account.id}
-              </option>
-            ))}
-          </select>
-        </div>
+        <DropDownPicker
+          options={accounts}
+          dropDownLabel="Select Account"
+          getValue={(account) => account.id}
+          getLabel={(account) => account.description}
+          onChange={(account) => { setSelectedAccount(account?.id ?? null) }}
+          layoutClassName="float-right"
+        ></DropDownPicker>
       </>
     );
   };

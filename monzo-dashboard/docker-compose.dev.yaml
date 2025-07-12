@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: monzo_db
     ports:
-      - "5432:5432" # For development, clean up dev vs prod later and clean up port exposure
+      - "5432:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data
 

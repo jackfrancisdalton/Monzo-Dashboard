@@ -27,7 +27,6 @@ const SetUpPage: React.FC = () => {
     };
 
     const startSync = () => {
-        // TODO: replace with CONSTS
         const eventSource = new EventSource(`${API_URL}/monzo/sync`);
 
         eventSource.onmessage = (event) => {
@@ -64,9 +63,8 @@ const SetUpPage: React.FC = () => {
         };
 
         eventSource.onerror = () => {
-            setError('Sync failed. Please try again.');
-            setSyncTasks([]);
-            eventSource.close();
+            // TODO: come up with a better error handling strategy
+            setError('Sync error occured.');
         };
     };
 
