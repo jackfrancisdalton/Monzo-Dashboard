@@ -9,8 +9,6 @@ export const useMonzoData = ({ start, end }: { start: Date, end: Date }) => {
     const [selectedAccount, setSelectedAccount] = useState<string | null>(null);
     const [dashboardSummary, setDashboardSummary] = useState<DashboardSummary>();
 
-    // TODO: add checking for API URL being set
-
     // Fetch accounts on first load
     useEffect(() => {
         const fetchAccounts = async () => {
