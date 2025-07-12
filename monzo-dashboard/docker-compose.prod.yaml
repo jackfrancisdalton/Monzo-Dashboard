@@ -26,10 +26,11 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile.frontend
+      # Must be provided as args not evns for vite build process
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+        VITE_FRONTEND_URL: ${VITE_FRONTEND_URL}
     env_file: .env.production
-    environment:
-      VITE_API_URL: ${VITE_API_URL}
-      VITE_FRONTEND_URL: ${VITE_FRONTEND_URL}
     networks:
       - monzo_dashboard
 

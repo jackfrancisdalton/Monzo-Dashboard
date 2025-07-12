@@ -25,9 +25,17 @@ COPY --from=builder /prunedRepo/pnpm-workspace.yaml ./pnpm-workspace.yaml
 
 RUN pnpm install --frozen-lockfile
 
+ARG VITE_API_URL
+ARG VITE_FRONTEND_URL
+ENV VITE_API_URL=$VITE_API_URL
+ENV VITE_FRONTEND_URL=$VITE_FRONTEND_URL
+
 COPY --from=builder /prunedRepo/out/full/ ./
 RUN pnpm turbo run build --filter=frontend...
 
 # --- Final Nginx stage ---
 FROM nginx:alpine
 COPY --from=installer /app/apps/frontend/dist /usr/share/nginx/html
+
+# Required to ensure SPA behaviour is routed correctly, always reutrning index file
+COPY apps/frontend/frontend.nginx.conf /etc/nginx/conf.d/default.conf
