@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   startOfWeek, endOfWeek, startOfMonth, endOfMonth,
   startOfYear, endOfYear, subWeeks
@@ -8,7 +8,7 @@ interface TimeRangePickerProps {
   onChange: (range: { start: Date; end: Date }) => void;
 }
 
-export const TimeRangePicker: React.FC<TimeRangePickerProps> = ({ onChange }) => {
+const TimeRangePicker: React.FC<TimeRangePickerProps> = ({ onChange }) => {
   const [customStart, setCustomStart] = useState<Date | null>(null);
   const [customEnd, setCustomEnd] = useState<Date | null>(null);
 
@@ -130,3 +130,5 @@ export const TimeRangePicker: React.FC<TimeRangePickerProps> = ({ onChange }) =>
     </div>
   );
 };
+
+export default TimeRangePicker;

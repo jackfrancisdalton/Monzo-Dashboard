@@ -1,17 +1,12 @@
 import { useEffect, useState } from "react";
 import { useMonzoData } from "../hooks/useMonzoData";
-import { TimeRangePicker } from "../components/TimeRangePicker";
 import AppLayout from "../layouts/AppLayout";
 import CardLayout from "../layouts/CardLayout";
-import CardWrapper from "../components/CardWrapper";
 import { ResponsiveLine } from "@nivo/line";
-import TopEntitiesCard from "../components/TopEntitiesCard";
-import DisplayCard from "../components/DisplayCard";
 import { ResponsiveTreeMap } from "@nivo/treemap";
 import { ResponsivePie } from "@nivo/pie";
 import { useSearchParams } from "react-router-dom";
-import type { lastDayOfDecade } from "date-fns";
-import DropDownPicker from "../components/DropDownPicker";
+import { CardWrapper, DisplayCard, DropDownPicker, TimeRangePicker, TopEntitiesCard } from "../components";
 
 // TODO: add a loading spinner on data loading/change
 function DashboardPage() {

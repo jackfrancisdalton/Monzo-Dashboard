@@ -6,9 +6,6 @@ import { databaseConfig } from './database.config';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { validationSchema } from './env-vars.config';
-import { join, resolve } from 'path';
-
-
 
 @Module({
   imports: [

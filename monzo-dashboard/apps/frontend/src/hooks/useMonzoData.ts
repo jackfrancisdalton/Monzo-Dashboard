@@ -5,7 +5,8 @@ import type { MonzoAccount } from "@repo/monzo-types";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const useMonzoData = ({ start, end }: { start: Date, end: Date }) => {
-    const [accounts, setAccounts] = useState<MonzoAccount[]>([]); // TECHDEBT: may wish to remove monzo types
+    // TECHDEBT: may wish to remove monzo types from frontend as they should really only be relevant on backend
+    const [accounts, setAccounts] = useState<MonzoAccount[]>([]); 
     const [selectedAccount, setSelectedAccount] = useState<string | null>(null);
     const [dashboardSummary, setDashboardSummary] = useState<DashboardSummary>();
 
