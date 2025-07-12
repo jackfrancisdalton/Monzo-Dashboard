@@ -12,8 +12,6 @@ const SetUpPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [oauthSuccess, setOauthSuccess] = useState(false);
 
-    console.log('SetUpPage loaded with API URL:', import.meta.env);
-
     useEffect(() => {
         const url = new URL(window.location.href);
         // TODO: replace with CONSTS

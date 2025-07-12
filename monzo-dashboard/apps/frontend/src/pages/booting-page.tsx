@@ -7,8 +7,6 @@ const BootingPage: React.FC = () => {
   const navigate = useNavigate();
   const [checking, setChecking] = useState(true);
 
-  console.log('Booting up...', API_URL);
-
   useEffect(() => {
     fetch(`${API_URL}/dashboard-data/is-configured`)
       .then((res) => res.json())
