@@ -2,6 +2,7 @@ services:
   postgres:
     image: postgres:15
     restart: always
+    env_file: .env.production
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -14,20 +15,8 @@ services:
   api:
     build:
       context: .
-      dockerfile: apps/api/Dockerfile
-    environment:
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_NAME: ${DB_NAME}
-      MONZO_CLIENT_ID: ${MONZO_CLIENT_ID}
-      MONZO_CLIENT_SECRET: ${MONZO_CLIENT_SECRET}
-      MONZO_REDIRECT_URI: ${MONZO_REDIRECT_URI}
-      ENCRYPTION_ALGORITHM: ${ENCRYPTION_ALGORITHM}
-      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
-      ENCRYPTION_IV: ${ENCRYPTION_IV}
-      VITE_FRONTEND_URL: ${VITE_FRONTEND_URL}
+      dockerfile: docker/Dockerfile.api
+    env_file: .env.production
     depends_on:
       - postgres
     networks:
@@ -36,7 +25,8 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: apps/api/Dockerfile
+      dockerfile: docker/Dockerfile.frontend
+    env_file: .env.production
     environment:
       VITE_API_URL: ${VITE_API_URL}
       VITE_FRONTEND_URL: ${VITE_FRONTEND_URL}
@@ -46,15 +36,15 @@ services:
   nginx:
     image: nginx:alpine
     volumes:
-      - ./nginx/default.conf.template:/etc/nginx/conf.d/default.conf.template
-      - ./nginx/entrypoint.sh:/docker-entrypoint.d/10-envsubst.sh # Make entry point run in container before container starts
+      - ./docker/nginx.conf.template:/etc/nginx/conf.d/default.conf.template
+      - ./docker/entrypoint.sh:/docker-entrypoint.d/10-envsubst.sh # trigger default conf on startup
     environment: # Provide URLs to template to reverse proxy to services over docker network
       API_DOCKER_URL: ${API_DOCKER_URL}
       FRONTEND_DOCKER_URL: ${FRONTEND_DOCKER_URL}
     ports:
       - "80:80"
     depends_on:
-      - frontend
+      # - frontend
       - api
     networks:
       - monzo_dashboard

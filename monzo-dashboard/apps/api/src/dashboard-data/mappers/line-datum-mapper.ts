@@ -1,4 +1,4 @@
-import { CumulativeLineDatum } from "../../../../../packages/dashboard-types/src";
+import { CumulativeLineDatum } from "@repo/dashboard-types";
 
 export function computeCumulativeLineData<T>(
     id: string,

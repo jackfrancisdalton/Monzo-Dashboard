@@ -1,4 +1,4 @@
-import { TreemapData } from "../../../../../packages/dashboard-types/src";
+import { TreemapData } from "@repo/dashboard-types";
 
 export function computeTreeMapData<T>(
     items: T[],

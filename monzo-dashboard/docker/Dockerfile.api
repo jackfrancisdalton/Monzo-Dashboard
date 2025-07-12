@@ -1,0 +1,51 @@
+# --- Base Image with Turbo, pnpm and common tools ---
+FROM node:22-alpine AS base
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
+RUN apk add --no-cache libc6-compat
+RUN corepack enable
+RUN pnpm add -g turbo
+
+# --- Builder: prune monorepo and prepare the isolate api app ---
+FROM base AS builder
+WORKDIR /prunedRepo
+
+# copy in the full monorepo so we can prune it
+COPY . . 
+
+# Use Turbo to prune the monorepo, isolating the api app content
+RUN turbo prune --scope=api --docker
+
+# --- Installer: install dependencies for the isolated api app ---
+FROM base AS installer
+
+WORKDIR /app
+
+COPY --from=builder /prunedRepo/out/json/ ./
+COPY --from=builder /prunedRepo/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=builder /prunedRepo/pnpm-workspace.yaml ./pnpm-workspace.yaml
+
+RUN pnpm install --frozen-lockfile
+
+COPY --from=builder /prunedRepo/out/full/ ./
+RUN pnpm turbo run build --filter=api...
+
+
+# --- Final Stage: run the api app ---
+FROM node:22-alpine
+WORKDIR /app
+
+# TODO: add user and group
+
+COPY --from=installer /app/node_modules ./node_modules
+COPY --from=installer /app/packages ./packages
+COPY --from=installer /app/apps/api ./apps/api
+
+COPY --from=installer /app/apps/api/dist ./apps/api/dist
+
+WORKDIR /app/apps/api
+
+CMD ["node", "dist/main.js"]
+

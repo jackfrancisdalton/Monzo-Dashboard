@@ -1,0 +1,28 @@
+events {}
+
+http {
+  upstream api {
+    server ${API_DOCKER_URL};
+  }
+
+  upstream frontend {
+    server ${FRONTEND_DOCKER_URL};
+  }
+
+  server {
+    listen 80;
+
+    # Serve frontend app
+    location / {
+      proxy_pass http://frontend;
+      try_files $uri $uri/ /index.html;
+    }
+
+    # Proxy API requests
+    location /api/ {
+      proxy_pass http://api;
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+    }
+  }
+}

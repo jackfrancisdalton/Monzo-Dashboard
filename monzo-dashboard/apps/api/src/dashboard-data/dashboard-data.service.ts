@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { AccountsSummary, CumulativeLineDatum, DashboardSummary, PieDatum, TopTransactionsDatum, TreemapData } from '../../../../packages/dashboard-types/src';
-import { MonzoAccount, MonzoTransaction } from '@repo/monzo-types';
+import { AccountsSummary, CumulativeLineDatum, DashboardSummary, PieDatum, TopTransactionsDatum, TreemapData } from '@repo/dashboard-types';
+import { MonzoTransaction } from '@repo/monzo-types';
 import { MonzoService } from 'src/monzo/monzo-service.interface';
 import { computeCumulativeLineData } from './mappers/line-datum-mapper';
 import { computeTreeMapData } from './mappers/tree-map-data-mapper';

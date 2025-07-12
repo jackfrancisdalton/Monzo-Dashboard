@@ -6,14 +6,16 @@ import { databaseConfig } from './database.config';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { validationSchema } from './env-vars.config';
+import { join, resolve } from 'path';
+
+
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema,
-      // On Production we pass in as process.env variables, so should ignore turborepo .env
-      envFilePath: process.env.NODE_ENV === 'development' ? '../../.env' : undefined
+      ignoreEnvFile: true,  // <-- we provide the env file in the package.json dev script
     }),
     AuthModule,
     MonzoModule, 
