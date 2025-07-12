@@ -17,7 +17,7 @@ All data is stored on your machine, and this app is meant for personal use only.
 ## Set up guide
 ### Set up Monzo Account 
 ### Install and run application
-note to self: docker compose up -f docker-compose.prod.yaml --env-file .env.docker up --build
+note to self:  docker compose --env-file .env.production -f docker-compose.prod.yaml up --build from root dir
 ### Oauth and syncing account 
 
 ----------------------------------
