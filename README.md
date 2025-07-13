@@ -158,7 +158,7 @@ This ensures modularity and reusability across the project.
 --------------------
 
 <details>
-<summary style="font-size: 1.5em;">Contributing to this project and future features</summary>
+<summary style="font-size: 1.5em;">Contributing to this project</summary>
 
 ---
 
