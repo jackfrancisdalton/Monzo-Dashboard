@@ -115,6 +115,10 @@ This ensures modularity and reusability across the project.
 | **nginx**          | Contains Nginx configuration files used for reverse proxying in production. Ensures smooth routing between the frontend and backend services across the Docker network. |
 
 
+### Arch Diagram
+<img width="5013" height="2459" alt="high-level-arch" src="https://github.com/user-attachments/assets/aab52c75-7361-4c2d-bed8-63eb02385385" />
+
+
 </details>
 
 --------------------------------
