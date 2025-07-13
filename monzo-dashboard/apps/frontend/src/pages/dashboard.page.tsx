@@ -85,7 +85,7 @@ function DashboardPage() {
     >
       {/* Display Cards */}
       <CardLayout>
-        <CardWrapper title="Spending over time" className="col-span-4 row-span-2">
+        <CardWrapper title="Credit/Debit over time" className="col-span-4 row-span-2">
           <ResponsiveLine
             data={dashboardSummary?.creditAndDebitOverTimeLineData ?? []}
             margin={{ top: 20, right: 20, bottom: 50, left: 50 }}

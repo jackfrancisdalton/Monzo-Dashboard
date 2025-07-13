@@ -14,7 +14,7 @@ export class DashboardDataService {
     ) {}
 
     async isConfigured(): Promise<boolean> {
-        // TECH-DEBT: For now we only implement monzo so only need to verify it is configured.
+        // TECH-NOTE: For now we only implement monzo so only need to verify it is configured.
         // In the future we may support multiple providers, so this could be expanded.
         return this.monzoService.isConfigured();
     }
@@ -56,7 +56,7 @@ export class DashboardDataService {
         const { creditTxs, debitTxs } = this.splitTransactionsByCreditDebit(transactions);
 
         return {  
-            balance,
+            balance: balance,
             creditAndDebitOverTimeLineData: this.getSpendingAndIncomeOverTimeLineData(creditTxs, debitTxs),
             creditsByCategoryPieData: this.getSpendingByCategoryPieChart(creditTxs),
             debitsByCategoryPieData: this.getSpendingByCategoryPieChart(debitTxs),
@@ -64,50 +64,52 @@ export class DashboardDataService {
             debitsByDescriptionTreeMap: this.getTreeMapByDescriptionData(debitTxs),
             topDebits: this.getTopDebits(debitTxs),
             topCredits: this.getTopCredits(creditTxs),
-            totalDebit: parseFloat(debitTxs.reduce((acc, tx) => { // TODO: clean up to functions and introduce major/minor currecy typing
-                return acc + (tx.amount < 0 ? Math.abs(tx.amount) : 0);
-            }, 0).toFixed(2)),
-            totalCredit: parseFloat(creditTxs.reduce((acc, tx) => {
-                return acc + (tx.amount > 0 ? Math.abs(tx.amount) : 0);
-            }, 0).toFixed(2)),
+            totalDebit: this.toMajorCurrency(
+                debitTxs.reduce((acc, tx) => acc + (tx.amount < 0 ? Math.abs(tx.amount) : 0), 0)
+            ),
+            totalCredit: this.toMajorCurrency(
+                creditTxs.reduce((acc, tx) => acc + (tx.amount > 0 ? Math.abs(tx.amount) : 0), 0)
+            ),
         };
     }
+
+    /*
+    * TODO: review approach to data formatting. We are repeatedly computing the same data in different places.
+    * It makes it easy to expand on but isn't very efficient. That said it's still more than fast enough so leaving for now.
+    */
 
     private getSpendingAndIncomeOverTimeLineData(creditTxs: MonzoTransaction[], debitTxs: MonzoTransaction[]): CumulativeLineDatum[] {    
         const spendingLine = computeCumulativeLineData(
             "Debits",
             debitTxs,
             (tx) => new Date(tx.created),
-            (tx) => Math.abs(tx.amount)
+            (tx) => this.toMajorCurrency(Math.abs(tx.amount))
         );
     
         const incomeLine = computeCumulativeLineData(
             "Credits",
             creditTxs,
             (tx) => new Date(tx.created),
-            (tx) => Math.abs(tx.amount)
+            (tx) => this.toMajorCurrency(Math.abs(tx.amount))
         );
     
         return [spendingLine[0]!, incomeLine[0]!];
     }
 
     private getTreeMapByDescriptionData(transactions: MonzoTransaction[]): TreemapData {
-        const treeMapByDescription = computeTreeMapData(
+        return computeTreeMapData(
             transactions,
             (tx) => tx.description ?? "unknown",
-            (tx) => Math.abs(tx.amount)
+            (tx) => this.toMajorCurrency(Math.abs(tx.amount))
         );
-        return treeMapByDescription;
     }
 
     private getSpendingByCategoryPieChart(transactions: MonzoTransaction[]): PieDatum[] {
-        const pieMap = computeGenericPieData(
+        return computeGenericPieData(
             transactions,
             (tx) => tx.category ?? 'unknown',
-            (tx) => Math.abs(tx.amount)
-        )
-
-        return pieMap
+            (tx) => this.toMajorCurrency(Math.abs(tx.amount))
+        );
     }
 
     private getTopCredits(transactions: MonzoTransaction[]): TopTransactionsDatum[] {
@@ -115,7 +117,7 @@ export class DashboardDataService {
             .sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount))
             .slice(0, 10)
             .map((tx) => ({
-                amount: Math.abs(tx.amount),
+                amount: this.toMajorCurrency(Math.abs(tx.amount)),
                 date: new Date(tx.created),
                 label: tx.description || 'No description',
             }));
@@ -126,7 +128,7 @@ export class DashboardDataService {
             .sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount))
             .slice(0, 10)
             .map((tx) => ({
-                amount: Math.abs(tx.amount),
+                amount: this.toMajorCurrency(Math.abs(tx.amount)),
                 date: new Date(tx.created),
                 label: tx.description || 'No description',
             }));
@@ -144,5 +146,10 @@ export class DashboardDataService {
 
             return acc;
         }, { creditTxs: [], debitTxs: [] } as { creditTxs: MonzoTransaction[], debitTxs: MonzoTransaction[] });
+    }
+
+    // TODO: move to utils file
+    private toMajorCurrency(amount: number): number {
+        return parseFloat((amount / 100).toFixed(2));
     }
 }
