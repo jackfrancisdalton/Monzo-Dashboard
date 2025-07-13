@@ -6,6 +6,10 @@ Love Monzo, but find it frustrating not being able to check your finances on a b
 It's a readonly Monzo dashboard that syncs all of your Monzo data to a database and provides you with UI to assess
 what you've been spending and earning!
 
+https://github.com/user-attachments/assets/12062d06-c20e-49ee-a3f0-03caaba93c8a
+
+
+
 ## Project Aim?
 Expand the already stellar offering at Monzo with a web dashboard that the community can contribute to over time, 
 allowing the Monzo team to focus on scaling their services and delivery rapidly on mobile. The architecture of this application was designed with the intention of making contribution easy, so please feel free to open PRs!
