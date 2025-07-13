@@ -86,6 +86,17 @@ All other behavior and processing is handled internally in Docker services.
 
 </details>
 
+<details>
+<summary style="font-size: 1.5em;">Clearing your data</summary>
+
+### How to wipe the SQL database?
+As the PostgreSQL database is a container and stores in volumes, you can completely wipe your data by running:
+`docker compose --env-file .env.production -f docker-compose.prod.yaml down -v` with the `-v` denoting that volumes should be deleted.
+
+
+</details>
+---------------------------------
+
 ----------------------------------
 
 <details>
