@@ -155,37 +155,50 @@ The architecture is designed to separate concerns between the frontend, backend,
 
 </details>
 
+--------------------
 
+<details>
+<summary style="font-size: 1.5em;">Contributing to this project and future features</summary>
 
-## Contributing to this project and future features
+---
 
 ### Adding New Cards/Data Analysis
 This app is designed to make this flow as easy as possible. How?
-1. All monzo data is available via the PostgreSQL database after sync
-2. So you can aquire all of it and format it as you see fit in the Dashboard service that functions as a presentation layer
-3. Then in the UI the CardLayout and AppLayout allow you to easily fit in new cards with the data you generate
+1. All Monzo data is available via the PostgreSQL database after sync.
+2. You can acquire all of it and format it as you see fit in the Dashboard service that functions as a presentation layer.
+3. Then in the UI, the CardLayout and AppLayout allow you to easily fit in new cards with the data you generate.
 
+---
 
 ### Desired Features/Improvements (if you fancy doing them)
-- improve error handling (perhaps a re-usable error toast component)
-- profile page
-- settings page
-- transaction search (by merchant/description/date range)
-- merchant overview (how much total spent, how much refunded, latest transactions)
+- Improve error handling (perhaps a reusable error toast component).
+- Profile page.
+- Settings page.
+- Transaction search (by merchant/description/date range).
+- Merchant overview (how much total spent, how much refunded, latest transactions).
 
+</details>
 
 ----------------------------------
 
-## Limitations & Bugs
-### 5 Minute pull
-As per the monzo documentation, you can only pull all account transactions in the first 5 minutes of oauth login.
-To achieve this we burst a number of paginated queries right after oauth success to fetch them all and store them in SQL ASAP.
-If for some reason this is not compelted within 5 minutes you may not be able to pull all of your data.
+<details>
+<summary style="font-size: 1.5em;">Limitations & Bugs</summary>
 
+---
 
-### SSE support required
-The current implementation of the oauth & account sync flow depends on SSE support. 
-If your browser does not have support SSE then this will fail. Adding a fallback is on the roadmap but a low priority given how common SSE support is. 
+### 5 Minute Pull
+As per the Monzo documentation, you can only pull all account transactions in the first 5 minutes of OAuth login.  
+To achieve this, the app bursts a number of paginated queries right after OAuth success to fetch them all and store them in SQL as quickly as possible.  
+If for some reason this is not completed within 5 minutes, you may not be able to pull all of your data.
+
+---
+
+### SSE Support Required
+The current implementation of the OAuth and account sync flow depends on SSE (Server-Sent Events) support.  
+If your browser does not support SSE, this process will fail. Adding a fallback is on the roadmap but is a low priority given how common SSE support is.
+
+</details>
+
 
 ----------------------------------
 
