@@ -2,11 +2,12 @@ import React from 'react'
 import { NavLink } from "react-router-dom";
 
 interface AppLayoutProps {
-    headerComponent?: React.ReactNode;
     children: React.ReactNode;
+    headerComponent?: React.ReactNode;
+    showLoadingOverlay?: boolean;
 };
 
-const AppLayout: React.FC<AppLayoutProps> = ({ headerComponent, children }) => {
+const AppLayout: React.FC<AppLayoutProps> = ({ children, headerComponent, showLoadingOverlay }) => {
     return (
         <div className="flex h-screen">
             {/* Left sidebar - fixed width */}
@@ -17,7 +18,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ headerComponent, children }) => {
                         to="/"
                         className={({ isActive }) =>
                             isActive ? 'bg-gray-700 p-2 rounded' : 'hover:bg-gray-700 p-2 rounded'
-                        }
+                    }
                     >
                         Dashboard
                     </NavLink>
@@ -47,7 +48,12 @@ const AppLayout: React.FC<AppLayoutProps> = ({ headerComponent, children }) => {
                         {headerComponent}
                     </header>
                 )}
-                <main className="flex-1 overflow-y-auto p-4">
+                <main className="flex-1 overflow-y-auto p-4 relative">
+                    {showLoadingOverlay && (
+                        <div className="absolute inset-0 bg-gray-500 opacity-25 flex items-center justify-center z-50">
+                            <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                    )}
                     {children}
                 </main>
             </div>

@@ -6,9 +6,10 @@ import {
 
 interface TimeRangePickerProps {
   onChange: (range: { start: Date; end: Date }) => void;
+  disabled?: boolean;
 }
 
-const TimeRangePicker: React.FC<TimeRangePickerProps> = ({ onChange }) => {
+const TimeRangePicker: React.FC<TimeRangePickerProps> = ({ onChange, disabled = false }) => {
   const [customStart, setCustomStart] = useState<Date | null>(null);
   const [customEnd, setCustomEnd] = useState<Date | null>(null);
 
@@ -60,19 +61,22 @@ const TimeRangePicker: React.FC<TimeRangePickerProps> = ({ onChange }) => {
       <div className="flex gap-1">
         <button
           onClick={selectWeekSoFar}
-          className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer"
+          disabled={disabled}
+          className={`p-2 rounded cursor-pointer ${disabled ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'}`}
         >
           Week so far
         </button>
         <button
           onClick={selectThisFullWeek}
-          className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer"
+          disabled={disabled}
+          className={`p-2 rounded cursor-pointer ${disabled ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'}`}
         >
           This week
         </button>
         <button
           onClick={selectLastWeek}
-          className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer"
+          disabled={disabled}
+          className={`p-2 rounded cursor-pointer ${disabled ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'}`}
         >
           Last week
         </button>
@@ -84,7 +88,8 @@ const TimeRangePicker: React.FC<TimeRangePickerProps> = ({ onChange }) => {
           <button
             key={i}
             onClick={() => selectMonth(i)}
-            className="p-2 bg-purple-500 text-white rounded hover:bg-purple-600 cursor-pointer"
+            disabled={disabled}
+            className={`p-2 rounded cursor-pointer ${disabled ? 'bg-gray-500 cursor-not-allowed' : 'bg-purple-500 text-white hover:bg-purple-600'}`}
           >
             {new Date(0, i).toLocaleString('default', { month: 'short' })}
           </button>
@@ -95,13 +100,15 @@ const TimeRangePicker: React.FC<TimeRangePickerProps> = ({ onChange }) => {
       <div className="flex gap-1 ml-4">
         <button
           onClick={selectThisYear}
-          className="p-2 bg-orange-500 text-white rounded hover:bg-orange-600 cursor-pointer"
+          disabled={disabled}
+          className={`p-2 rounded cursor-pointer ${disabled ? 'bg-gray-500 cursor-not-allowed' : 'bg-orange-500 text-white hover:bg-orange-600'}`}
         >
           This year
         </button>
         <button
           onClick={selectLastYear}
-          className="p-2 bg-orange-500 text-white rounded hover:bg-orange-600 cursor-pointer"
+          disabled={disabled}
+          className={`p-2 rounded cursor-pointer ${disabled ? 'bg-gray-500 cursor-not-allowed' : 'bg-orange-500 text-white hover:bg-orange-600'}`}
         >
           Last year
         </button>
@@ -112,17 +119,20 @@ const TimeRangePicker: React.FC<TimeRangePickerProps> = ({ onChange }) => {
         <input
           type="date"
           onChange={(e) => setCustomStart(new Date(e.target.value))}
-          className="px-1 py-1 border rounded"
+          disabled={disabled}
+          className={`px-1 py-1 border rounded ${disabled ? 'bg-gray-200 cursor-not-allowed' : ''}`}
         />
         <span>to</span>
         <input
           type="date"
           onChange={(e) => setCustomEnd(new Date(e.target.value))}
-          className="px-1 py-1 border rounded"
+          disabled={disabled}
+          className={`px-1 py-1 border rounded ${disabled ? 'bg-gray-200 cursor-not-allowed' : ''}`}
         />
         <button
           onClick={applyCustom}
-          className="p-2 bg-green-500 text-white rounded hover:bg-green-600 cursor-pointer"
+          disabled={disabled}
+          className={`p-2 rounded cursor-pointer ${disabled ? 'bg-gray-500 cursor-not-allowed' : 'bg-green-500 text-white hover:bg-green-600'}`}
         >
           Apply
         </button>

@@ -24,6 +24,7 @@ function DashboardPage() {
     selectedAccount,
     setSelectedAccount,
     dashboardSummary,
+    loadingData
   } = useMonzoData({ start: dateRange.start, end: dateRange.end });
 
   // On initial load, check URL params for account and date range
@@ -62,6 +63,7 @@ function DashboardPage() {
           onChange={(dateRange) => {
             setDateRange(dateRange);
           }}
+          disabled={loadingData}
         />
         <DropDownPicker
           options={accounts}
@@ -70,13 +72,17 @@ function DashboardPage() {
           getLabel={(account) => account.description}
           onChange={(account) => { setSelectedAccount(account?.id ?? null) }}
           layoutClassName="float-right"
+          disabled={loadingData}
         ></DropDownPicker>
       </>
     );
   };
 
   return (
-    <AppLayout headerComponent={generateHeader()}>
+    <AppLayout 
+      headerComponent={generateHeader()} 
+      showLoadingOverlay={loadingData}
+    >
       {/* Display Cards */}
       <CardLayout>
         <CardWrapper title="Spending over time" className="col-span-4 row-span-2">

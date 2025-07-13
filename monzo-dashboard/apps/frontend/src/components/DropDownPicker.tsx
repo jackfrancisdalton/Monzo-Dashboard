@@ -1,4 +1,3 @@
-
 interface DropDownPickerProps<T> {
     options: T[];
     dropDownLabel: string;
@@ -6,6 +5,7 @@ interface DropDownPickerProps<T> {
     getLabel: (item: T) => string;
     onChange: (selected: T | undefined) => void;
     layoutClassName?: string;
+    disabled?: boolean;
 }
 
 const DropDownPicker = <T,>({
@@ -14,7 +14,8 @@ const DropDownPicker = <T,>({
     getValue,
     getLabel,
     onChange,
-    layoutClassName
+    layoutClassName,
+    disabled = false // Default to false
 }: DropDownPickerProps<T>) => {
     // TECHDEBT: will have to re-render this every render, if long list of options this sucks 
     const valueToObjectMap = new Map<string, T>();
@@ -31,6 +32,7 @@ const DropDownPicker = <T,>({
                 id="drop-down-select"
                 className="border border-gray-300 rounded-md p-2 bg-gray-800 text-white"
                 onChange={(e) => onChange(valueToObjectMap.get(e.target.value))}
+                disabled={disabled} // Apply the disabled prop
             >
                 {options.map((option, index) => (
                     <option key={index} value={getValue(option)}>
