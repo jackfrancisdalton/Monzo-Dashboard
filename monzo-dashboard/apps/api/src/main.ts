@@ -18,6 +18,7 @@ async function bootstrap() {
     whitelist: true,
   }));
 
+  // TODO: review changing this to fail if port not defined instead of defaulting to 3000
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

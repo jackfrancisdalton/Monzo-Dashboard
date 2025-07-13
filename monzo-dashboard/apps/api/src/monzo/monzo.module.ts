@@ -16,7 +16,7 @@ import { MonzoController } from './monzo.controller';
   imports: [
     AuthModule, 
     HttpModule.register({
-      timeout: 5 * 60 * 10, // 5 minutes to reflect monzo limitations
+      timeout: 5 * 60 * 1000, // 5 minutes to reflect Monzo limit for full transaction history pull
       maxRedirects: 5,
     }),
     TypeOrmModule.forFeature([
@@ -33,7 +33,8 @@ import { MonzoController } from './monzo.controller';
     MonzoSyncService,
     {
       provide: MonzoService,
-      useClass: process.env.NODE_ENV === 'production'
+      // Preferred this over process.env.production to allow for easier dev/prod development when required
+      useClass: process.env.USE_REAL_MONZO_API === 'true' 
           ? RealMonzoService
           : MockMonzoService,
     },

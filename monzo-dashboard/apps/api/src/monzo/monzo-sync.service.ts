@@ -10,7 +10,6 @@ import { MonzoAccount, MonzoSyncProgressUpdate } from '@repo/monzo-types';
 // TODO: clean up general logging approach, errorhandling, progress reporting and logging content
 @Injectable()
 export class MonzoSyncService {
-    private readonly logger = new Logger(MonzoSyncService.name);
     private readonly MONZO_API = 'https://api.monzo.com';
 
     constructor(
@@ -58,13 +57,14 @@ export class MonzoSyncService {
         try {
             const headers = await this.getAuthHeaders();
             await this.syncAccountsAndBalances(headers, onProgress);
-            await this.syncTransactions(headers, undefined, onProgress);
+            await this.syncTransactions(headers, undefined, onProgress); // undefined start fetchs all transactions
         } catch (error: any) {
             console.log(`Failed to complete full Monzo fetch: ${error}`)
             throw new Error(`Failed to complete full Monzo fetch: ${error.message}`);
         }
     }
 
+    // TODO: needs to be integrated with the dashboard data service, need to decide on the triggering mechanism
     async incrementalSync(onProgress?: (p: MonzoSyncProgressUpdate) => void): Promise<void> {
         try {
             // use last transaction point as starting point of fetch

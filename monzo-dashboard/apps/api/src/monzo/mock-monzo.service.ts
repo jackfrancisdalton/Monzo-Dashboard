@@ -15,15 +15,15 @@ export class MockMonzoService implements MonzoService {
   }
 
   async getAccounts(): Promise<MonzoAccount[]> {
-    return this.getRequest<MonzoAccount[]>(`${process.env.VITE_MOCK_MONZO_URL}/accounts`);
+    return this.getRequest<MonzoAccount[]>(`${process.env.MOCK_MONZO_URL}/accounts`);
   }
 
   async getBalance(accountId: string): Promise<MonzoBalance> {
-    return this.getRequest<MonzoBalance>(`${process.env.VITE_MOCK_MONZO_URL}/balance`);
+    return this.getRequest<MonzoBalance>(`${process.env.MOCK_MONZO_URL}/balance`);
   }
 
   async getTransactions(accountId: string, start: Date, end: Date): Promise<MonzoTransaction[]> {
-    const res = await this.getRequest<MonzoTransaction[]>(`${process.env.VITE_MOCK_MONZO_URL}/transactions`);
+    const res = await this.getRequest<MonzoTransaction[]>(`${process.env.MOCK_MONZO_URL}/transactions`);
 
     return res.filter((transaction) => {
       const t = new Date(transaction.created);
@@ -35,14 +35,15 @@ export class MockMonzoService implements MonzoService {
   private async getRequest<T>(path: string): Promise<T> {
     try {
       return await firstValueFrom(
-        this.http.get<T>(path).pipe(
+        this.http.get<T>(path, { timeout: 8000 }).pipe(
           map((response) => response.data),
           catchError((err) => {
-            return throwError(() => new Error(`Failed to fetch ${path}`));
+            return throwError(() => new Error(`Failed to fetch ${path}, with error: ${err}`));
           }),
         ),
       );
     } catch (err) {
+      console.log(`Error fetching from ${path}:`);
       throw err;
     }
   }

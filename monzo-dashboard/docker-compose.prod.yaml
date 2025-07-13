@@ -19,6 +19,7 @@ services:
     env_file: .env.production
     depends_on:
       - postgres
+      - mockmonzo ## ideally make this conditional if USE_REAL_MONZO_API is false
     networks:
       - monzo_dashboard
 
@@ -34,6 +35,15 @@ services:
     networks:
       - monzo_dashboard
 
+  # TODO: add condition to only up if USE_REAL_MONZO_API is false
+  mockmonzo:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.mockmonzo
+    env_file: .env.production
+    networks:
+      - monzo_dashboard
+
   nginx:
     build:
       context: .
@@ -41,12 +51,14 @@ services:
     environment: # Provide URLs to template to reverse proxy to services over docker network
       API_DOCKER_URL: ${API_DOCKER_URL}
       FRONTEND_DOCKER_URL: ${FRONTEND_DOCKER_URL}
+      MOCK_MONZO_DOCKER_URL: ${MOCK_MONZO_DOCKER_URL}
     ports:
       - "80:80" # Expose port 80  as the entrypoint for reverse proxy TODO: replace with env variable for flexibility
       # NOTE: consider offering over HTTP and exposing 443 for HTTPS with certs
     depends_on:
       - frontend
       - api
+      - mockmonzo
     networks:
       - monzo_dashboard
 
