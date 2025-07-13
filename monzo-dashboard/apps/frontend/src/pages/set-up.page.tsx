@@ -6,15 +6,16 @@ import { CheckCircle, Loader2 } from 'lucide-react';
 const API_URL = import.meta.env.VITE_API_URL;
 const FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL;
 
+// TODO: this page is doing two jobs, auth and sync, should be split into two pages and cleaned up
 const SetUpPage: React.FC = () => {
     const navigate = useNavigate();
     const [syncTasks, setSyncTasks] = useState<MonzoSyncProgressUpdate[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [oauthSuccess, setOauthSuccess] = useState(false);
+    const [isApproved, setIsApproved] = useState(false); // New state for checkbox
 
     useEffect(() => {
         const url = new URL(window.location.href);
-        // TODO: replace with CONSTS
         if (url.searchParams.get('oauth') === 'success') {
             setOauthSuccess(true);
         }
@@ -23,7 +24,7 @@ const SetUpPage: React.FC = () => {
     const startAuth = () => {
         window.location.href = `${API_URL}/auth/monzo/login?redirect_uri=${encodeURIComponent(
             `${FRONTEND_URL}/setup?oauth=success`
-        )}`; // TODO: review if we want to set this here, or on the backend
+        )}`;
     };
 
     const startSync = () => {
@@ -54,8 +55,6 @@ const SetUpPage: React.FC = () => {
                 }
             });
 
-            // TODO: replace with CONSTS
-            // When this message arrives we've received the complete sync and can navigate to dashboard
             if (data.taskStage === 'completed' && data.taskName === 'fullSync') {
                 eventSource.close();
                 setTimeout(() => navigate('/dashboard'), 5000);
@@ -63,17 +62,17 @@ const SetUpPage: React.FC = () => {
         };
 
         eventSource.onerror = () => {
-            // TODO: come up with a better error handling strategy
-            setError('Sync error occured.');
+            setError('Sync error occurred.');
+            eventSource.close();
         };
     };
 
     const renderHeader = () => (
         <div className="text-center">
-            <h1 className="text-3xl font-bold mb-4">Auth and sync your Monzo account</h1>
+            <h1 className="text-3xl font-bold mb-4">Welcome! Let's Authorise your account and Sync your data!</h1>
             <p className="mb-6 max-w-xl mx-auto">
-                We'll redirect you to auth with Monzo, then automatically sync all your data.
-                Tokens are securely stored and auto-refresh. Future syncs only fetch new transactions.
+                Click the button below to connect your Monzo account. 
+                Once connected you'll be able to sync your data to the app and start browsing!
             </p>
         </div>
     );
@@ -88,12 +87,29 @@ const SetUpPage: React.FC = () => {
     );
 
     const renderSyncButton = () => (
-        <button
-            onClick={startSync}
-            className="bg-green-600 text-white px-6 py-3 rounded shadow hover:bg-green-700 transition mt-4"
-        >
-            Start Sync
-        </button>
+        <div className="flex flex-col items-center mt-4">
+            <div className="flex items-center mb-4">
+                <input
+                    type="checkbox"
+                    id="approvalCheckbox"
+                    checked={isApproved}
+                    onChange={(e) => setIsApproved(e.target.checked)}
+                    className="mr-2"
+                />
+                <label htmlFor="approvalCheckbox" className="text-sm">
+                    I have approved this app in the Monzo app. You should have received a notification in the Monzo app asking for approval.
+                </label>
+            </div>
+            <button
+                onClick={startSync}
+                disabled={!isApproved}
+                className={`px-6 py-3 rounded shadow transition ${
+                    isApproved ? 'bg-green-600 text-white hover:bg-green-700' : 'bg-gray-400 text-gray-700 cursor-not-allowed'
+                }`}
+            >
+                Start Sync
+            </button>
+        </div>
     );
 
     const renderSyncTasks = () => (
