@@ -72,7 +72,7 @@ All other behavior and processing is handled internally in Docker services.
 2. Navigate to the mock-monzo app directory and run `pnpm run generate:large` to generate mock data.
 3. Run `pnpm run dev` and access the app at `localhost:5173`.
 
->By default this will usw mock data. If you want to use dev mode with real data/Oauth flow do this:
+>By default this will use mock data. If you want to use dev mode with real data/Oauth flow do this:
 >1. Update `USE_REAL_MONZO_API` to `true` in the `.env.development`.
 >2. Run `docker compose --env-file .env.development -f docker-compose.dev.yaml up --build` to set up the Postgres container.
 >3. Then run `pnpm run dev`.
@@ -241,8 +241,8 @@ A solution to improve scalability and readability for larger data sets is requir
 ### Additional Pages
 Currently only the dashboard page is supported. I intend on adding support for a 
 
-Account Page: showing useful information like account numbers, IBAN, etc... with easy copy buttons
-Settings PAge: for setting themes, default accounts, default time ranges on dashboad
+- *Accounts Page*: showing useful information like account numbers, IBAN, etc... with easy copy buttons
+- *Settings PAge*: for setting themes, default accounts, default time ranges on dashboad
 
 
 </details>
