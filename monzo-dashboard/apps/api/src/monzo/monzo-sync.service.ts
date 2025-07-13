@@ -227,36 +227,36 @@ export class MonzoSyncService {
             return cache.get(merchantData.id)!;
         }
     
-        let merchant = await this.merchantRepo.findOne({ where: { id: merchantData.id } });
-        if (!merchant) {
-            const address = new MerchantAddressEntity();
-            address.address = merchantData.address?.address || '';
-            address.city = merchantData.address?.city || '';
-            address.country = merchantData.address?.country || '';
-            address.latitude = merchantData.address?.latitude || 0;
-            address.longitude = merchantData.address?.longitude || 0;
-            address.postcode = merchantData.address?.postcode || '';
-            address.region = merchantData.address?.region || '';
+        const address = new MerchantAddressEntity();
+        address.address = merchantData.address?.address || '';
+        address.city = merchantData.address?.city || '';
+        address.country = merchantData.address?.country || '';
+        address.latitude = merchantData.address?.latitude || 0;
+        address.longitude = merchantData.address?.longitude || 0;
+        address.postcode = merchantData.address?.postcode || '';
+        address.region = merchantData.address?.region || '';
     
-            const safeCreatedDate = (merchantData.created && !isNaN(Date.parse(merchantData.created)))
-                ? new Date(merchantData.created)
-                : undefined;
+        const safeCreatedDate = merchantData.created && !isNaN(Date.parse(merchantData.created))
+            ? new Date(merchantData.created)
+            : undefined;
     
-            merchant = this.merchantRepo.create({
-                id: merchantData.id,
-                name: merchantData.name,
-                category: merchantData.category,
-                emoji: merchantData.emoji,
-                logo: merchantData.logo,
-                created: safeCreatedDate,
-                address,
-            });
+        const merchant = this.merchantRepo.create({
+            id: merchantData.id,
+            name: merchantData.name,
+            category: merchantData.category,
+            emoji: merchantData.emoji,
+            logo: merchantData.logo,
+            created: safeCreatedDate,
+            address,
+        });
     
-            await this.merchantRepo.save(merchant);
-        }
+        await this.merchantRepo.upsert(merchant, ['id']);
+    
         cache.set(merchantData.id, merchant);
+    
         return merchant;
     }
+    
     
     private async fetchTransactionsPage(
         account: AccountEntity,

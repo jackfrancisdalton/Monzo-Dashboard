@@ -33,6 +33,8 @@ services:
         VITE_API_URL: ${VITE_API_URL}
         VITE_FRONTEND_URL: ${VITE_FRONTEND_URL}
     env_file: .env.production
+    depends_on:
+      - api
     networks:
       - monzo_dashboard
 
