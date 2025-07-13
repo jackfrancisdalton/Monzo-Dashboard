@@ -2,8 +2,8 @@
 
 
 # Monzo-Dashboard
-Love Monzo but find it frustrating not being able to check your finances on a browser? **This is your solution!**
-It's a readonly Monzo dashboard that syncs all of your Monzo data to a database and provides you with UI to assess
+Love Monzo but find it frustrating not being able to check your finances on a browser? **This is the solution!**
+It's a readonly Monzo dashboard that syncs all of your Monzo data to an SQL database, then provides you with a UI to assess
 what you've been spending and earning!
 
 https://github.com/user-attachments/assets/12062d06-c20e-49ee-a3f0-03caaba93c8a
@@ -12,15 +12,15 @@ https://github.com/user-attachments/assets/12062d06-c20e-49ee-a3f0-03caaba93c8a
 
 ## Project Aim?
 Support the already stellar offering at Monzo with a web dashboard that the community can contribute to over time, 
-allowing the Monzo team to focus on scaling their services and delivery rapidly on mobile. 
-The architecture of this application was designed with the intention of making contribution easy, so please feel free to open PRs!
+allowing the Monzo team to continue focus on scaling their services and rapidly delivering on mobile. 
+The architecture of this application was designed with the intention of making contribution easy, **so please feel free to open PRs!**
 
 <details>
 <summary style="font-size: 3em;">How does it handle your data?</summary>
 
-This is your personal finance data. We should keep security at front of mind.
-In line with that, this app aims to keep it as private as possible. 
-**It is intended only to run on localhost on your personal machine.**
+This is your personal finance data. We should keep its security at front of mind.
+In line with that, this app aims to keep everything in your hands and secure as much as possible. 
+**It is STRONGLY recommended you only run this on localhost on your own personal machine and don't open it up to the internet by hosting it**
 
 ### How are secrets stored?
 Secrets are stored in `.env` files that you keep on your local machine and are only ever injected into Docker environments.
@@ -46,7 +46,7 @@ All other behavior and processing is handled internally in Docker services.
 <summary style="font-size: 3em;">Set up guide</summary>
 
 ### Required Configuration
-1. Set up Monzo Oauth Account **(NOTE: Can be skipped if you want to use mock data)**
+1. Set up a Monzo Oauth Client **(NOTE: Can be skipped if you want to use mock data)**
     - Navigate to https://developers.monzo.com/ and sign in using your Monzo email.
     - Create a new Oauth Client.
     - Mark it as secure credentials and set the redirect to `http://localhost:80/api/auth/monzo/callback`.
@@ -95,7 +95,6 @@ All other behavior and processing is handled internally in Docker services.
 ### Arch Overview
 The Monzo Dashboard is structured as a monorepo using Turbo Repo to manage multiple apps and shared packages. 
 This ensures modularity and reusability across the project. 
-The architecture is designed to separate concerns between the frontend, backend, and supporting services like mock APIs and shared configurations.
 
 
 | App Name           | Description                                                                 |
@@ -122,35 +121,35 @@ The architecture is designed to separate concerns between the frontend, backend,
 <details>
 <summary style="font-size: 1.5em;">Data/Authentication Flows</summary>
 
+### How does Oauth flow work?
+1. User initaties Oauth flow fromt the UI
+2. They are directed to the API OauthController
+3. This uses the provider (monzo) to attach oauth parameters and specify the redirect URL
+4. The Oauth controller forwards to the Monzo Login page for Oauth login
+5. Once loged in the OauthController callback is called to encrypt and store the refresh and access tokenss
+6. The user is then redirected to the Sync step of set up
 
-### Mock Data Flow
-1. Frontend app is opened in your browser
-2. As `USE_REAL_MONZO_API` is false the `MockMonzoService` is used instead of `RealMonzoService`
-3. This informs the dashboard service in `api` that you are configured
-4. When data is requested from the dashboard service it forwards to the mock service that requests from the mock monzo app
-5. the Mock monzo app returns mock data generated from json files.
+
+### How does real data sync?
+1. User clicks Sync button on set up page
+2. This calls the API MonzoController to trigger syncing
+3. The monzo sync service first fetches balances and acocunts from the Monzo API and stores in PostgreSQL
+4. It then generates month-long paginated requests for every month since account creation (For each account)
+5. It fires these in paralllel storing the transaction and merchant data in PostgrSQL as it goes
+6. Throughout this process it callbacks to send SSE events to the frontend to provide progress updates
+7. Once all data is aquired the SQL database is considered ready and from there all dashboard data is generated from there. 
+
+
+### How Does Mock Data Work?
+1. Mock data is generated in the mock-monzo service using the generate command.
+2. It is stored in JSON format in that app
+3. When the API app requests Monzo data and `USE_REAL_MONZO_API` is `false` it will inject its MockMonzoService
+4. This will send a request to the mock-monzo service 
+5. The mock monzo service will read the generated .json files and return the mocked data to the API
 
 >Note: the mock data generator can be ammended with different arguments to generate desired data sets
 
----
 
-### Oauth Flow
-1. User initiates Oauth flow specifying redirect 
-2. User is redirected to OauthController in API app
-3. OAuthcontroller attaches relevant data and forwards to Monzo API
-4. Monzo returns to Oauth controller with tokens
-5. Oauth Controller encrypts and stores data on 
-
-
-### Data Sync Flow
-1. User initiates sync from the UI
-2. Fowrads to API
-3. API initiates sync service
-4. Sync process captures blaances and accounts first
-5. Generates paginated requests with 1 month time range for every month since account creation
-6. Fires in parallel and batch stores to DB on retreval
-7. API provides SSE updates to UI as sync continues
-8. On sync complete user is redirected to dashboard
 
 
 </details>
@@ -164,18 +163,20 @@ The architecture is designed to separate concerns between the frontend, backend,
 
 ### Adding New Cards/Data Analysis
 This app is designed to make this flow as easy as possible. How?
-1. All Monzo data is available via the PostgreSQL database after sync.
-2. You can acquire all of it and format it as you see fit in the Dashboard service that functions as a presentation layer.
-3. Then in the UI, the CardLayout and AppLayout allow you to easily fit in new cards with the data you generate.
+1. All Monzo data is available via the PostgreSQL database after the user has sync'd.
+2. The Dashboard Service provides a one-stop-shopw to access and process all data for the frontend.
+3. The UI AppLayout and CardLayout allow you to easily integrate a new custom card into the existing UI.
 
----
+As an example if you wanted to add a card for "Number of transfers from Jane" you would:
+1. Add a function to count transactions from jane in the DashboardService
+2. Update the DashboardSummary type to include it
+3. Add a CardLayout to the Dashboard.page.ts and bind your data.
 
-### Desired Features/Improvements (if you fancy doing them)
-- Improve error handling (perhaps a reusable error toast component).
-- Profile page.
-- Settings page.
-- Transaction search (by merchant/description/date range).
-- Merchant overview (how much total spent, how much refunded, latest transactions).
+
+### Testing
+As a homebrew project done by a single developer, I'm yet to unit, integration, and E2E test this.
+If you fancy expanding the existing app with unit tests it'd be much appreciated!
+
 
 </details>
 
@@ -187,7 +188,7 @@ This app is designed to make this flow as easy as possible. How?
 ---
 
 ### 5 Minute Pull
-As per the Monzo documentation, you can only pull all account transactions in the first 5 minutes of OAuth login.  
+As per the Monzo documentation, you can only transactions older than 90 days in the first 5 minutes of OAuth login.  
 To achieve this, the app bursts a number of paginated queries right after OAuth success to fetch them all and store them in SQL as quickly as possible.  
 If for some reason this is not completed within 5 minutes, you may not be able to pull all of your data.
 
@@ -204,6 +205,20 @@ If your browser does not support SSE, this process will fail. Adding a fallback 
 
 <details>
 <summary style="font-size: 1.5em;">Upcoming Work</summary>
+
+---
+
+### Memoisation in UI
+At present there is no use of memoisation leading and excessive re-rendering has not been assessed. To make the app as efficient as possible this should be reviewed and corrected
+
+### Clean up package size/loading
+As packages have been added throughout development I suspect many of them are no longer needed. In addition I've not reviewed the dev vs prod dependancies so 
+un-needed packages may have crept into the prod. I also suspect we can also make use of lazy loading moduels to cut back on initial load times too.
+
+---
+### Centralising PORTs
+As users may already have ports bound, I need to review setting ports in the .env so that it applies to the entire project, 
+allowing users to easily shift between say port 80 and port 3000 as they see fit
 
 ---
 ### Logging and Error handling
