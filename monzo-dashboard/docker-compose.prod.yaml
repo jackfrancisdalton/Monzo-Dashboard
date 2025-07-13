@@ -1,9 +1,10 @@
 services:
+  #  TODO: add profiles check to only run if not using mock api
   postgres:
     image: postgres:15
     restart: always
     env_file: .env.production
-    environment:
+    environment: 
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
@@ -35,7 +36,7 @@ services:
     networks:
       - monzo_dashboard
 
-  # TODO: add condition to only up if USE_REAL_MONZO_API is false
+  #  TODO: add profiles check to only run if using mock api
   mockmonzo:
     build:
       context: .
