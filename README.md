@@ -18,7 +18,8 @@ The architecture of this application was designed with the intention of making c
 <details>
 <summary style="font-size: 3em;">How does it handle your data?</summary>
 
-This is your personal finance data. We should keep its security at front of mind.
+### This is your personal finance data!
+We should keep its security at front of mind.
 In line with that, this app aims to keep everything in your hands and secure as much as possible. 
 **It is STRONGLY recommended you only run this on localhost on your own personal machine and don't open it up to the internet by hosting it**
 
