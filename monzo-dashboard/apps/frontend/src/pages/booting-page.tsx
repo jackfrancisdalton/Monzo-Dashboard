@@ -14,10 +14,10 @@ const BootingPage: React.FC = () => {
         if (data.isConfigured) {
           navigate('/dashboard');
         } else {
-          navigate('/setup');
+          navigate('/oauth');
         }
       })
-      .catch(() => navigate('/setup'))
+      .catch(() => navigate('/oauth')) // TODO: handle error more gracefully
       .finally(() => setChecking(false));
   }, [navigate]);
 

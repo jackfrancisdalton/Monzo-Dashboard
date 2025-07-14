@@ -23,6 +23,7 @@ services:
       - mockmonzo ## ideally make this conditional if USE_REAL_MONZO_API is false
     networks:
       - monzo_dashboard
+  # TODO: should wait for SQL to be ready before starting the API service, depends_on does is not enough for this
 
   frontend:
     build:
