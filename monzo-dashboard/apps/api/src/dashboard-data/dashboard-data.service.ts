@@ -14,7 +14,7 @@ export class DashboardDataService {
     ) {}
 
     async isConfigured(): Promise<boolean> {
-        // TECH-NOTE: For now we only implement monzo so only need to verify it is configured.
+        // TECH-NOTE: For now we only implement monzo data so only need to verify it is configured.
         // In the future we may support multiple providers, so this could be expanded.
         return this.monzoService.isConfigured();
     }

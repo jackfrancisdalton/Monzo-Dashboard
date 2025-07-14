@@ -42,9 +42,9 @@ export class RealMonzoService implements MonzoService {
         }
 
         return {
-            balance: latestBalance.balance / 100, // TODO: add typing for major/minor currency to control moving forwards
+            balance: latestBalance.balance,
             currency: latestBalance.currency,
-            spend_today: latestBalance.spend_today / 100,
+            spend_today: latestBalance.spend_today,
         };
     }
 
@@ -60,7 +60,7 @@ export class RealMonzoService implements MonzoService {
         return txs.map(tx => ({
             id: tx.id,
             accountId: tx.accountId,
-            amount: tx.amount / 100,
+            amount: tx.amount,
             currency: tx.currency,
             category: tx.category,
             merchant: tx.merchant ? {
