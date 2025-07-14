@@ -11,7 +11,6 @@ export const useMonzoData = ({ start, end }: { start: Date, end: Date }) => {
     const [dashboardSummary, setDashboardSummary] = useState<DashboardSummary>();
     const [loadingData, setLoadingData] = useState<boolean>(false);
 
-
     // Fetch accounts on first load
     useEffect(() => {
         const fetchAccounts = async () => {

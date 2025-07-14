@@ -7,6 +7,11 @@ import { ResponsiveTreeMap } from "@nivo/treemap";
 import { ResponsivePie } from "@nivo/pie";
 import { useSearchParams } from "react-router-dom";
 import { CardWrapper, DisplayCard, DropDownPicker, TimeRangePicker, TopEntitiesCard } from "../components";
+import React from "react";
+
+const MemoLineChart = React.memo(ResponsiveLine);
+const MemoPieChart = React.memo(ResponsivePie);
+const MemoTreeMap = React.memo(ResponsiveTreeMap);
 
 // TODO: add a loading spinner on data loading/change
 function DashboardPage() {
@@ -86,7 +91,7 @@ function DashboardPage() {
       {/* Display Cards */}
       <CardLayout>
         <CardWrapper title="Credit/Debit over time" className="col-span-4 row-span-2">
-          <ResponsiveLine
+          <MemoLineChart
             data={dashboardSummary?.creditAndDebitOverTimeLineData ?? []}
             margin={{ top: 20, right: 20, bottom: 50, left: 50 }}
             xScale={{
@@ -138,7 +143,7 @@ function DashboardPage() {
 
         {/* Pie Diagrams */}
         <CardWrapper title="Credit by category" className="col-span-2 row-span-2">
-          <ResponsivePie
+          <MemoPieChart
             data={dashboardSummary?.creditsByCategoryPieData ?? []}
             margin={{ top: 20, right: 40, bottom: 60, left: 40 }}
             innerRadius={0.5}
@@ -156,7 +161,7 @@ function DashboardPage() {
           />
         </CardWrapper>
         <CardWrapper title="Debit by category" className="col-span-2 row-span-2">
-          <ResponsivePie
+          <MemoPieChart
             data={dashboardSummary?.debitsByCategoryPieData ?? []}
             margin={{ top: 20, right: 40, bottom: 60, left: 40 }}
             innerRadius={0.5}
@@ -176,7 +181,7 @@ function DashboardPage() {
 
         {/* Tree Diagrams */}
         <CardWrapper title="Credits Tree" className="col-span-2 row-span-2">
-          <ResponsiveTreeMap
+          <MemoTreeMap
             data={
               dashboardSummary?.creditsByDescriptionTreeMap ?? {
                 name: "root",
@@ -194,7 +199,7 @@ function DashboardPage() {
           />
         </CardWrapper>
         <CardWrapper title="Debits Tree" className="col-span-2 row-span-2">
-          <ResponsiveTreeMap
+          <MemoTreeMap
             data={
               dashboardSummary?.debitsByDescriptionTreeMap ?? {
                 name: "root",
