@@ -18,7 +18,12 @@ async function bootstrap() {
     whitelist: true,
   }));
 
-  // TODO: review changing this to fail if port not defined instead of defaulting to 3000
-  await app.listen(process.env.PORT ?? 3000);
+  const port = process.env.API_PORT;
+  
+  if (!port) {
+    throw new Error('API_DOCKER_PORT is not defined');
+  }
+
+  await app.listen(port);
 }
 bootstrap();
