@@ -233,31 +233,28 @@ If your browser does not support SSE, this process will fail. Adding a fallback 
 
 ---
 
-### Cleaning up SQL requirements
+### Cleaning up SQL Container requirements
 If the app is running with mock data there is actually no need for the PostgreSQL container or the RealMonzoService.
-At the moment these are still required due to the boot up and configuration of the app. This should be updated to not run when in mockmode, simplifying the boot up and decreasing requirements.
+At the moment these are still required due to the boot up and configuration of the app with TypeORM. 
+This should be updated to not run the container when in mockmode, and not load the module simplifying the boot up and decreasing requirements.
 
 ### Memoisation in UI
-At present there is no use of memoisation leading and excessive re-rendering has not been assessed. To make the app as efficient as possible this should be reviewed and corrected
+At present there is no use of memoisation leading and excessive re-rendering. 
+To make the app as efficient as possible this should be reviewed and corrected
 
 ### Clean up package size/loading
 As packages have been added throughout development I suspect many of them are no longer needed. In addition I've not reviewed the dev vs prod dependancies so 
 un-needed packages may have crept into the prod. I also suspect we can also make use of lazy loading moduels to cut back on initial load times too.
 
 ---
-### Centralising PORTs
-As users may already have ports bound, I need to review setting ports in the .env so that it applies to the entire project, 
-allowing users to easily shift between say port 80 and port 3000 as they see fit
-
----
 ### Logging and Error handling
-This applicaiton was developed focusing on feature development and common flows. 
-Refactoring, focus and expansion of how errors and loggin are handled is a must for this repository. 
+This applicaiton was developed focusing on feature development and the core success flows. 
+Refactoring, focus and expansion of how errors and logging are handled is a must for this repository. 
 
 ---
 
 ### Incremental Sync
-The initial account sync is integrated, but the incremental sync still needs to be implemented.  
+The initial full account sync is integrated, but the incremental sync still needs to be implemented.  
 A potential solution could involve triggering the sync with a hook such as "on module init," but the exact approach is yet to be decided.
 
 ---
@@ -265,6 +262,8 @@ A potential solution could involve triggering the sync with a hook such as "on m
 ### UI Scalability
 The current UI struggles to handle large data sets, making it difficult to read and analyze.  
 A solution to improve scalability and readability for larger data sets is required.
+
+---
 
 ### Additional Pages
 Currently only the dashboard page is supported. I intend on adding support for a 

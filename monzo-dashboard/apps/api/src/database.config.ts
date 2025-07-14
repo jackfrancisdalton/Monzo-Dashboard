@@ -10,8 +10,9 @@ export const databaseConfig = (): TypeOrmModuleOptions => {
     database: process.env.DB_NAME,
     entities: [__dirname + '/**/*.entity.{js,ts}'],
 
-    // Sync during development to avoid having to deal with migrations 
-    // TODO: This should be replaced with proper migrations in production
+    // TECHDEBT: As development is on-going and no active users i am setting synchronize to true.
+    // This will auto create the database schema based on the entities.
+    // When in full release this should be set to false and migrations used instead.
     synchronize: true,
 });
 }
