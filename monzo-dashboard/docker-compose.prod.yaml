@@ -52,7 +52,8 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile.nginx
-    environment: # Provide URLs to template to reverse proxy to services over docker network
+    environment:
+      NGINX_PORT: ${NGINX_PORT}
       API_DOCKER_URL: ${API_DOCKER_URL}
       FRONTEND_DOCKER_URL: ${FRONTEND_DOCKER_URL}
       MOCK_MONZO_DOCKER_URL: ${MOCK_MONZO_DOCKER_URL}

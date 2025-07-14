@@ -1,5 +1,5 @@
 server {
-    listen 80;
+    listen ${NGINX_PORT};
 
     location / {
         proxy_pass http://${FRONTEND_DOCKER_URL}/;
