@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { AccountsSummary, DashboardSummary } from '@repo/dashboard-types';
 import type { MonzoAccount } from "@repo/monzo-types";
 
@@ -11,63 +11,62 @@ export const useMonzoData = ({ start, end }: { start: Date, end: Date }) => {
     const [dashboardSummary, setDashboardSummary] = useState<DashboardSummary>();
     const [loadingData, setLoadingData] = useState<boolean>(false);
 
-    // Fetch accounts on first load
     useEffect(() => {
-        const fetchAccounts = async () => {
-            try {
-                const res = await fetch(`${API_URL}/dashboard-data/accounts`);
-                
-                if (!res.ok) {
-                    throw new Error(`Failed to fetch accounts: ${res.status} ${res.statusText}`);
-                }
-
-                const data: AccountsSummary = await res.json();
-                setAccounts(data.accounts);
-
-                // auto select first account if non specified
-                if (data.accounts.length && !selectedAccount) {
-                    setSelectedAccount(data.accounts[0].id); 
-                }
-            } catch (error) {
-                console.error("Error fetching accounts:", error);
-                setAccounts([]);
-            }
-        };
         fetchAccounts();
     }, []);
 
-    // Fetch dashboard summary whenever selectedAccount or date range changes
     useEffect(() => {
+        fetchDashboardSummary();
+    }, [start, end, selectedAccount]);
+
+    const fetchAccounts = useCallback(async () => {
+        try {
+            const res = await fetch(`${API_URL}/dashboard-data/accounts`);
+            
+            if (!res.ok) {
+                throw new Error(`Failed to fetch accounts: ${res.status} ${res.statusText}`);
+            }
+
+            const data: AccountsSummary = await res.json();
+            setAccounts(data.accounts);
+
+            // auto select first account if non specified
+            if (data.accounts.length && !selectedAccount) {
+                setSelectedAccount(data.accounts[0].id); 
+            }
+        } catch (error) {
+            console.error("Error fetching accounts:", error);
+            setAccounts([]);
+        }
+    }, []);
+
+    const fetchDashboardSummary = useCallback(async () => {
         if (!selectedAccount)
             return;
 
-        const fetchData = async () => {
-            setLoadingData(true);
+        setLoadingData(true);
 
-            try {
-                const queryParams = new URLSearchParams({
-                    start: start.toISOString(),
-                    end: end.toISOString(),
-                    accountId: selectedAccount
-                });
+        try {
+            const queryParams = new URLSearchParams({
+                start: start.toISOString(),
+                end: end.toISOString(),
+                accountId: selectedAccount
+            });
 
-                const res = await fetch(`${API_URL}/dashboard-data/data?${queryParams.toString()}`);
-                
-                if (!res.ok) {
-                    throw new Error(`Failed to fetch data: ${res.status} ${res.statusText}`);
-                }
-
-                const data: DashboardSummary = await res.json();
-                setDashboardSummary(data);
-            } catch (error) {
-                console.error("Error fetching dashboard summary:", error);
-                setDashboardSummary(undefined);
-            } finally {
-                setLoadingData(false);
+            const res = await fetch(`${API_URL}/dashboard-data/data?${queryParams.toString()}`);
+            
+            if (!res.ok) {
+                throw new Error(`Failed to fetch data: ${res.status} ${res.statusText}`);
             }
-        };
 
-        fetchData();
+            const data: DashboardSummary = await res.json();
+            setDashboardSummary(data);
+        } catch (error) {
+            console.error("Error fetching dashboard summary:", error);
+            setDashboardSummary(undefined);
+        } finally {
+            setLoadingData(false);
+        }
     }, [start, end, selectedAccount]);
 
     return {
