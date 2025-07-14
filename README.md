@@ -233,6 +233,10 @@ If your browser does not support SSE, this process will fail. Adding a fallback 
 
 ---
 
+### Cleaning up SQL requirements
+If the app is running with mock data there is actually no need for the PostgreSQL container or the RealMonzoService.
+At the moment these are still required due to the boot up and configuration of the app. This should be updated to not run when in mockmode, simplifying the boot up and decreasing requirements.
+
 ### Memoisation in UI
 At present there is no use of memoisation leading and excessive re-rendering has not been assessed. To make the app as efficient as possible this should be reviewed and corrected
 
