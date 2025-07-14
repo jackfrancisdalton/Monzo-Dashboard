@@ -52,7 +52,6 @@ All other behavior and processing is handled internally in Docker services.
     - *NOTE:* you'll recieve a notificaiton on your Monzo app to approve permissions
     - Create a new Oauth Client.
     - Mark it as secure credentials and set the redirect to `http://localhost:80/api/auth/monzo/callback`.
-    - Note: If you are using real data in dev mode, you'll need this to be `http://localhost:3000/auth/monzo/callback`.
   
     You should end up with something like this:
     <img width="1446" height="699" alt="image" src="https://github.com/user-attachments/assets/7d2e065a-c95e-40ce-a657-5ab69a8ae6d7" />
