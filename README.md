@@ -33,7 +33,7 @@ When the app aquires refresh and access tokens through the Monzo Oauth flow they
 
 ### How is Monzo data aquired/stored?
 All data is aquired direcitly from the Monzo API using access tokens and stored in a PostgreSQL Docker volume in the format returned from the Monzo API.
-THe frontend application then generates the dashboard from that SQL data.
+The frontend application is then provided chart data from a Dashboard backend service that structures the data.
 
 ### Will this modify my Monzo account?
 This application is designed as a read-only application. It only ever reads data from the official Monzo API.  
