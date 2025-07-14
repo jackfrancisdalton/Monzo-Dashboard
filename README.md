@@ -189,8 +189,8 @@ This ensures modularity and reusability across the project.
 ### Adding New Cards/Data Analysis
 This app is designed to make this flow as easy as possible. How?
 1. All Monzo data is available via the PostgreSQL database after the user has sync'd.
-2. The Dashboard Service provides a one-stop-shopw to access and process all data for the frontend.
-3. The UI AppLayout and CardLayout allow you to easily integrate a new custom card into the existing UI.
+2. You can then use the Dashboard Service as a one-stop-shop to access, process and forrmat all the data you want for the frontend.
+3. Then in the UI the AppLayout and CardLayout allow you to easily integrate a new custom card into the existing UI using that data.
 
 As an example if you wanted to add a card for "Number of transfers from Jane" you would:
 1. Add a function to count transactions from jane in the DashboardService
