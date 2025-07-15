@@ -5,6 +5,7 @@ import { MonzoService } from 'src/monzo/monzo-service.interface';
 import { computeCumulativeLineData } from './mappers/line-datum-mapper';
 import { computeTreeMapData } from './mappers/tree-map-data-mapper';
 import { computeGenericPieData } from './mappers/pie-datum-mapper';
+import { InvalidAccountIdException, NoAccountsConfiguredException } from './dashboard-data.exceptions';
 
 @Injectable()
 export class DashboardDataService {
@@ -13,9 +14,9 @@ export class DashboardDataService {
         private readonly monzoService: MonzoService
     ) {}
 
+    // TECH-NOTE: For now we only implement monzo data so only need to verify it is configured.
+    // In the future we may support multiple providers, so this could be expanded.
     async isConfigured(): Promise<boolean> {
-        // TECH-NOTE: For now we only implement monzo data so only need to verify it is configured.
-        // In the future we may support multiple providers, so this could be expanded.
         return this.monzoService.isConfigured();
     }
 
@@ -23,7 +24,7 @@ export class DashboardDataService {
         const accounts = await this.monzoService.getAccounts();
         
         if (accounts.length === 0) {
-            throw new Error("No Monzo accounts found. Please ensure you have linked your Monzo account.");
+            throw new NoAccountsConfiguredException();
         }
 
         const mappedAccounts = accounts.map(account => ({
@@ -39,13 +40,13 @@ export class DashboardDataService {
         const accounts = await this.monzoService.getAccounts();
 
         if(accounts.length === 0) {
-            throw new Error("No Monzo accounts found. Please ensure you have linked your Monzo account.");
+            throw new NoAccountsConfiguredException();
         }
 
         const targetAccountId = accounts.find(account => account.id === accountId)?.id;
 
         if(!targetAccountId) {
-            throw new Error("No valid account ID found. Please ensure your Monzo account is properly linked.");
+            throw new InvalidAccountIdException(accountId);
         }
 
         const [balance, transactions] = await Promise.all([
