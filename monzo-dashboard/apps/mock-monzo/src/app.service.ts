@@ -7,6 +7,8 @@ import path from 'path';
 export class AppService {
     private readonly dataDir = path.resolve(process.cwd(), './mock-data');
 
+    // TECH_DEBT: replace json names with const that can be shared in a turborepo package with the genration script
+
     getAccounts(): MonzoAccount[] {
         return JSON.parse(fs.readFileSync(path.join(this.dataDir, 'accounts.json'), 'utf-8')).accounts;
     }

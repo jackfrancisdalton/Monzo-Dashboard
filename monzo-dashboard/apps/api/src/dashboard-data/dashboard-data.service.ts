@@ -63,8 +63,8 @@ export class DashboardDataService {
             debitsByCategoryPieData: this.getSpendingByCategoryPieChart(debitTxs),
             creditsByDescriptionTreeMap: this.getTreeMapByDescriptionData(creditTxs),
             debitsByDescriptionTreeMap: this.getTreeMapByDescriptionData(debitTxs),
-            topDebits: this.getTopDebits(debitTxs),
-            topCredits: this.getTopCredits(creditTxs),
+            topDebits: this.getTopTransactions(debitTxs, 10),
+            topCredits: this.getTopTransactions(creditTxs, 10),
             totalDebit: this.toMajorCurrency(
                 debitTxs.reduce((acc, tx) => acc + (tx.amount < 0 ? Math.abs(tx.amount) : 0), 0)
             ),
@@ -113,21 +113,10 @@ export class DashboardDataService {
         );
     }
 
-    private getTopCredits(transactions: MonzoTransaction[]): TopTransactionsDatum[] {
+    private getTopTransactions(transactions: MonzoTransaction[], numberOfTxs: number): TopTransactionsDatum[] {
         return [...transactions]
             .sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount))
-            .slice(0, 10)
-            .map((tx) => ({
-                amount: this.toMajorCurrency(Math.abs(tx.amount)),
-                date: new Date(tx.created),
-                label: tx.description || 'No description',
-            }));
-    }
-
-    private getTopDebits(transactions: MonzoTransaction[]): TopTransactionsDatum[] {
-        return [...transactions]
-            .sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount))
-            .slice(0, 10)
+            .slice(0, numberOfTxs)
             .map((tx) => ({
                 amount: this.toMajorCurrency(Math.abs(tx.amount)),
                 date: new Date(tx.created),
