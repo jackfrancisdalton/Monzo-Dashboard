@@ -22,7 +22,7 @@ export class MonzoController {
         });
       };
 
-      this.monzoSyncService.initialFullFetch(onProgress)
+      this.monzoSyncService.syncFullAccount(onProgress)
         .then(() => {
           subscriber.next({ data: { taskName: 'fullSync', taskStage: "completed" } });
         })

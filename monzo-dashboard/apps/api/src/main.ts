@@ -18,11 +18,15 @@ async function bootstrap() {
     whitelist: true,
   }));
 
+  const isProd = process.env.NODE_ENV === 'production';
+  app.useLogger(isProd ? ['log', 'warn', 'error'] : ['log', 'warn', 'error', 'debug', 'verbose']);
+
   const port = process.env.API_PORT;
   
   if (!port) {
     throw new Error('API_DOCKER_PORT is not defined');
   }
+
 
   await app.listen(port);
 }

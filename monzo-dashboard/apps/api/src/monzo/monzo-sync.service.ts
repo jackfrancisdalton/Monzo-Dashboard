@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -11,6 +11,7 @@ import { MonzoApiException, MonzoAuthMissingException } from './monzo.exceptions
 // TODO: clean up general logging approach, errorhandling, progress reporting and logging content
 @Injectable()
 export class MonzoSyncService {
+    private readonly logger = new Logger(MonzoSyncService.name);
     private readonly MONZO_API = 'https://api.monzo.com';
 
     constructor(
@@ -23,6 +24,7 @@ export class MonzoSyncService {
     ) {
         const axios = this.http.axiosRef;
 
+        // TODO: Consider moving this to a util function as retry on access_token expiray is common behaviour
         axios.interceptors.response.use(
             response => response,
             async (error) => {
@@ -49,24 +51,26 @@ export class MonzoSyncService {
             throw new MonzoAuthMissingException();
         }
 
-        return {
-            Authorization: `Bearer ${tokens.accessToken}`,
-        };
+        return { Authorization: `Bearer ${tokens.accessToken}` };
     }
 
-    async initialFullFetch(onProgress?: (p: MonzoSyncProgressUpdate) => void): Promise<void> {
+    async syncFullAccount(onProgress?: (p: MonzoSyncProgressUpdate) => void): Promise<void> {
+        this.logger.log('Starting full account sync from Monzo');
+
         try {
             const headers = await this.getAuthHeaders();
             await this.syncAccountsAndBalances(headers, onProgress);
             await this.syncTransactions(headers, undefined, onProgress); // undefined start fetchs all transactions
         } catch (error: any) {
-            console.log(`Failed to complete full Monzo fetch: ${error}`)
             throw new MonzoApiException(error.response?.data || error.message, 'Failed to complete full Monzo account sync');
         }
+        this.logger.log('Completed full account sync from Monzo');
     }
 
     // TODO: needs to be integrated with the dashboard data service, need to decide on the triggering mechanism
     async incrementalSync(onProgress?: (p: MonzoSyncProgressUpdate) => void): Promise<void> {
+        this.logger.log('Starting incremental account sync from Monzo');
+
         try {
             // use last transaction point as starting point for the sync
             const lastTx = await this.transactionRepo.findOne({ order: { created: 'DESC' } });
@@ -77,6 +81,8 @@ export class MonzoSyncService {
         } catch (error: any) {
             throw new MonzoApiException(error.response?.data || error.message, 'Failed to complete incremental Monzo fetch');
         }
+
+        this.logger.log('Completed incremental account sync from Monzo');
     }
 
     private async syncAccountsAndBalances(
@@ -121,7 +127,6 @@ export class MonzoSyncService {
             onProgress?.({ taskName: 'accounts', taskStage: 'completed', syncedCount: accounts.length });
             onProgress?.({ taskName: 'balances', taskStage: 'completed', syncedCount: balanceCount });
         } catch (error: any) {
-            console.log(`Failed to sync accounts and balances: ${error}`);
             throw new MonzoApiException(error.response?.data || error.message, 'Failed to sync accounts and balances');
         }
     }
