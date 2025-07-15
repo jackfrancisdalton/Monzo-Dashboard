@@ -13,15 +13,20 @@ const SyncPage: React.FC = () => {
     const [isSyncing, setIsSyncing] = useState(false);
 
     const startSync = () => {
+        // In case of sync prevent duplicate sync call
+        if (isSyncing) 
+            return;
+
         setIsSyncing(true);
         const eventSource = new EventSource(`${API_URL}/monzo/sync`);
 
         eventSource.onmessage = (event) => {
             const data: MonzoSyncProgressUpdate = JSON.parse(event.data);
 
-            setSyncTasks((prevTasks) => {
-                const updatedTasks = prevTasks.filter((task) => task.taskName !== data.taskName);
-                return [...updatedTasks, data];
+            setSyncTasks((prev) => {
+                const taskMap = new Map(prev.map(t => [t.taskName, t]));
+                taskMap.set(data.taskName, data);
+                return Array.from(taskMap.values());
             });
 
             if (data.taskStage === 'completed' && data.taskName === 'fullSync') {

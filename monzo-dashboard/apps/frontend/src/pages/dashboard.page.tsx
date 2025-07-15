@@ -43,12 +43,11 @@ function DashboardPage() {
     }
 
     if (startFromUrl && endFromUrl) {
-      setDateRange({
-        start: new Date(startFromUrl),
-        end: new Date(endFromUrl),
-      });
+      setDateRange({ start: new Date(startFromUrl), end: new Date(endFromUrl) });
     }
   }, []);
+
+  // TODO: add dynamic calculation of ticks to show in line chart to handle when large date ranges are returned
 
   // Sync param changes to URL
   useEffect(() => {

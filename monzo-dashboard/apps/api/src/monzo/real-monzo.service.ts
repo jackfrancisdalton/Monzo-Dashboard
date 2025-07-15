@@ -6,6 +6,7 @@ import { Between, Repository } from "typeorm";
 import { AccountEntity } from "./entities/account.entity";
 import { TransactionEntity } from "./entities/transaction.entity";
 import { BalanceEntity } from "./entities/balance.entity";
+import { MonzoAccountNotFoundException } from "./monzo.exceptions";
 
 @Injectable()
 export class RealMonzoService implements MonzoService {
@@ -17,13 +18,17 @@ export class RealMonzoService implements MonzoService {
 
 
     async isConfigured(): Promise<boolean> {
-        // We consider the monzo app configured if we have tokens stored denoting that we have completed an oauth exchange
+        // We consider the monzo app configured if we have at least on account stored in the DB.
         const accounts = await this.accountRepo.find();
         return accounts.length > 0;
     }
 
     async getAccounts(): Promise<MonzoAccount[]> {
         const accounts = await this.accountRepo.find({});
+
+        if (!accounts || accounts.length === 0) {
+            throw new MonzoAccountNotFoundException();
+        }
         
         return accounts.map(account => ({
             id: account.id,
@@ -38,7 +43,7 @@ export class RealMonzoService implements MonzoService {
         });
 
         if (!latestBalance) {
-            throw new Error(`No balance found for account ${accountId}`);
+            throw new MonzoAccountNotFoundException(accountId)
         }
 
         return {

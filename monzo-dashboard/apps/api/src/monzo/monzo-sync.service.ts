@@ -1,11 +1,12 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { firstValueFrom } from 'rxjs';
 import { TokenStorageService } from '../auth/token-storage.service';
 import { AccountEntity, BalanceEntity, MerchantAddressEntity, MerchantEntity, TransactionEntity } from './entities';
-import { MonzoAccount, MonzoSyncProgressUpdate } from '@repo/monzo-types';
+import { MonzoSyncProgressUpdate } from '@repo/monzo-types';
+import { MonzoApiException, MonzoAuthMissingException } from './monzo.exceptions';
 
 // TODO: clean up general logging approach, errorhandling, progress reporting and logging content
 @Injectable()
@@ -45,7 +46,7 @@ export class MonzoSyncService {
         const tokens = await this.tokenStorage.getTokens('monzo');
 
         if (!tokens || !tokens.accessToken) {
-            throw new Error('No Monzo access token found. Please authenticate first.');
+            throw new MonzoAuthMissingException();
         }
 
         return {
@@ -60,21 +61,21 @@ export class MonzoSyncService {
             await this.syncTransactions(headers, undefined, onProgress); // undefined start fetchs all transactions
         } catch (error: any) {
             console.log(`Failed to complete full Monzo fetch: ${error}`)
-            throw new Error(`Failed to complete full Monzo fetch: ${error.message}`);
+            throw new MonzoApiException(error.response?.data || error.message, 'Failed to complete full Monzo account sync');
         }
     }
 
     // TODO: needs to be integrated with the dashboard data service, need to decide on the triggering mechanism
     async incrementalSync(onProgress?: (p: MonzoSyncProgressUpdate) => void): Promise<void> {
         try {
-            // use last transaction point as starting point of fetch
+            // use last transaction point as starting point for the sync
             const lastTx = await this.transactionRepo.findOne({ order: { created: 'DESC' } });
             const headers = await this.getAuthHeaders();
 
             await this.syncAccountsAndBalances(headers, onProgress);
             await this.syncTransactions(headers, lastTx?.created, onProgress);
         } catch (error: any) {
-            throw new Error(`Failed to complete incremental Monzo fetch: ${error.message}`);
+            throw new MonzoApiException(error.response?.data || error.message, 'Failed to complete incremental Monzo fetch');
         }
     }
 
@@ -119,12 +120,9 @@ export class MonzoSyncService {
 
             onProgress?.({ taskName: 'accounts', taskStage: 'completed', syncedCount: accounts.length });
             onProgress?.({ taskName: 'balances', taskStage: 'completed', syncedCount: balanceCount });
-        } catch (err: any) {
-            const errormessage = {
-                message: 'Failed to fetch accounts and balances from Monzo API',
-                details: err?.response?.data || err.message || 'Unknown error',
-            };
-            console.log('Failed to fetch accounts', errormessage);
+        } catch (error: any) {
+            console.log(`Failed to sync accounts and balances: ${error}`);
+            throw new MonzoApiException(error.response?.data || error.message, 'Failed to sync accounts and balances');
         }
     }
 
@@ -168,7 +166,7 @@ export class MonzoSyncService {
         let running: Promise<void>[] = [];
         let totalFetched = 0;
     
-        // Generate a promise for each time window to fetch transactions
+        // Generate a promise for each time window to fetch transactions for
         for (const window of timeWindows) {
             const promise = this.fetchTransactionsPage(account, headers, window.start, window.end)
                 .then(async (transactions) => {
@@ -198,11 +196,8 @@ export class MonzoSyncService {
                         settled: tx.settled ? new Date(tx.settled) : undefined,
                     }));
     
-                    console.log(`Fetched ${entities.length} transactions for account ${account.id} from ${window.start} to ${window.end}`);
                     await this.transactionRepo.upsert(entities, ['id']);
                     totalFetched += entities.length;
-    
-                    // TODO: replace total fetched with number of batches completed
                     onProgress?.({ taskName: 'transactions', taskStage: 'progress', syncedCount: totalFetched });
                 });
     
@@ -214,7 +209,6 @@ export class MonzoSyncService {
             }
         }
     
-        // Wait for all remaining promises to finish then return
         await Promise.all(running);
         return totalFetched;
     }
@@ -272,8 +266,7 @@ export class MonzoSyncService {
             const response = await firstValueFrom(this.http.get(url, { headers }));
             return response.data.transactions;
         } catch (error: any) {
-            console.log('Failed to fetch transaction page', error.response?.data || error.message);
-            throw new Error(`Failed to fetch transaction page: ${error.message}`);
+            throw new MonzoApiException(error.response?.data || error.message, `Failed to fetch transaction page for account ${account.id} since ${since} before ${before}`);
         }
     }
 }
