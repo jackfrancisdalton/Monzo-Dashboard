@@ -6,6 +6,7 @@ import { firstValueFrom } from "rxjs";
 import { ConfigService } from '@nestjs/config';
 import { buildOAuthProvidersConfig } from "./oauth.providers";
 import { randomBytes } from "crypto";
+import { InvalidOAuthStateException, OAuthProviderNotConfiguredException } from "./auth.exceptions";
 
 @Controller('auth')
 export class OAuthController {
@@ -25,16 +26,16 @@ export class OAuthController {
     const providerConfig = oAuthConfigs[provider];
 
     if (!providerConfig) {
-      throw new NotFoundException(`Provider "${provider}" is not configured.`);
-    }
+      throw new OAuthProviderNotConfiguredException(provider);
+  }
 
-    // Applications will set their redirect_URIs as the callback funtion. To control redirection on the UI
-    // We pass the rdirect specfied in the frontend as a state parameter, then use it in the callback, so that the frontend
-    // can control the terminating redirection of the oauth flow.
+    // We pass the redirect specfied in the frontend as a state parameter, then use it in the callback method, 
+    // so that we can target a specific frontend page as the terminating page for the oauth flow.
     const statePayload = {
       nonce: randomBytes(8).toString('hex'),
       frontend_redirect_uri: redirectUri
     };
+
     const state = Buffer.from(JSON.stringify(statePayload)).toString('base64url');
 
     const queryParams = new URLSearchParams({
@@ -64,7 +65,7 @@ export class OAuthController {
     const providerConfig = oAuthConfigs[provider];
 
     if (!providerConfig) {
-      throw new NotFoundException(`Provider "${provider}" is not configured.`);
+      throw new OAuthProviderNotConfiguredException(provider);
     }
 
     let stateData: { nonce: string; frontend_redirect_uri: string } = { 
@@ -75,7 +76,7 @@ export class OAuthController {
     try {
       stateData = JSON.parse(Buffer.from(state, 'base64url').toString());
     } catch (err) {
-      console.warn('Failed to parse state', err);
+      throw new InvalidOAuthStateException(state);
     }
 
     const response = await firstValueFrom(

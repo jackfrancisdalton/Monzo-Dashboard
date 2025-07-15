@@ -8,6 +8,7 @@ import { buildOAuthProvidersConfig } from "./oauth.providers";
 import { ConfigService } from "@nestjs/config";
 import { HttpService } from "@nestjs/axios";
 import { firstValueFrom } from "rxjs";
+import { NoRefreshTokenStoredException, OAuthProviderNotConfiguredException } from "./auth.exceptions";
 
 @Injectable()
 export class TokenStorageService {
@@ -49,15 +50,15 @@ export class TokenStorageService {
 
     async refreshTokens(provider: string): Promise<OAuthTokensDTO> {
         const existing = await this.getTokens(provider);
+        
         if (!existing?.refreshToken) {
-            throw new Error(`No refresh token stored for provider ${provider}`);
+            throw new NoRefreshTokenStoredException(provider);
         }
 
-        // You'll probably want to generalize this by putting your OAuth config elsewhere
         const oAuthConfigs = buildOAuthProvidersConfig(this.configService);
         const providerConfig = oAuthConfigs[provider];
         if (!providerConfig) {
-            throw new Error(`No OAuth config found for provider ${provider}`);
+            throw new OAuthProviderNotConfiguredException(provider);
         }
 
         const response = await firstValueFrom(
