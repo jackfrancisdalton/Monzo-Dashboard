@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { AccountsSummary, CumulativeLineDatum, DashboardSummary, PieDatum, TopTransactionsDatum, TreemapData } from '@repo/dashboard-types';
 import { MonzoTransaction } from '@repo/monzo-types';
 import { MonzoService } from 'src/monzo/monzo-service.interface';
@@ -9,6 +9,7 @@ import { InvalidAccountIdException, NoAccountsConfiguredException } from './dash
 
 @Injectable()
 export class DashboardDataService {
+    private readonly logger = new Logger(DashboardDataService.name);
 
     constructor(
         private readonly monzoService: MonzoService
@@ -17,10 +18,12 @@ export class DashboardDataService {
     // TECH-NOTE: For now we only implement monzo data so only need to verify it is configured.
     // In the future we may support multiple providers, so this could be expanded.
     async isConfigured(): Promise<boolean> {
+        this.logger.log('Checking if dashboard is configured.')
         return this.monzoService.isConfigured();
     }
 
     async getAccounts(): Promise<AccountsSummary> {
+        this.logger.log('Fetching accounts summary.')
         const accounts = await this.monzoService.getAccounts();
         
         if (accounts.length === 0) {
@@ -37,6 +40,7 @@ export class DashboardDataService {
     }
 
     async getDashboardData(accountId: string, start: Date, end: Date): Promise<DashboardSummary> {
+        this.logger.log('Fetching dashboard data.')
         const accounts = await this.monzoService.getAccounts();
 
         if(accounts.length === 0) {

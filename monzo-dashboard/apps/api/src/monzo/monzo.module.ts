@@ -33,7 +33,7 @@ import { MonzoController } from './monzo.controller';
     MonzoSyncService,
     {
       provide: MonzoService,
-      // Preferred this over process.env.production to allow for easier dev/prod development when required
+      // Preferred USE_REAL_MONZO_API over process.env.production to allow for easier dev/prod development when required
       useClass: process.env.USE_REAL_MONZO_API === 'true' 
           ? RealMonzoService
           : MockMonzoService,

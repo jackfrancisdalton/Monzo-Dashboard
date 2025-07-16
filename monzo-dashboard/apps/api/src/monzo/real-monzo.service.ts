@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { MonzoService } from "./monzo-service.interface";
 import { MonzoAccount, MonzoBalance, MonzoTransaction } from "@repo/monzo-types";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -10,6 +10,8 @@ import { MonzoAccountNotFoundException } from "./monzo.exceptions";
 
 @Injectable()
 export class RealMonzoService implements MonzoService {
+    private readonly logger = new Logger(RealMonzoService.name);
+
     constructor(
         @InjectRepository(AccountEntity) private readonly accountRepo: Repository<AccountEntity>,
         @InjectRepository(TransactionEntity) private readonly transactionRepo: Repository<TransactionEntity>,
@@ -18,18 +20,22 @@ export class RealMonzoService implements MonzoService {
 
 
     async isConfigured(): Promise<boolean> {
+        this.logger.log('Running monzo configuration check')
+
         // We consider the monzo app configured if we have at least on account stored in the DB.
-        const accounts = await this.accountRepo.find();
-        return accounts.length > 0;
+        const numAccounts = await this.accountRepo.count();
+        return numAccounts > 0;
     }
 
     async hasSomeData(): Promise<boolean> {
+        this.logger.log('Checking if some data has already been synced')
         const accounts = await this.accountRepo.count();
         const transactions = await this.transactionRepo.count();
         return accounts > 0 && transactions > 0;
     }
 
     async getAccounts(): Promise<MonzoAccount[]> {
+        this.logger.log('Fetching account data')
         const accounts = await this.accountRepo.find({});
 
         if (!accounts || accounts.length === 0) {
@@ -44,6 +50,8 @@ export class RealMonzoService implements MonzoService {
     }
 
     async getBalance(accountId: string): Promise<MonzoBalance> {
+        this.logger.log('Fetching balance data')
+
         const latestBalance = await this.balanceRepo.findOne({
             where: { accountId }
         });
@@ -60,6 +68,8 @@ export class RealMonzoService implements MonzoService {
     }
 
     async getTransactions(accountId: string, start: Date, end: Date): Promise<MonzoTransaction[]> {
+        this.logger.log('Fetching transaction data')
+
         const txs = await this.transactionRepo.find({
             where: {
                 accountId,
