@@ -1,7 +1,7 @@
 import { Controller, Sse } from "@nestjs/common";
-import { MonzoSyncService } from "./monzo-sync.service";
 import { Observable } from "rxjs";
-import { MonzoSyncProgressUpdateEvent } from "@repo/monzo-types";
+import { MonzoSyncService } from "./monzo-sync.service";
+import { MonzoSyncProgressUpdate, MonzoSyncProgressUpdateEvent } from "@repo/monzo-types";
 
 @Controller('monzo')
 export class MonzoController {
@@ -9,10 +9,25 @@ export class MonzoController {
     private readonly monzoSyncService: MonzoSyncService,
   ) {}
 
-  @Sse('sync')
-  sync(): Observable<MonzoSyncProgressUpdateEvent> {
-    return new Observable((subscriber) => {
-      const onProgress = (progress) => {
+  @Sse('sync-full')
+  syncFull(): Observable<MonzoSyncProgressUpdateEvent> {
+    return this.createSyncObservable((onProgress) =>
+      this.monzoSyncService.syncFullAccount(onProgress)
+    );
+  }
+
+  @Sse('incremental-sync')
+  incrementalSync(): Observable<MonzoSyncProgressUpdateEvent> {
+    return this.createSyncObservable((onProgress) =>
+      this.monzoSyncService.incrementalSync(onProgress)
+    );
+  }
+
+  private createSyncObservable(
+    syncMethod: (progressCallback: (p: MonzoSyncProgressUpdate) => void) => Promise<void>
+  ): Observable<MonzoSyncProgressUpdateEvent> {
+    return new Observable<MonzoSyncProgressUpdateEvent>((subscriber) => {
+      const onProgress = (progress: MonzoSyncProgressUpdate) => {
         subscriber.next({
           data: {
             taskName: progress.taskName,
@@ -22,13 +37,22 @@ export class MonzoController {
         });
       };
 
-      this.monzoSyncService.syncFullAccount(onProgress)
-        .then(() => {
-          subscriber.next({ data: { taskName: 'fullSync', taskStage: "completed" } });
-        })
-        .catch((err) => {
+      (async () => {
+        try {
+          await syncMethod(onProgress);
+
+          subscriber.next({
+            data: {
+              taskName: 'sync',
+              taskStage: "completed"
+            }
+          });
+
+          subscriber.complete();
+        } catch (err) {
           subscriber.error(err);
-        });
+        }
+      })();
     });
   }
 }

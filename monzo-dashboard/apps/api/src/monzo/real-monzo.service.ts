@@ -23,6 +23,12 @@ export class RealMonzoService implements MonzoService {
         return accounts.length > 0;
     }
 
+    async hasSomeData(): Promise<boolean> {
+        const accounts = await this.accountRepo.count();
+        const transactions = await this.transactionRepo.count();
+        return accounts > 0 && transactions > 0;
+    }
+
     async getAccounts(): Promise<MonzoAccount[]> {
         const accounts = await this.accountRepo.find({});
 

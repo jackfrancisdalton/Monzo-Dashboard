@@ -11,7 +11,7 @@ import { MonzoApiException, MonzoAuthMissingException } from './monzo.exceptions
 // TODO: clean up general logging approach, errorhandling, progress reporting and logging content
 @Injectable()
 export class MonzoSyncService {
-    private readonly logger = new Logger(MonzoSyncService.name);
+    // private readonly logger = new Logger(MonzoSyncService.name);
     private readonly MONZO_API = 'https://api.monzo.com';
 
     constructor(
@@ -55,7 +55,7 @@ export class MonzoSyncService {
     }
 
     async syncFullAccount(onProgress?: (p: MonzoSyncProgressUpdate) => void): Promise<void> {
-        this.logger.log('Starting full account sync from Monzo');
+        // this.logger.log('Starting full account sync from Monzo');
 
         try {
             const headers = await this.getAuthHeaders();
@@ -64,25 +64,41 @@ export class MonzoSyncService {
         } catch (error: any) {
             throw new MonzoApiException(error.response?.data || error.message, 'Failed to complete full Monzo account sync');
         }
-        this.logger.log('Completed full account sync from Monzo');
+        // this.logger.log('Completed full account sync from Monzo');
     }
 
     // TODO: needs to be integrated with the dashboard data service, need to decide on the triggering mechanism
     async incrementalSync(onProgress?: (p: MonzoSyncProgressUpdate) => void): Promise<void> {
-        this.logger.log('Starting incremental account sync from Monzo');
+        // this.logger.log('Starting incremental account sync from Monzo');
 
         try {
-            // use last transaction point as starting point for the sync
-            const lastTx = await this.transactionRepo.findOne({ order: { created: 'DESC' } });
             const headers = await this.getAuthHeaders();
 
+            // use last transaction point as starting point for the sync
+            const lastTx = await this.transactionRepo.findOne({ 
+                where: {},
+                order: { created: 'DESC' } 
+            });
+
+            if (!lastTx) {
+                throw new MonzoApiException('No transactions found to sync from', 'No previous transactions to base incremental sync on');
+            }
+
+            const ninetyDaysAgo = new Date();
+            ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+
+            const syncStartDate = (lastTx.created > ninetyDaysAgo)
+                ? lastTx.created
+                : ninetyDaysAgo;
+
             await this.syncAccountsAndBalances(headers, onProgress);
-            await this.syncTransactions(headers, lastTx?.created, onProgress);
+            await this.syncTransactions(headers, syncStartDate, onProgress);
         } catch (error: any) {
+            Logger.log('Error during incremental sync:', error);
             throw new MonzoApiException(error.response?.data || error.message, 'Failed to complete incremental Monzo fetch');
         }
 
-        this.logger.log('Completed incremental account sync from Monzo');
+        // this.logger.log('Completed incremental account sync from Monzo');
     }
 
     private async syncAccountsAndBalances(

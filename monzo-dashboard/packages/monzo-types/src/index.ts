@@ -42,7 +42,7 @@ export interface MonzoBalance {
 }
 
 // Types and interfaces for SSE update events on monzo sync
-export type MonzoSyncTaskName = 'fullSync' | 'accounts' | 'transactions' | 'balances';
+export type MonzoSyncTaskName = 'sync' | 'accounts' | 'transactions' | 'balances';
 export type MonzoSyncTaskStage = 'start' | 'progress' | 'completed';
 
 export interface MonzoSyncProgressUpdate {

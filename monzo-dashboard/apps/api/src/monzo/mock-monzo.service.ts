@@ -18,6 +18,11 @@ export class MockMonzoService implements MonzoService {
     return this.getRequest<MonzoAccount[]>(`${process.env.MOCK_MONZO_URL}/accounts`);
   }
 
+  async hasSomeData(): Promise<boolean> {
+    // Assumed we always have some data in the mock service.
+    return true;
+  }
+
   async getBalance(accountId: string): Promise<MonzoBalance> {
     return this.getRequest<MonzoBalance>(`${process.env.MOCK_MONZO_URL}/balance`);
   }

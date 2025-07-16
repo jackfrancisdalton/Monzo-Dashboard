@@ -5,6 +5,9 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // const isProd = process.env.NODE_ENV === 'production';
+  // app.useLogger(isProd ? ['log', 'warn', 'error'] : ['log', 'warn', 'error', 'debug', 'verbose']);
+
   if (process.env.NODE_ENV === 'development') {
     // Required to communicate between frontend when running on localhost ports
     app.enableCors({
@@ -18,15 +21,11 @@ async function bootstrap() {
     whitelist: true,
   }));
 
-  const isProd = process.env.NODE_ENV === 'production';
-  app.useLogger(isProd ? ['log', 'warn', 'error'] : ['log', 'warn', 'error', 'debug', 'verbose']);
-
   const port = process.env.API_PORT;
   
   if (!port) {
     throw new Error('API_DOCKER_PORT is not defined');
   }
-
 
   await app.listen(port);
 }
