@@ -6,15 +6,21 @@ import { ResponsiveLine } from "@nivo/line";
 import { ResponsiveTreeMap } from "@nivo/treemap";
 import { ResponsivePie } from "@nivo/pie";
 import { useSearchParams } from "react-router-dom";
-import { CardWrapper, DisplayCard, DropDownPicker, TimeRangePicker, TopEntitiesCard } from "../components";
+import {
+  CardWrapper,
+  DisplayCard,
+  DropDownPicker,
+  TimeRangePicker,
+  TopEntitiesCard,
+} from "../components";
 import React from "react";
+import { differenceInDays, differenceInMonths } from "date-fns";
 
 const MemoLineChart = React.memo(ResponsiveLine);
 const MemoPieChart = React.memo(ResponsivePie);
 const MemoTreeMap = React.memo(ResponsiveTreeMap);
 
 function DashboardPage() {
-
   const [searchParams, setSearchParams] = useSearchParams();
   const [dateRange, setDateRange] = useState<{ start: Date; end: Date }>(() => {
     const today = new Date();
@@ -28,7 +34,7 @@ function DashboardPage() {
     selectedAccount,
     setSelectedAccount,
     dashboardSummary,
-    loadingData
+    loadingData,
   } = useMonzoData({ start: dateRange.start, end: dateRange.end });
 
   // On initial load, check URL params for account and date range
@@ -46,8 +52,6 @@ function DashboardPage() {
     }
   }, []);
 
-  // TODO: add dynamic calculation of ticks to show in line chart to handle when large date ranges are returned
-
   // Sync param changes to URL
   useEffect(() => {
     if (!selectedAccount || !dateRange) return;
@@ -58,6 +62,19 @@ function DashboardPage() {
       end: dateRange.end.toISOString(),
     });
   }, [selectedAccount, dateRange]);
+
+  const calculateTickValues = () => {
+    const daysDiff = differenceInDays(dateRange.end, dateRange.start);
+    if (daysDiff <= 14) {
+      return "every 1 day";
+    } else if (daysDiff <= 32) {
+      return "every 2 days";
+    } else if (daysDiff <= 365) {
+      return "every 1 month";
+    } else {
+      return "every 2 months";
+    }
+  };
 
   const generateHeader = () => {
     return (
@@ -73,7 +90,9 @@ function DashboardPage() {
           dropDownLabel="Select Account"
           getValue={(account) => account.id}
           getLabel={(account) => account.description}
-          onChange={(account) => { setSelectedAccount(account?.id ?? null) }}
+          onChange={(account) => {
+            setSelectedAccount(account?.id ?? null);
+          }}
           layoutClassName="float-right"
           disabled={loadingData}
         ></DropDownPicker>
@@ -82,13 +101,16 @@ function DashboardPage() {
   };
 
   return (
-    <AppLayout 
-      headerComponent={generateHeader()} 
+    <AppLayout
+      headerComponent={generateHeader()}
       showLoadingOverlay={loadingData}
     >
       {/* Display Cards */}
       <CardLayout>
-        <CardWrapper title="Credit/Debit over time" className="col-span-4 row-span-2">
+        <CardWrapper
+          title="Credit/Debit over time"
+          className="col-span-4 row-span-2"
+        >
           <MemoLineChart
             data={dashboardSummary?.creditAndDebitOverTimeLineData ?? []}
             margin={{ top: 20, right: 20, bottom: 50, left: 50 }}
@@ -97,25 +119,25 @@ function DashboardPage() {
               type: "time",
               format: "%Y-%m-%dT%H:%M:%S.%LZ",
               precision: "day",
-              min: 'auto', 
-              max: 'auto'
+              min: "auto",
+              max: "auto",
             }}
             xFormat="time:%d/%m/%Y"
             yScale={{ type: "linear" }}
             axisBottom={{
               format: "%d/%m/%Y",
-              tickValues: "every 2 days",
+              tickValues: calculateTickValues(),
             }}
             legends={[
               {
-                  anchor: 'top-left',
-                  direction: 'column',
-                  translateX: 20,
-                  translateY: 12,
-                  itemWidth: 80,
-                  itemHeight: 22,
-                  symbolShape: 'circle'
-              }
+                anchor: "top-left",
+                direction: "column",
+                translateX: 20,
+                translateY: 12,
+                itemWidth: 80,
+                itemHeight: 22,
+                symbolShape: "circle",
+              },
             ]}
           />
         </CardWrapper>
@@ -154,7 +176,10 @@ function DashboardPage() {
         </CardWrapper>
 
         {/* Pie Diagrams */}
-        <CardWrapper title="Credit by category" className="col-span-2 row-span-2">
+        <CardWrapper
+          title="Credit by category"
+          className="col-span-2 row-span-2"
+        >
           <MemoPieChart
             data={dashboardSummary?.creditsByCategoryPieData ?? []}
             margin={{ top: 20, right: 40, bottom: 60, left: 40 }}
@@ -173,7 +198,10 @@ function DashboardPage() {
             arcLabel={(d) => `£${d.value.toFixed(2)}`} // TODO: move to backend
           />
         </CardWrapper>
-        <CardWrapper title="Debit by category" className="col-span-2 row-span-2">
+        <CardWrapper
+          title="Debit by category"
+          className="col-span-2 row-span-2"
+        >
           <MemoPieChart
             data={dashboardSummary?.debitsByCategoryPieData ?? []}
             margin={{ top: 20, right: 40, bottom: 60, left: 40 }}
