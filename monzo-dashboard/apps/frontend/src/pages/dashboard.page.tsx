@@ -13,9 +13,8 @@ const MemoLineChart = React.memo(ResponsiveLine);
 const MemoPieChart = React.memo(ResponsivePie);
 const MemoTreeMap = React.memo(ResponsiveTreeMap);
 
-// TODO: add a loading spinner on data loading/change
 function DashboardPage() {
-  // TECH-DEBT: Sets default date range to last 7 days, may wish to change this in future when user defaults can be set
+
   const [searchParams, setSearchParams] = useSearchParams();
   const [dateRange, setDateRange] = useState<{ start: Date; end: Date }>(() => {
     const today = new Date();
@@ -93,10 +92,13 @@ function DashboardPage() {
           <MemoLineChart
             data={dashboardSummary?.creditAndDebitOverTimeLineData ?? []}
             margin={{ top: 20, right: 20, bottom: 50, left: 50 }}
+            colors={["#ff4d4f", "#52c41a"]} // Updated to brighter and more modern red and green
             xScale={{
               type: "time",
               format: "%Y-%m-%dT%H:%M:%S.%LZ",
               precision: "day",
+              min: 'auto', 
+              max: 'auto'
             }}
             xFormat="time:%d/%m/%Y"
             yScale={{ type: "linear" }}
@@ -104,6 +106,17 @@ function DashboardPage() {
               format: "%d/%m/%Y",
               tickValues: "every 2 days",
             }}
+            legends={[
+              {
+                  anchor: 'top-left',
+                  direction: 'column',
+                  translateX: 20,
+                  translateY: 12,
+                  itemWidth: 80,
+                  itemHeight: 22,
+                  symbolShape: 'circle'
+              }
+            ]}
           />
         </CardWrapper>
 
@@ -157,6 +170,7 @@ function DashboardPage() {
             arcLinkLabelsColor={{ from: "color" }}
             arcLabelsSkipAngle={10}
             arcLabelsTextColor={{ from: "color", modifiers: [["darker", 2]] }}
+            arcLabel={(d) => `£${d.value.toFixed(2)}`} // TODO: move to backend
           />
         </CardWrapper>
         <CardWrapper title="Debit by category" className="col-span-2 row-span-2">
@@ -175,6 +189,7 @@ function DashboardPage() {
             arcLinkLabelsColor={{ from: "color" }}
             arcLabelsSkipAngle={10}
             arcLabelsTextColor={{ from: "color", modifiers: [["darker", 2]] }}
+            arcLabel={(d) => `£${d.value.toFixed(2)}`} // TODO: move to backend
           />
         </CardWrapper>
 

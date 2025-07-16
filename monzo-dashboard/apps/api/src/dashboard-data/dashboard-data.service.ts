@@ -109,6 +109,7 @@ export class DashboardDataService {
         );
     }
 
+    // TODO: due to aggregation of values ends up with large decimal place count, needs resolving
     private getSpendingByCategoryPieChart(transactions: MonzoTransaction[]): PieDatum[] {
         return computeGenericPieData(
             transactions,
