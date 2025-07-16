@@ -4,7 +4,7 @@ import { MonzoModule } from 'src/monzo/monzo.module';
 import { DashboardDataController } from './dashboard-data.controller';
 
 @Module({
-  imports: [MonzoModule],
+  imports: [MonzoModule.register()],
   providers: [DashboardDataService],
   controllers: [DashboardDataController],
   exports: [DashboardDataService],

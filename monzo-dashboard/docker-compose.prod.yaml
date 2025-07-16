@@ -59,7 +59,6 @@ services:
       MOCK_MONZO_DOCKER_URL: ${MOCK_MONZO_DOCKER_URL}
     ports:
       - "80:80" # Expose port 80  as the entrypoint for reverse proxy TODO: replace with env variable for flexibility
-      # NOTE: consider offering over HTTP and exposing 443 for HTTPS with certs
     depends_on:
       - frontend
       - api

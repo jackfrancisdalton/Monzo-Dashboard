@@ -72,12 +72,11 @@ All other behavior and processing is handled internally in Docker services.
     ...and assigning your secret values (like Monzo Oauth secrets) in there, so your secrets are well... your secrets.
 
 ### Dev Mode
-1. Spin up the dev PosgreSQL container with `docker compose --env-file .env.development -f docker-compose.dev.yaml up --build`
 2. Navigate to `/monzo-dashboard` and run `pnpm install` (requires `pnpm` to be installed)
 3. Navigate to the `src/apps/mock-monzo` app directory and run `pnpm run generate:large` to generate mock data.
 4. In `/monzo-dashboard` directory run `pnpm run dev` and access the app at `localhost:5173`.
 
->By default this will use mock data. If you want to use dev mode with real data/Oauth flow do this:
+>By default this will use mock data. If you want to use dev mode with real data and the real Oauth flow do this:
 >1. Update `USE_REAL_MONZO_API` to `true` in the `.env.development`.
 >2. Run `docker compose --env-file .env.development -f docker-compose.dev.yaml up --build` to set up the Postgres container.
 >3. Then run `pnpm run dev`.
